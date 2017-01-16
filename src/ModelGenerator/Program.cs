@@ -9,6 +9,7 @@
   using System.Threading.Tasks;
   using YamlDotNet.Serialization;
   using YamlDotNet.Serialization.NamingConventions;
+  using YamlDotNetExtensions;
 
   class Program
   {
@@ -50,7 +51,11 @@
       {
         modelFile = new FileStream(modelFilePath, FileMode.Open);
         reader = new StreamReader(modelFile);
-        var deserializer = new DeserializerBuilder().WithNamingConvention(new UnderscoredNamingConvention()).Build();
+
+        var deserializer = (Deserializer)null;
+        deserializer = new DeserializerBuilder()
+          .WithTypeConverter(new ValueOrQualifiedEnumMemberAlternativeConverter())
+          .WithNamingConvention(new UnderscoredNamingConvention()).Build();
         return deserializer.Deserialize<Spec>(reader);
       }
       finally

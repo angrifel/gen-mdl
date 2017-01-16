@@ -11,13 +11,13 @@
     public Spec()
     {
       this.Entities = new OrderedDictionary<string, OrderedDictionary<string, string>>();
-      this.Enums = new OrderedDictionary<string, List<string>>();
+      this.Enums = new OrderedDictionary<string, List<Alternative<string, QualifiedEnumMember>>>();
     }
 
     public Dictionary<string, TargetInfo> Targets { get; set; }
 
     public OrderedDictionary<string, OrderedDictionary<string, string>> Entities { get; set; }
 
-    public OrderedDictionary<string, List<string>> Enums { get; set; }
+    public OrderedDictionary<string, List<Alternative<string, QualifiedEnumMember>>> Enums { get; set; }
   }
 }

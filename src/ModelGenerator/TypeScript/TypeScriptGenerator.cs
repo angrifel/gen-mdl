@@ -1,5 +1,6 @@
 ﻿namespace ModelGenerator.TypeScript
 {
+  using Model;
   using System;
   using System.Collections.Generic;
   using System.IO;
@@ -24,7 +25,7 @@
         barrelOutput = new FileStream(barrelPath, FileMode.Create, FileAccess.Write, FileShare.None);
         barrelWriter = new StreamWriter(barrelOutput);
 
-        foreach (var @enum in (IDictionary<string, List<string>>)specInterpreter.Spec.Enums)
+        foreach (var @enum in (IDictionary<string, List<Alternative<string, QualifiedEnumMember>>>)specInterpreter.Spec.Enums)
         {
           var enumFileName = GetFileName(@enum.Key);
           var path = Path.Combine(targetInfo.Path, Path.ChangeExtension(enumFileName, Constants.TypeScriptExtension));
@@ -64,7 +65,7 @@
       }
     }
 
-    private static void GenerateEnum(StreamWriter output, string enumName, IList<string> enumMembers)
+    private static void GenerateEnum(StreamWriter output, string enumName, IList<Alternative<string, QualifiedEnumMember>> enumMembers)
     {
       var normalizedEnumName = SpecFunctions.ToPascalCase(enumName);
       output.WriteLine($"enum {normalizedEnumName} {{");
@@ -80,11 +81,20 @@
       output.WriteLine($"export default {normalizedEnumName}");
     }
 
-    private static void GenerateEnumMember(StreamWriter output, string memberName, bool last)
+    private static void GenerateEnumMember(StreamWriter output, Alternative<string, QualifiedEnumMember> member, bool isLastOne)
     {
-      var separator = last ? string.Empty : ",";
-      var normalizedMemberName = SpecFunctions.ToPascalCase(memberName);
-      output.WriteLine($"  {normalizedMemberName}{separator}");
+      var name = member.Value as string ?? ((QualifiedEnumMember)member.Value).Name;
+      var nomalizedMemberName = SpecFunctions.ToPascalCase(name);
+      var separator = isLastOne ? string.Empty : ",";
+      var qem = member.Value as QualifiedEnumMember;
+      if (qem == null)
+      {
+        output.WriteLine($"  {nomalizedMemberName}{separator}");
+      }
+      else
+      {
+        output.WriteLine($"  {nomalizedMemberName} = {qem.Value}{separator}");
+      }
     }
 
     private static void GenerateEntity(StreamWriter output, SpecInterpreter specInterpreter, string entityName, IDictionary<string, string> entityMembers)

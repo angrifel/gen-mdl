@@ -65,6 +65,8 @@
     <Compile Include="DictionaryExtensions.cs" />
     <Compile Include="ITargetGenerator.cs" />
     <Compile Include="ITargetAmmedment.cs" />
+    <Compile Include="Model\Alternative.cs" />
+    <Compile Include="Model\QualifiedEnumMember.cs" />
     <Compile Include="Model\Spec.cs" />
     <Compile Include="Model\TargetInfo.cs" />
     <Compile Include="OrderedDictionary.cs" />
@@ -75,6 +77,7 @@
     <Compile Include="SpecInterpreter.cs" />
     <Compile Include="TypeScript\TypeScriptAmmendment.cs" />
     <Compile Include="TypeScript\TypeScriptGenerator.cs" />
+    <Compile Include="YamlDotNetExtensions\ValueOrQualifiedEnumMemberAlternativeConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.1">

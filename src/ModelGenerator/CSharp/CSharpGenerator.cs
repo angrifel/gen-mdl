@@ -17,7 +17,7 @@
 
       Directory.CreateDirectory(targetInfo.Path);
 
-      foreach (var @enum in (IDictionary<string, List<string>>)specInterpreter.Spec.Enums)
+      foreach (var @enum in (IDictionary<string, List<Alternative<string, QualifiedEnumMember>>>)specInterpreter.Spec.Enums)
       {
         var enumFilename = GetFilename(@enum.Key);
         var path = Path.Combine(targetInfo.Path, Path.ChangeExtension(enumFilename, Constants.CSharpExtension));
@@ -46,7 +46,7 @@
       }
     }
 
-    private static void GenerateEnum(StreamWriter output, string @namespace, string enumName, IList<string> enumMembers)
+    private static void GenerateEnum(StreamWriter output, string @namespace, string enumName, IList<Alternative<string, QualifiedEnumMember>> enumMembers)
     {
       var normalizedEnumName = SpecFunctions.ToPascalCase(enumName);
       output.WriteLine($"namespace {@namespace}");
@@ -65,11 +65,20 @@
       output.WriteLine(@"}");
     }
 
-    private static void GenerateEnumMember(TextWriter output, string memberName, bool isLastOne)
+    private static void GenerateEnumMember(TextWriter output, Alternative<string, QualifiedEnumMember> member, bool isLastOne)
     {
-      var nomalizedMemberName = SpecFunctions.ToPascalCase(memberName);
+      var name = member.Value as string ?? ((QualifiedEnumMember)member.Value).Name;
+      var nomalizedMemberName = SpecFunctions.ToPascalCase(name);
       var separator = isLastOne ? string.Empty : ",";
-      output.WriteLine($"    {nomalizedMemberName}{separator}");
+      var qem = member.Value as QualifiedEnumMember;
+      if (qem == null)
+      {
+        output.WriteLine($"    {nomalizedMemberName}{separator}");
+      }
+      else
+      {
+        output.WriteLine($"    {nomalizedMemberName} = {qem.Value}{separator}");
+      }
     }
 
     private static void GenerateEntity(StreamWriter output, SpecInterpreter specInterpreter, string entityName, IDictionary<string, string> entityMembers)
