@@ -66,11 +66,11 @@
       }
     }
 
-    public void ProcessSpecification()
+    public void ProcessSpecification(string basePath)
     {
       foreach (var targetGenerator in _targetGenerator)
       {
-        targetGenerator.Value.Generate(_specInterpreter);
+        targetGenerator.Value.Generate(basePath, _specInterpreter);
       }
     }
   }

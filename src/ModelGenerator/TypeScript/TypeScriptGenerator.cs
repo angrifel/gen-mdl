@@ -10,13 +10,14 @@
 
   public class TypeScriptGenerator : ITargetGenerator
   {
-    public void Generate(SpecInterpreter specInterpreter)
+    public void Generate(string basePath, SpecInterpreter specInterpreter)
     {
       var targetInfo = specInterpreter.Spec.Targets[Constants.TypeScriptTarget];
+      if (!PathFunctions.IsSupportedPath(targetInfo.Path)) throw new InvalidOperationException("Path not supported");
+      var targetDir = PathFunctions.IsPathRelative(targetInfo.Path) ? Path.Combine(basePath, targetInfo.Path) : targetInfo.Path;
+      Directory.CreateDirectory(targetDir);
 
-      Directory.CreateDirectory(targetInfo.Path);
-
-      var barrelPath = Path.Combine(targetInfo.Path, Path.ChangeExtension("index", Constants.TypeScriptExtension));
+      var barrelPath = Path.Combine(targetDir, Path.ChangeExtension("index", Constants.TypeScriptExtension));
       var barrelOutput = (Stream)null;
       var barrelWriter = (TextWriter)null;
 
@@ -28,7 +29,7 @@
         foreach (var @enum in specInterpreter.Spec.Enums)
         {
           var enumFileName = GetFileName(@enum.Key);
-          var path = Path.Combine(targetInfo.Path, Path.ChangeExtension(enumFileName, Constants.TypeScriptExtension));
+          var path = Path.Combine(targetDir, Path.ChangeExtension(enumFileName, Constants.TypeScriptExtension));
           using (var output = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
           {
             using (var writer = new StreamWriter(output))
@@ -44,7 +45,7 @@
         foreach (var entity in specInterpreter.Spec.Entities)
         {
           var entityFileName = GetFileName(entity.Key);
-          var path = Path.Combine(targetInfo.Path, Path.ChangeExtension(entityFileName, Constants.TypeScriptExtension));
+          var path = Path.Combine(targetDir, Path.ChangeExtension(entityFileName, Constants.TypeScriptExtension));
           using (var output = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
           {
             using (var writer = new StreamWriter(output))

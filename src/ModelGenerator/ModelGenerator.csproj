@@ -71,6 +71,7 @@
     <Compile Include="Model\Spec.cs" />
     <Compile Include="Model\TargetInfo.cs" />
     <Compile Include="OrderedDictionary.cs" />
+    <Compile Include="PathFunctions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpecExtensions.cs" />

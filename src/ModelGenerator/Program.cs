@@ -25,7 +25,7 @@
         var specProcessor = new SpecProcessor(spec);
         specProcessor.AmmedSpecification();
         specProcessor.VerifySpecification();
-        specProcessor.ProcessSpecification();
+        specProcessor.ProcessSpecification(Path.GetDirectoryName(modelFilePath));
       }
       catch (Exception ex)
       {

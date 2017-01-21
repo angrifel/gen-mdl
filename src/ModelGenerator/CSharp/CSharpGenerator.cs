@@ -13,16 +13,18 @@
   {
     private static readonly string[] StructNativeTypes = new string[] { "bool", "byte", "short", "int", "long", "float", "double", "decimal", "char", "System.Guid", "System.DateTime", "System.TimeSpan", "System.DateTimeOffset" };
 
-    public void Generate(SpecInterpreter specInterpreter)
+    public void Generate(string basePath, SpecInterpreter specInterpreter)
     {
       var targetInfo = specInterpreter.Spec.Targets[Constants.CSharpTarget];
+      if (!PathFunctions.IsSupportedPath(targetInfo.Path)) throw new InvalidOperationException("Path not supported");
+      var targetDir = PathFunctions.IsPathRelative(targetInfo.Path) ? Path.Combine(basePath, targetInfo.Path) : targetInfo.Path;
 
-      Directory.CreateDirectory(targetInfo.Path);
+      Directory.CreateDirectory(targetDir);
 
       foreach (var @enum in specInterpreter.Spec.Enums)
       {
         var enumFilename = GetFilename(@enum.Key);
-        var path = Path.Combine(targetInfo.Path, Path.ChangeExtension(enumFilename, Constants.CSharpExtension));
+        var path = Path.Combine(targetDir, Path.ChangeExtension(enumFilename, Constants.CSharpExtension));
         using (var output = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
         {
           using (var writer = new StreamWriter(output))
@@ -36,7 +38,7 @@
       foreach (var entity in specInterpreter.Spec.Entities)
       {
         var entityFilename = GetFilename(entity.Key);
-        var path = Path.Combine(targetInfo.Path, Path.ChangeExtension(entityFilename, Constants.CSharpExtension));
+        var path = Path.Combine(targetDir, Path.ChangeExtension(entityFilename, Constants.CSharpExtension));
         using (var output = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
         {
           using (var writer = new StreamWriter(output))

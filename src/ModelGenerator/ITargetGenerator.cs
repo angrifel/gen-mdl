@@ -8,6 +8,6 @@ namespace ModelGenerator
 {
   public interface ITargetGenerator
   {
-    void Generate(SpecInterpreter specInterpreter);
+    void Generate(string basePath, SpecInterpreter specInterpreter);
   }
 }
