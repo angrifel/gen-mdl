@@ -54,6 +54,7 @@
 
         var deserializer = (Deserializer)null;
         deserializer = new DeserializerBuilder()
+          .WithTypeConverter(new ValueOrEntityMemberInfoAlternativeConverter(() => deserializer))
           .WithTypeConverter(new ValueOrQualifiedEnumMemberAlternativeConverter())
           .WithNamingConvention(new UnderscoredNamingConvention()).Build();
         return deserializer.Deserialize<Spec>(reader);

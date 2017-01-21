@@ -25,7 +25,7 @@
         barrelOutput = new FileStream(barrelPath, FileMode.Create, FileAccess.Write, FileShare.None);
         barrelWriter = new StreamWriter(barrelOutput);
 
-        foreach (var @enum in (IDictionary<string, List<Alternative<string, QualifiedEnumMember>>>)specInterpreter.Spec.Enums)
+        foreach (var @enum in specInterpreter.Spec.Enums)
         {
           var enumFileName = GetFileName(@enum.Key);
           var path = Path.Combine(targetInfo.Path, Path.ChangeExtension(enumFileName, Constants.TypeScriptExtension));
@@ -41,7 +41,7 @@
           barrelWriter.WriteLine($"export * from './{enumFileName}'");
         }
 
-        foreach (var entity in (IDictionary<string, OrderedDictionary<string, string>>)specInterpreter.Spec.Entities)
+        foreach (var entity in specInterpreter.Spec.Entities)
         {
           var entityFileName = GetFileName(entity.Key);
           var path = Path.Combine(targetInfo.Path, Path.ChangeExtension(entityFileName, Constants.TypeScriptExtension));
@@ -97,7 +97,7 @@
       }
     }
 
-    private static void GenerateEntity(StreamWriter output, SpecInterpreter specInterpreter, string entityName, IDictionary<string, string> entityMembers)
+    private static void GenerateEntity(StreamWriter output, SpecInterpreter specInterpreter, string entityName, IDictionary<string, Alternative<string, EntityMemberInfo>> entityMembers)
     {
       var enumDependencies = specInterpreter.GetDirectEnumDependencies(entityName);
       var entityDependencies = specInterpreter.GetDirectEntityDependencies(entityName);
@@ -126,9 +126,9 @@
       output.WriteLine("}");
     }
 
-    private static void GenerateEntityMembers(StreamWriter output, SpecInterpreter specInterpreter, IDictionary<string, string> entityMembers)
+    private static void GenerateEntityMembers(StreamWriter output, SpecInterpreter specInterpreter, IDictionary<string, Alternative<string, EntityMemberInfo>> entityMembers)
     {
-      var members = new KeyValuePair<string, string>[entityMembers.Count];
+      var members = new KeyValuePair<string, Alternative<string, EntityMemberInfo>>[entityMembers.Count];
       entityMembers.CopyTo(members, 0);
       for (int i = 0; i < members.Length; i++)
       {
@@ -136,9 +136,10 @@
       }
     }
 
-    private static void GenerateEntityMember(StreamWriter output, SpecInterpreter specInterpreter, KeyValuePair<string, string> member)
+    private static void GenerateEntityMember(StreamWriter output, SpecInterpreter specInterpreter, KeyValuePair<string, Alternative<string, EntityMemberInfo>> member)
     {
-      var resolvedType = specInterpreter.GetResolvedType(Constants.TypeScriptTarget, member.Value);
+      var specType = member.Value.GetMemberType();
+      var resolvedType = specInterpreter.GetResolvedType(Constants.TypeScriptTarget, specType);
       var normalizedType = specInterpreter.IsNativeType(Constants.TypeScriptTarget, resolvedType) ? resolvedType : SpecFunctions.ToPascalCase(resolvedType);
       var normalizedMemberName = SpecFunctions.ToCamelCase(member.Key);
       output.WriteLine($"  {normalizedMemberName} : {normalizedType};");

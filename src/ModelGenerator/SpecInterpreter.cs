@@ -50,12 +50,12 @@
 
     public IEnumerable<string> GetDirectEnumDependencies(string type) =>
       IsEntity(type)
-        ? _spec.Entities[type].Where(_ => _spec.Enums.ContainsKey(_.Value)).Select(_ => _.Value)
+        ? _spec.Entities[type].Where(_ => IsEnum(_.Value.GetMemberType())).Select(_ => _.Value.GetMemberType())
         : _emptyArray;
 
     public IEnumerable<string> GetDirectEntityDependencies(string type) =>
       IsEntity(type)
-        ? _spec.Entities[type].Where(_ => IsEntity(_.Value)).Select(_ => _.Value)
+        ? _spec.Entities[type].Where(_ => IsEntity(_.Value.GetMemberType())).Select(_ => _.Value.GetMemberType())
         : _emptyArray;
 
     public bool IsTypeResolvable(string target, string type) =>

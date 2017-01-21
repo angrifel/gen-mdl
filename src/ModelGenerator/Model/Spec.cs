@@ -10,14 +10,14 @@
   {
     public Spec()
     {
-      this.Entities = new OrderedDictionary<string, OrderedDictionary<string, string>>();
-      this.Enums = new OrderedDictionary<string, List<Alternative<string, QualifiedEnumMember>>>();
+      this.Entities = new Dictionary<string, OrderedDictionary<string, Alternative<string, EntityMemberInfo>>>();
+      this.Enums = new Dictionary<string, List<Alternative<string, QualifiedEnumMember>>>();
     }
 
     public Dictionary<string, TargetInfo> Targets { get; set; }
 
-    public OrderedDictionary<string, OrderedDictionary<string, string>> Entities { get; set; }
+    public Dictionary<string, OrderedDictionary<string, Alternative<string, EntityMemberInfo>>> Entities { get; set; }
 
-    public OrderedDictionary<string, List<Alternative<string, QualifiedEnumMember>>> Enums { get; set; }
+    public Dictionary<string, List<Alternative<string, QualifiedEnumMember>>> Enums { get; set; }
   }
 }

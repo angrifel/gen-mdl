@@ -53,11 +53,11 @@
       {
         var targetInfo = _spec.Targets[target];
 
-        foreach (DictionaryEntry entity in _spec.Entities)
+        foreach (var entity in _spec.Entities)
         {
-          foreach (var member in (IDictionary<string, string>)entity.Value)
+          foreach (var member in (IDictionary<string, Alternative<string, EntityMemberInfo>>)entity.Value)
           {
-            if (!_specInterpreter.IsTypeResolvable(target, member.Value))
+            if (!_specInterpreter.IsTypeResolvable(target, member.Value.GetMemberType()))
             {
               throw new Exception($"{target} verification failed: Unrecognized type '{member.Value}' in '{entity.Key}.{member.Key}'.");
             }

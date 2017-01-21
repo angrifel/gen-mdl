@@ -11,13 +11,15 @@
 
   public class CSharpGenerator : ITargetGenerator
   {
+    private static readonly string[] StructNativeTypes = new string[] { "bool", "byte", "short", "int", "long", "float", "double", "decimal", "char", "System.Guid", "System.DateTime", "System.TimeSpan", "System.DateTimeOffset" };
+
     public void Generate(SpecInterpreter specInterpreter)
     {
       var targetInfo = specInterpreter.Spec.Targets[Constants.CSharpTarget];
 
       Directory.CreateDirectory(targetInfo.Path);
 
-      foreach (var @enum in (IDictionary<string, List<Alternative<string, QualifiedEnumMember>>>)specInterpreter.Spec.Enums)
+      foreach (var @enum in specInterpreter.Spec.Enums)
       {
         var enumFilename = GetFilename(@enum.Key);
         var path = Path.Combine(targetInfo.Path, Path.ChangeExtension(enumFilename, Constants.CSharpExtension));
@@ -31,7 +33,7 @@
         }
       }
 
-      foreach (var entity in (IDictionary<string, OrderedDictionary<string, string>>)specInterpreter.Spec.Entities)
+      foreach (var entity in specInterpreter.Spec.Entities)
       {
         var entityFilename = GetFilename(entity.Key);
         var path = Path.Combine(targetInfo.Path, Path.ChangeExtension(entityFilename, Constants.CSharpExtension));
@@ -81,7 +83,7 @@
       }
     }
 
-    private static void GenerateEntity(StreamWriter output, SpecInterpreter specInterpreter, string entityName, IDictionary<string, string> entityMembers)
+    private static void GenerateEntity(StreamWriter output, SpecInterpreter specInterpreter, string entityName, IDictionary<string, Alternative<string, EntityMemberInfo>> entityMembers)
     {
       var normalizedEntityName = SpecFunctions.ToPascalCase(entityName);
       output.WriteLine($"namespace {@specInterpreter.Spec.Targets[Constants.CSharpTarget].Namespace}");
@@ -97,9 +99,9 @@
       output.WriteLine(@"}");
     }
 
-    private static void GenerateEntityMembers(StreamWriter output, SpecInterpreter specInterpreter, IDictionary<string, string> entityMembers)
+    private static void GenerateEntityMembers(StreamWriter output, SpecInterpreter specInterpreter, IDictionary<string, Alternative<string, EntityMemberInfo>> entityMembers)
     {
-      var members = new KeyValuePair<string, string>[entityMembers.Count];
+      var members = new KeyValuePair<string, Alternative<string, EntityMemberInfo>>[entityMembers.Count];
       entityMembers.CopyTo(members, 0);
       for (int i = 0; i < members.Length - 1; i++)
       {
@@ -109,14 +111,20 @@
       GenerateEntityMember(output, specInterpreter, members[members.Length - 1].Key, members[members.Length - 1].Value, true);
     }
 
-    private static void GenerateEntityMember(StreamWriter output, SpecInterpreter specInterpreter, string name, string type, bool isLastOne)
+    private static void GenerateEntityMember(StreamWriter output, SpecInterpreter specInterpreter, string name, Alternative<string, EntityMemberInfo> valueOrEntityMemberInfoAlternative, bool isLastOne)
     {
-      var resolvedType = specInterpreter.GetResolvedType(Constants.CSharpTarget, type);
-      var normalizedType = specInterpreter.IsNativeType(Constants.CSharpTarget, resolvedType) ? type : SpecFunctions.ToPascalCase(resolvedType);
-      var normalizedName = SpecFunctions.ToPascalCase(name);
-      output.WriteLine($"    public {normalizedType} {normalizedName} {{ get; set; }}");
+      var specType = valueOrEntityMemberInfoAlternative.GetMemberType();
+      var isNullable = valueOrEntityMemberInfoAlternative.GetIsNullable();
+      var resolvedType = specInterpreter.GetResolvedType(Constants.CSharpTarget, specType);
+      var normalizedType = specInterpreter.IsNativeType(Constants.CSharpTarget, specType) ? specType : SpecFunctions.ToPascalCase(resolvedType);
+      var isStruct = IsStruct(normalizedType);
+      var memberType = normalizedType + (isStruct && isNullable ? "?" : string.Empty);
+      var memberName = SpecFunctions.ToPascalCase(name);
+      output.WriteLine($"    public {memberType} {memberName} {{ get; set; }}");
     }
 
     private static string GetFilename(string type) => SpecFunctions.ToPascalCase(type);
+
+    private static bool IsStruct(string type) => StructNativeTypes.Contains(type);
   }
 }

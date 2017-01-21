@@ -54,12 +54,13 @@ namespace ModelGenerator
 
     public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
     {
-      var entries = new DictionaryEntry[base.Count];
-      base.CopyTo(entries, 0);
+      // NOTE: do not use base.CopyTo(Array array, int index). Items are not copied in order.
 
-      for (int i = 0, j = arrayIndex; i < Math.Min(array.Length - arrayIndex, base.Count); i++, j++)
+      var i = arrayIndex;
+      foreach (var item in (IEnumerable<KeyValuePair<TKey, TValue>>)this)
       {
-        array[j] = new KeyValuePair<TKey, TValue>((TKey)entries[i].Key, (TValue)entries[i].Value);
+        if (i >= array.Length + arrayIndex) break;
+        array[i++] = item;
       }
     }
 
