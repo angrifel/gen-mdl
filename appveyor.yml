@@ -1,0 +1,7 @@
+after_build:
+  - 7z a mdlgen.zip LICENSE LICENSE-libyaml LICENSE-YamlDotNet %APPVEYOR_BUILD_FOLDER%\src\ModelGenerator\bin\$(configuration)\mdlgen.exe
+
+artifacts:
+  - path: mdlgen.zip
+    name: application
+
