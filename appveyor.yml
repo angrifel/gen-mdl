@@ -1,14 +1,8 @@
 platform: Any CPU
 configuration: [Debug, Release]
 after_build:
-  - |
-    if "%CONFIGURATION%"=="Debug" (
-        7z a mdlgen_debug.zip LICENSE LICENSE-libyaml LICENSE-YamlDotNet %APPVEYOR_BUILD_FOLDER%\src\ModelGenerator\bin\Debug\mdlgen.exe %APPVEYOR_BUILD_FOLDER%\src\ModelGenerator\bin\Release\mdlgen.pdb
-    )
-    if "%CONFIGURATION%"=="Release" (
-        7z a mdlgen.zip LICENSE LICENSE-libyaml LICENSE-YamlDotNet %APPVEYOR_BUILD_FOLDER%\src\ModelGenerator\bin\Release\mdlgen.exe
-        7z a mdlgen_release.zip LICENSE LICENSE-libyaml LICENSE-YamlDotNet %APPVEYOR_BUILD_FOLDER%\src\ModelGenerator\bin\Release\mdlgen.exe %APPVEYOR_BUILD_FOLDER%\src\ModelGenerator\bin\Release\mdlgen.pdb
-    )
+  - tools\package_on_debug.cmd %CONFIGURATION% %APPVEYOR_BUILD_FOLDER%
+  - tools\package_on_release.cmd %CONFIGURATION% %APPVEYOR_BUILD_FOLDER%
 
 artifacts:
   - path: mdlgen.zip
