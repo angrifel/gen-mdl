@@ -1,9 +1,14 @@
 platform: Any CPU
 configuration: [Debug, Release]
 after_build:
-  - 7z a mdlgen.zip LICENSE LICENSE-libyaml LICENSE-YamlDotNet %APPVEYOR_BUILD_FOLDER%\src\ModelGenerator\bin\Release\mdlgen.exe
-  - 7z a mdlgen_release.zip LICENSE LICENSE-libyaml LICENSE-YamlDotNet %APPVEYOR_BUILD_FOLDER%\src\ModelGenerator\bin\Release\mdlgen.exe %APPVEYOR_BUILD_FOLDER%\src\ModelGenerator\bin\Release\mdlgen.pdb
-  - 7z a mdlgen_debug.zip LICENSE LICENSE-libyaml LICENSE-YamlDotNet %APPVEYOR_BUILD_FOLDER%\src\ModelGenerator\bin\Debug\mdlgen.exe %APPVEYOR_BUILD_FOLDER%\src\ModelGenerator\bin\Release\mdlgen.pdb
+  - |
+    if "%CONFIGURATION%"=="Debug" (
+        7z a mdlgen_debug.zip LICENSE LICENSE-libyaml LICENSE-YamlDotNet %APPVEYOR_BUILD_FOLDER%\src\ModelGenerator\bin\Debug\mdlgen.exe %APPVEYOR_BUILD_FOLDER%\src\ModelGenerator\bin\Release\mdlgen.pdb
+    )
+    if "%CONFIGURATION%"=="Release" (
+        7z a mdlgen.zip LICENSE LICENSE-libyaml LICENSE-YamlDotNet %APPVEYOR_BUILD_FOLDER%\src\ModelGenerator\bin\Release\mdlgen.exe
+        7z a mdlgen_release.zip LICENSE LICENSE-libyaml LICENSE-YamlDotNet %APPVEYOR_BUILD_FOLDER%\src\ModelGenerator\bin\Release\mdlgen.exe %APPVEYOR_BUILD_FOLDER%\src\ModelGenerator\bin\Release\mdlgen.pdb
+    )
 
 artifacts:
   - path: mdlgen.zip
@@ -11,6 +16,6 @@ artifacts:
 
   - path: mdlgen_release.zip
     name: mdlgen with symbols
-    
+
   - path: mdlgen_debug.zip
     name: mdlgen with symbols - debug
