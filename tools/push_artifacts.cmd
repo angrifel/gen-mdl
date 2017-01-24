@@ -1,8 +1,7 @@
 @echo off
 setlocal
-set CONFIGURATION=%1
-set BUILD_FOLDER=%2
-set VERSION=%3
+set BUILD_FOLDER=%1
+set VERSION=%2
 set MDLGEN_PATH=%BUILD_FOLDER%\mdlgen_%VERSION%.zip
 set MDLGEN_RELEASE_PATH=%BUILD_FOLDER%\mdlgen_%VERSION%_release.zip
 set MDLGEN_DEBUG_PATH=%BUILD_FOLDER%\mdlgen_%VERSION%_debug.zip
