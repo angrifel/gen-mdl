@@ -4,6 +4,6 @@ set CONFIGURATION=%1
 set BUILD_FOLDER=%2
 set VERSION=%3
 if  "%CONFIGURATION%"=="Debug" (
-    7z a %BUILD_FOLDER%\mdlgen_%APPVEYOR_BUILD_VERSION%_debug.zip %BUILD_FOLDER%\LICENSE %BUILD_FOLDER%\LICENSE-libyaml %BUILD_FOLDER%\LICENSE-YamlDotNet %BUILD_FOLDER%\src\ModelGenerator\bin\Debug\mdlgen.exe %BUILD_FOLDER%\src\ModelGenerator\bin\Debug\mdlgen.pdb
+    7z a %BUILD_FOLDER%\mdlgen_%VERSION%_debug.zip %BUILD_FOLDER%\LICENSE %BUILD_FOLDER%\LICENSE-libyaml %BUILD_FOLDER%\LICENSE-YamlDotNet %BUILD_FOLDER%\src\ModelGenerator\bin\Debug\mdlgen.exe %BUILD_FOLDER%\src\ModelGenerator\bin\Debug\mdlgen.pdb
 )
 endlocal

@@ -11,13 +11,4 @@ configuration: [Debug, Release]
 after_build:
   - tools\package_on_debug.cmd %CONFIGURATION% %APPVEYOR_BUILD_FOLDER% %APPVEYOR_BUILD_VERSION%
   - tools\package_on_release.cmd %CONFIGURATION% %APPVEYOR_BUILD_FOLDER% %APPVEYOR_BUILD_VERSION%
-
-artifacts:
-  - path: mdlgen_{version}.zip
-    name: mdlgen
-
-  - path: mdlgen_{version}_release.zip
-    name: mdlgen with symbols
-
-  - path: mdlgen_{version}_debug.zip
-    name: mdlgen with symbols - debug
+  - tools\push_artifacts.cmd %APPVEYOR_BUILD_FOLDER% %APPVEYOR_BUILD_VERSION%
