@@ -1,3 +1,11 @@
+version: 1.0.{build}
+
+assembly_info:
+  patch: true
+  assembly_version: '{version}'
+  assembly_file_version: '{version}'
+  assembly_informational_version: '{version}-rc1'
+
 platform: Any CPU
 configuration: [Debug, Release]
 after_build:
