@@ -1,10 +1,14 @@
-version: 1.0.{build}
+environment:
+  major_minor_version: 0.0
+  prerelease_suffix: -rc1
+
+version: $(major_minor_version).{build}$(prerelease_suffix)
 
 assembly_info:
   patch: true
-  assembly_version: '{version}'
-  assembly_file_version: '{version}'
-  assembly_informational_version: '{version}-rc1'
+  assembly_version: '$(major_minor_version).{build}'
+  assembly_file_version: ' $(major_minor_version).{build}'
+  assembly_informational_version: '{version}'
 
 platform: Any CPU
 configuration: [Debug, Release]
