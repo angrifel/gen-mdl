@@ -9,10 +9,8 @@ artifacts:
   - path: mdlgen.zip
     name: mdlgen
 
-artifacts:
   - path: mdlgen_release.zip
     name: mdlgen with symbols
-
-artifacts:
+    
   - path: mdlgen_debug.zip
     name: mdlgen with symbols - debug
