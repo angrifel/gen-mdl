@@ -12,3 +12,15 @@ after_build:
   - tools\package_on_debug.cmd %CONFIGURATION% %APPVEYOR_BUILD_FOLDER% %APPVEYOR_BUILD_VERSION%
   - tools\package_on_release.cmd %CONFIGURATION% %APPVEYOR_BUILD_FOLDER% %APPVEYOR_BUILD_VERSION%
   - tools\push_artifacts.cmd %APPVEYOR_BUILD_FOLDER% %APPVEYOR_BUILD_VERSION%
+
+deploy:
+  release: mdlden-v$(appveyor_build_version)
+  description: 'mdlgen rc-1 release'
+  provider: GitHub
+  auth_token:
+    secure: hR3Jaba/zuFlZJiS17qD60zHccr7+6mC+dLU5Yix2KD/EHlxYvaV+ANKZHUE+vP2
+  artifact: /.*\.zip/
+  draft: true
+  prerelease: true
+  on:
+    branch: master
