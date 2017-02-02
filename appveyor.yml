@@ -1,7 +1,7 @@
 environment:
   major_minor_version: "0.0"
 
-version: $(major_minor_version).{build}-rc1
+version: $(major_minor_version).{build}-alpha.1
 
 assembly_info:
   patch: true
@@ -17,7 +17,7 @@ skip_tags: true
 
 deploy:
   tag: v$(appveyor_build_version)
-  release: mdlden-v$(appveyor_build_version)
+  release: mdlgen-v$(appveyor_build_version)
   description: 'mdlgen v$(appveyor_build_version)'
   provider: GitHub
   auth_token:
