@@ -2,7 +2,7 @@
 
 A Source code generator for model definitions.
 
-[![Build status](https://ci.appveyor.com/api/projects/status/uftlt64mg0v359vw/branch/master?svg=true)](https://ci.appveyor.com/project/angrifel/mdlgen/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/qpwt9kk7wgbtp86a/branch/master?svg=true)](https://ci.appveyor.com/project/angrifel/mdlgen/branch/master)
 
 ## Description
 
