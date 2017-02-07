@@ -96,19 +96,19 @@ namespace ModelGenerator.CSharp
           new CSharpClass
           {
             Name = SpecFunctions.ToPascalCase(entityName),
-            Members = entityMembers.Select(_ => GenerateEntityMember(_.Key, _.Value)).ToList()
+            Members = entityMembers.Select(GenerateEntityMember).ToList()
           }
         }
       };
     }
 
-    private CSharpClassMember GenerateEntityMember(string name, IEntityMemberInfo entityMemberInfo)
+    private CSharpClassMember GenerateEntityMember(KeyValuePair<string, IEntityMemberInfo> member)
     {
-      var resolvedType = _specInterpreter.GetResolvedType(Constants.CSharpTarget, entityMemberInfo.Type);
-      var normalizedType = _specInterpreter.IsNativeType(Constants.CSharpTarget, entityMemberInfo.Type) ? entityMemberInfo.Type : SpecFunctions.ToPascalCase(resolvedType);
+      var resolvedType = _specInterpreter.GetResolvedType(Constants.CSharpTarget, member.Value.Type);
+      var normalizedType = _specInterpreter.IsNativeType(Constants.CSharpTarget, member.Value.Type) ? member.Value.Type : SpecFunctions.ToPascalCase(resolvedType);
       var isStruct = IsStruct(normalizedType);
-      var memberType = normalizedType + (isStruct && entityMemberInfo.IsNullable ? "?" : string.Empty);
-      var memberName = SpecFunctions.ToPascalCase(name);
+      var memberType = normalizedType + (isStruct && member.Value.IsNullable ? "?" : string.Empty);
+      var memberName = SpecFunctions.ToPascalCase(member.Key);
       return new CSharpClassMember { Type = memberType, Name = memberName };
     }
     

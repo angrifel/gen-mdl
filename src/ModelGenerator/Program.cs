@@ -37,9 +37,10 @@ namespace ModelGenerator
       if (args.Length > 1) { ShowHelp(); return 0; }
       var modelFilePath = args[0];
       if (!File.Exists(modelFilePath)) ShowFileDoesNotExist();
+      var specSource = new FileSpecSource(modelFilePath);
       try
       {
-        var spec = GetSpecFromFile(modelFilePath);
+        var spec = specSource.GetSpec();
         var specProcessor = new SpecProcessor(spec, new GeneratorFactory());
         specProcessor.AmmedSpecification();
         specProcessor.VerifySpecification();

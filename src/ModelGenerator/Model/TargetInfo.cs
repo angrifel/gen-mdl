@@ -39,6 +39,5 @@ namespace ModelGenerator.Model
     public ISet<string> NativeTypes { get; set; }
 
     public string Namespace { get; set; }
-
   }
 }
