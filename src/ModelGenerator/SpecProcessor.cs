@@ -37,14 +37,13 @@ namespace ModelGenerator
       { Constants.CSharpTarget, new CSharpAmmendment() },
     };
 
-    private static readonly Dictionary<string, ITargetGenerator> _targetGenerator = new Dictionary<string, ITargetGenerator> {
-      { Constants.TypeScriptTarget, new TypeScriptGenerator() },
-      { Constants.CSharpTarget, new CSharpGenerator() }
-    };
+    private static readonly string[] Targets = new[] { Constants.CSharpTarget, Constants.TypeScriptTarget };
 
     private SpecInterpreter _specInterpreter;
 
-    public SpecProcessor(Spec spec)
+    private IGeneratorFactory _generatorFactory;
+
+    public SpecProcessor(Spec spec, IGeneratorFactory generatorFactory)
     {
       foreach (var target in spec.Targets.Keys)
       {
@@ -55,6 +54,7 @@ namespace ModelGenerator
       }
 
       _spec = spec;
+      _generatorFactory = generatorFactory;
     }
 
     public void AmmedSpecification()
@@ -86,11 +86,15 @@ namespace ModelGenerator
       }
     }
 
-    public void ProcessSpecification(string basePath)
+    public IEnumerable<GeneratorOutput> GenerateOutput()
     {
-      foreach (var targetGenerator in _targetGenerator)
+      foreach (var target in Targets)
       {
-        targetGenerator.Value.Generate(basePath, _specInterpreter);
+        var generator = _generatorFactory.CreateGenerator(target, _specInterpreter);
+        foreach (var output in generator.GenerateOutputs())
+        {
+          yield return output;
+        }
       }
     }
   }

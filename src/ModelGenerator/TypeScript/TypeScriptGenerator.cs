@@ -27,142 +27,114 @@ namespace ModelGenerator.TypeScript
   using System.IO;
   using System.Linq;
 
-  public class TypeScriptGenerator : ITargetGenerator
+  public class TypeScriptGenerator : IGenerator
   {
-    public void Generate(string basePath, SpecInterpreter specInterpreter)
+    private readonly SpecInterpreter _specInterpreter;
+    
+    public TypeScriptGenerator(SpecInterpreter specInterpreter)
     {
-      var targetInfo = specInterpreter.Spec.Targets[Constants.TypeScriptTarget];
-      if (!PathFunctions.IsSupportedPath(targetInfo.Path)) throw new InvalidOperationException("Path not supported");
-      var targetDir = PathFunctions.IsPathRelative(targetInfo.Path) ? Path.Combine(basePath, targetInfo.Path) : targetInfo.Path;
-      Directory.CreateDirectory(targetDir);
-
-      var barrelPath = Path.Combine(targetDir, Path.ChangeExtension("index", Constants.TypeScriptExtension));
-      var barrelOutput = (Stream)null;
-      var barrelWriter = (TextWriter)null;
-
-      try
-      {
-        barrelOutput = new FileStream(barrelPath, FileMode.Create, FileAccess.Write, FileShare.None);
-        barrelWriter = new StreamWriter(barrelOutput);
-
-        foreach (var @enum in specInterpreter.Spec.Enums)
-        {
-          var enumFileName = GetFileName(@enum.Key);
-          var path = Path.Combine(targetDir, Path.ChangeExtension(enumFileName, Constants.TypeScriptExtension));
-          using (var output = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
-          {
-            using (var writer = new StreamWriter(output))
-            {
-              GenerateEnum(writer, @enum.Key, @enum.Value);
-              writer.Flush();
-            }
-          }
-
-          barrelWriter.WriteLine($"export * from './{enumFileName}'");
-        }
-
-        foreach (var entity in specInterpreter.Spec.Entities)
-        {
-          var entityFileName = GetFileName(entity.Key);
-          var path = Path.Combine(targetDir, Path.ChangeExtension(entityFileName, Constants.TypeScriptExtension));
-          using (var output = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
-          {
-            using (var writer = new StreamWriter(output))
-            {
-              GenerateEntity(writer, specInterpreter, entity.Key, entity.Value);
-              writer.Flush();
-            }
-          }
-
-          barrelWriter.WriteLine($"export * from './{entityFileName}'");
-        }
-      }
-      finally
-      {
-        barrelWriter?.Flush();
-        barrelWriter?.Dispose();
-        barrelOutput?.Dispose();
-      }
+      if (specInterpreter == null) throw new ArgumentNullException(nameof(specInterpreter));
+      _specInterpreter = specInterpreter;
     }
 
-    private static void GenerateEnum(StreamWriter output, string enumName, IList<Alternative<string, QualifiedEnumMember>> enumMembers)
+    public IEnumerable<GeneratorOutput> GenerateOutputs()
+    {
+      var targetInfo = _specInterpreter.Spec.Targets[Constants.TypeScriptTarget];
+      var barrelContents = new List<TypeScriptDeclarationOrStatement>();
+
+      foreach (var @enum in _specInterpreter.Spec.Enums)
+      {
+        var enumFileName = GetFileName(@enum.Key);
+        yield return 
+          new GeneratorOutput
+          {
+            Path = Path.Combine(targetInfo.Path, Path.ChangeExtension(enumFileName, Constants.TypeScriptExtension)),
+            GenerationRoot = GenerateEnum(@enum.Key, @enum.Value)
+          };
+
+        barrelContents.Add(new TypeScriptReExportStatement { FileName = enumFileName });
+      }
+
+      foreach (var entity in _specInterpreter.Spec.Entities)
+      {
+        var entityFileName = GetFileName(entity.Key);
+        yield return
+          new GeneratorOutput
+          {
+            Path = Path.Combine(targetInfo.Path, Path.ChangeExtension(entityFileName, Constants.TypeScriptExtension)),
+            GenerationRoot = GenerateEntity(entity.Key, entity.Value)
+          };
+
+        barrelContents.Add(new TypeScriptReExportStatement { FileName = entityFileName });
+      }
+
+      yield return new GeneratorOutput
+      {
+        Path = Path.Combine(targetInfo.Path, Path.ChangeExtension("index", Constants.TypeScriptExtension)),
+        GenerationRoot = new TypeScriptFile { Contents = barrelContents }
+      };
+    }
+
+    private static TypeScriptFile GenerateEnum(string enumName, IList<Alternative<string, QualifiedEnumMember>> enumMembers)
     {
       var normalizedEnumName = SpecFunctions.ToPascalCase(enumName);
-      output.WriteLine($"enum {normalizedEnumName} {{");
-      for (int i = 0; i < enumMembers.Count - 1; i++)
+      return new TypeScriptFile
       {
-        GenerateEnumMember(output, enumMembers[i], false);
-      }
-
-      GenerateEnumMember(output, enumMembers[enumMembers.Count - 1], true);
-
-      output.WriteLine("}");
-      output.WriteLine();
-      output.WriteLine($"export default {normalizedEnumName}");
+        Contents = new List<TypeScriptDeclarationOrStatement>
+        {
+          new TypeScriptEnum
+          {
+            Name = normalizedEnumName,
+            Members = enumMembers.Select(GenerateEnumMemberOutput).ToList()
+          },
+          new TypeScriptExportStatement { IsDefault = true, Object = normalizedEnumName }
+        }
+      };
     }
 
-    private static void GenerateEnumMember(StreamWriter output, Alternative<string, QualifiedEnumMember> member, bool isLastOne)
+    private TypeScriptFile GenerateEntity(string entityName, IDictionary<string, Alternative<string, EntityMemberInfo>> entityMembers)
+    {
+      var normalizedEntityName = SpecFunctions.ToPascalCase(entityName);
+      var enumDependencies = _specInterpreter.GetDirectEnumDependencies(entityName);
+      var entityDependencies = _specInterpreter.GetDirectEntityDependencies(entityName);
+      var directDependencies = enumDependencies.Concat(entityDependencies).ToList();
+      var result = 
+        new TypeScriptFile
+        {
+          Contents = directDependencies.Select(_ => (TypeScriptDeclarationOrStatement)(new TypeScriptImportStatement { ObjectName = SpecFunctions.ToPascalCase(_), File = GetFileName(_) })).ToList()
+        };
+      result.Contents.Add(
+        new TypeScriptExportStatement
+        {
+          IsDefault = true,
+          TypeDeclaration = 
+            new TypeScriptClass
+            {
+              Name = normalizedEntityName,
+              Members = entityMembers.Select(GenerateEntity).ToList()
+            }
+        });
+      return result;
+    }
+
+    private TypeScriptClassMember GenerateEntity(KeyValuePair<string, Alternative<string, EntityMemberInfo>> member)
+    {
+      var specType = member.Value.GetMemberType();
+      var resolvedType = _specInterpreter.GetResolvedType(Constants.TypeScriptTarget, specType);
+      var normalizedType = _specInterpreter.IsNativeType(Constants.TypeScriptTarget, resolvedType) ? resolvedType : SpecFunctions.ToPascalCase(resolvedType);
+      var normalizedMemberName = SpecFunctions.ToCamelCase(member.Key);
+      return new TypeScriptClassMember { Name = normalizedMemberName, Type = normalizedType };
+    }
+
+    private static TypeScriptEnumMember GenerateEnumMemberOutput(Alternative<string, QualifiedEnumMember> member)
     {
       var name = member.Value as string ?? ((QualifiedEnumMember)member.Value).Name;
       var nomalizedMemberName = SpecFunctions.ToPascalCase(name);
-      var separator = isLastOne ? string.Empty : ",";
-      var qem = member.Value as QualifiedEnumMember;
-      if (qem == null)
+      return new TypeScriptEnumMember
       {
-        output.WriteLine($"  {nomalizedMemberName}{separator}");
-      }
-      else
-      {
-        output.WriteLine($"  {nomalizedMemberName} = {qem.Value}{separator}");
-      }
-    }
-
-    private static void GenerateEntity(StreamWriter output, SpecInterpreter specInterpreter, string entityName, IDictionary<string, Alternative<string, EntityMemberInfo>> entityMembers)
-    {
-      var enumDependencies = specInterpreter.GetDirectEnumDependencies(entityName);
-      var entityDependencies = specInterpreter.GetDirectEntityDependencies(entityName);
-      var directDependencies = enumDependencies.Concat(entityDependencies).ToList();
-      var normalizedEntityName = SpecFunctions.ToPascalCase(entityName);
-
-      if (directDependencies.Count > 0)
-      {
-        foreach (var type in directDependencies)
-        {
-          var normalizedTypeDependency = SpecFunctions.ToPascalCase(type);
-          var directDependencyFileName = GetFileName(type);
-          output.WriteLine($"import {normalizedTypeDependency} from './{directDependencyFileName}';");
-        }
-
-        output.WriteLine();
-      }
-
-      output.WriteLine($"export default class {normalizedEntityName} {{");
-
-      if (entityMembers.Count > 0)
-      {
-        GenerateEntityMembers(output, specInterpreter, entityMembers);
-      }
-
-      output.WriteLine("}");
-    }
-
-    private static void GenerateEntityMembers(StreamWriter output, SpecInterpreter specInterpreter, IDictionary<string, Alternative<string, EntityMemberInfo>> entityMembers)
-    {
-      var members = new KeyValuePair<string, Alternative<string, EntityMemberInfo>>[entityMembers.Count];
-      entityMembers.CopyTo(members, 0);
-      for (int i = 0; i < members.Length; i++)
-      {
-        GenerateEntityMember(output, specInterpreter, members[i]);
-      }
-    }
-
-    private static void GenerateEntityMember(StreamWriter output, SpecInterpreter specInterpreter, KeyValuePair<string, Alternative<string, EntityMemberInfo>> member)
-    {
-      var specType = member.Value.GetMemberType();
-      var resolvedType = specInterpreter.GetResolvedType(Constants.TypeScriptTarget, specType);
-      var normalizedType = specInterpreter.IsNativeType(Constants.TypeScriptTarget, resolvedType) ? resolvedType : SpecFunctions.ToPascalCase(resolvedType);
-      var normalizedMemberName = SpecFunctions.ToCamelCase(member.Key);
-      output.WriteLine($"  {normalizedMemberName} : {normalizedType};");
+        Name = nomalizedMemberName,
+        Value = (member.Value as QualifiedEnumMember)?.Value
+      };
     }
 
     private static string GetFileName(string type) => SpecFunctions.ToHyphenatedCase(type);

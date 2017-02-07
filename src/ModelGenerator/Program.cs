@@ -23,6 +23,7 @@ namespace ModelGenerator
 {
   using Model;
   using System;
+  using System.Collections.Generic;
   using System.IO;
   using YamlDotNet.Serialization;
   using YamlDotNet.Serialization.NamingConventions;
@@ -39,10 +40,12 @@ namespace ModelGenerator
       try
       {
         var spec = GetSpecFromFile(modelFilePath);
-        var specProcessor = new SpecProcessor(spec);
+        var specProcessor = new SpecProcessor(spec, new GeneratorFactory());
         specProcessor.AmmedSpecification();
         specProcessor.VerifySpecification();
-        specProcessor.ProcessSpecification(Path.GetDirectoryName(modelFilePath));
+        //specProcessor.ProcessSpecification(Path.GetDirectoryName(modelFilePath));
+        var outputs = specProcessor.GenerateOutput();
+        WriteOutputs(Path.GetDirectoryName(modelFilePath), outputs);
         return 0;
       }
       catch (Exception ex)
@@ -82,6 +85,23 @@ namespace ModelGenerator
       {
         reader?.Dispose();
         modelFile?.Dispose();
+      }
+    }
+
+    private static void WriteOutputs(string basePath, IEnumerable<GeneratorOutput> outputs)
+    {
+      foreach (var output in outputs)
+      {
+        var path = PathFunctions.IsPathRelative(output.Path) ? Path.Combine(basePath, output.Path) : output.Path;
+        Directory.CreateDirectory(Path.GetDirectoryName(path));
+        using (var outputStream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
+        {
+          using (var outputWriter = new StreamWriter(outputStream))
+          {
+            output.GenerationRoot.Generate(outputWriter);
+            outputWriter.Flush();
+          }
+        }
       }
     }
   }

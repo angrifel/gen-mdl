@@ -19,10 +19,35 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-namespace ModelGenerator
+namespace ModelGenerator.TypeScript
 {
-  public interface ITargetGenerator
+  using System.IO;
+
+  public class TypeScriptExportStatement : TypeScriptDeclarationOrStatement
   {
-    void Generate(string basePath, SpecInterpreter specInterpreter);
+    public bool IsDefault { get; set; }
+
+    public string Object { get; set; }
+
+    public TypeScriptTypeDeclaration TypeDeclaration { get; set; }
+
+    public override void Generate(TextWriter output)
+    {
+      output.Write(@"export ");
+      if (IsDefault)
+      {
+        output.Write(@"default ");
+      }
+
+      if (Object != null)
+      {
+        output.Write(Object);
+        output.WriteLine(";");
+      }
+      else
+      {
+        TypeDeclaration.Generate(output);
+      }
+    }
   }
 }
