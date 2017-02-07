@@ -27,11 +27,11 @@ namespace ModelGenerator.YamlDotNetExtensions
   using YamlDotNet.Core.Events;
   using YamlDotNet.Serialization;
 
-  public class ValueOrEntityMemberInfoAlternativeConverter : IYamlTypeConverter
+  public class IEntityMemberInfoConverter : IYamlTypeConverter
   {
     private readonly Func<Deserializer> _deserializerFactory;
 
-    public ValueOrEntityMemberInfoAlternativeConverter(Func<Deserializer> deserializerFactory)
+    public IEntityMemberInfoConverter(Func<Deserializer> deserializerFactory)
     {
       if (deserializerFactory == null) throw new ArgumentNullException(nameof(deserializerFactory));
       _deserializerFactory = deserializerFactory;
@@ -39,7 +39,7 @@ namespace ModelGenerator.YamlDotNetExtensions
 
     public bool Accepts(Type type)
     {
-      return type == typeof(Alternative<string, EntityMemberInfo>);
+      return type == typeof(IEntityMemberInfo);
     }
 
     public object ReadYaml(IParser parser, Type type)
@@ -47,12 +47,11 @@ namespace ModelGenerator.YamlDotNetExtensions
       if (parser.Accept<Scalar>())
       {
         var scalar = parser.Expect<Scalar>();
-        return new Alternative<string, EntityMemberInfo>(scalar.Value, null);
+        return new EntityMemberInfo { Type = scalar.Value };
       }
       else
       {
-        var emi = _deserializerFactory().Deserialize<EntityMemberInfo>(parser);
-        return new Alternative<string, EntityMemberInfo>(null, emi);
+        return _deserializerFactory().Deserialize<EntityMemberInfo>(parser);
       }
     }
 

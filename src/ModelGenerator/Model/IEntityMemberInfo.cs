@@ -21,10 +21,15 @@
 
 namespace ModelGenerator.Model
 {
-  public class EntityMemberInfo : IEntityMemberInfo
-  {
-    public string Type { get; set; }
+  using System;
+  using System.Collections.Generic;
+  using System.Linq;
+  using System.Text;
 
-    public bool IsNullable { get; set; }
+  public interface IEntityMemberInfo
+  {
+    string Type { get; set; }
+
+    bool IsNullable { get; set; }
   }
 }

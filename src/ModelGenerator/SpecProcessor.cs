@@ -75,9 +75,9 @@ namespace ModelGenerator
 
         foreach (var entity in _spec.Entities)
         {
-          foreach (var member in (IDictionary<string, Alternative<string, EntityMemberInfo>>)entity.Value)
+          foreach (var member in (IDictionary<string, IEntityMemberInfo>)entity.Value)
           {
-            if (!_specInterpreter.IsTypeResolvable(target, member.Value.GetMemberType()))
+            if (!_specInterpreter.IsTypeResolvable(target, member.Value.Type))
             {
               throw new Exception($"{target} verification failed: Unrecognized type '{member.Value}' in '{entity.Key}.{member.Key}'.");
             }

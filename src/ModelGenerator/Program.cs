@@ -75,7 +75,7 @@ namespace ModelGenerator
 
         var deserializer = (Deserializer)null;
         deserializer = new DeserializerBuilder()
-          .WithTypeConverter(new ValueOrEntityMemberInfoAlternativeConverter(() => deserializer))
+          .WithTypeConverter(new IEntityMemberInfoConverter(() => deserializer))
           .WithTypeConverter(new EnumMemberConverter())
           .WithNamingConvention(new UnderscoredNamingConvention()).Build();
         return deserializer.Deserialize<Spec>(reader);

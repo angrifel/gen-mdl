@@ -102,7 +102,7 @@ namespace ModelGenerator.TypeScript
     }
 
 
-    private TypeScriptFile GenerateEntity(string entityName, IDictionary<string, Alternative<string, EntityMemberInfo>> entityMembers)
+    private TypeScriptFile GenerateEntity(string entityName, IDictionary<string, IEntityMemberInfo> entityMembers)
     {
       var normalizedEntityName = SpecFunctions.ToPascalCase(entityName);
       var enumDependencies = _specInterpreter.GetDirectEnumDependencies(entityName);
@@ -127,10 +127,9 @@ namespace ModelGenerator.TypeScript
       return result;
     }
 
-    private TypeScriptClassMember GenerateEntityMember(KeyValuePair<string, Alternative<string, EntityMemberInfo>> member)
+    private TypeScriptClassMember GenerateEntityMember(KeyValuePair<string, IEntityMemberInfo> member)
     {
-      var specType = member.Value.GetMemberType();
-      var resolvedType = _specInterpreter.GetResolvedType(Constants.TypeScriptTarget, specType);
+      var resolvedType = _specInterpreter.GetResolvedType(Constants.TypeScriptTarget, member.Value.Type);
       var normalizedType = _specInterpreter.IsNativeType(Constants.TypeScriptTarget, resolvedType) ? resolvedType : SpecFunctions.ToPascalCase(resolvedType);
       var normalizedMemberName = SpecFunctions.ToCamelCase(member.Key);
       return new TypeScriptClassMember { Name = normalizedMemberName, Type = normalizedType };

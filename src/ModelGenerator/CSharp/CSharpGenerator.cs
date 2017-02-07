@@ -86,7 +86,7 @@ namespace ModelGenerator.CSharp
       };
     }
 
-    private IGenerationRoot GenerateEntity(string entityName, IDictionary<string, Alternative<string, EntityMemberInfo>> entityMembers)
+    private IGenerationRoot GenerateEntity(string entityName, IDictionary<string, IEntityMemberInfo> entityMembers)
     {
       return new CSharpNamespace
       {
@@ -102,14 +102,12 @@ namespace ModelGenerator.CSharp
       };
     }
 
-    private CSharpClassMember GenerateEntityMember(string name, Alternative<string, EntityMemberInfo> valueOrEntityMemberInfoAlternative)
+    private CSharpClassMember GenerateEntityMember(string name, IEntityMemberInfo entityMemberInfo)
     {
-      var specType = valueOrEntityMemberInfoAlternative.GetMemberType();
-      var isNullable = valueOrEntityMemberInfoAlternative.GetIsNullable();
-      var resolvedType = _specInterpreter.GetResolvedType(Constants.CSharpTarget, specType);
-      var normalizedType = _specInterpreter.IsNativeType(Constants.CSharpTarget, specType) ? specType : SpecFunctions.ToPascalCase(resolvedType);
+      var resolvedType = _specInterpreter.GetResolvedType(Constants.CSharpTarget, entityMemberInfo.Type);
+      var normalizedType = _specInterpreter.IsNativeType(Constants.CSharpTarget, entityMemberInfo.Type) ? entityMemberInfo.Type : SpecFunctions.ToPascalCase(resolvedType);
       var isStruct = IsStruct(normalizedType);
-      var memberType = normalizedType + (isStruct && isNullable ? "?" : string.Empty);
+      var memberType = normalizedType + (isStruct && entityMemberInfo.IsNullable ? "?" : string.Empty);
       var memberName = SpecFunctions.ToPascalCase(name);
       return new CSharpClassMember { Type = memberType, Name = memberName };
     }
