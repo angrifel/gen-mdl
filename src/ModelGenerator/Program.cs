@@ -43,7 +43,6 @@ namespace ModelGenerator
         var specProcessor = new SpecProcessor(spec, new GeneratorFactory());
         specProcessor.AmmedSpecification();
         specProcessor.VerifySpecification();
-        //specProcessor.ProcessSpecification(Path.GetDirectoryName(modelFilePath));
         var outputs = specProcessor.GenerateOutput();
         WriteOutputs(Path.GetDirectoryName(modelFilePath), outputs);
         return 0;
@@ -77,7 +76,7 @@ namespace ModelGenerator
         var deserializer = (Deserializer)null;
         deserializer = new DeserializerBuilder()
           .WithTypeConverter(new ValueOrEntityMemberInfoAlternativeConverter(() => deserializer))
-          .WithTypeConverter(new ValueOrQualifiedEnumMemberAlternativeConverter())
+          .WithTypeConverter(new EnumMemberConverter())
           .WithNamingConvention(new UnderscoredNamingConvention()).Build();
         return deserializer.Deserialize<Spec>(reader);
       }

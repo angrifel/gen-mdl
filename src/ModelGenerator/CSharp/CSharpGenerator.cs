@@ -61,7 +61,7 @@ namespace ModelGenerator.CSharp
       }
     }
 
-    private static IGenerationRoot GenerateEnum(string @namespace, string enumName, IList<Alternative<string, QualifiedEnumMember>> enumMembers)
+    private static IGenerationRoot GenerateEnum(string @namespace, string enumName, IList<EnumMember> enumMembers)
     {
       return new CSharpNamespace
       {
@@ -77,15 +77,12 @@ namespace ModelGenerator.CSharp
       };
     }
 
-    private static CSharpEnumMember GenerateEnumMember(Alternative<string, QualifiedEnumMember> member)
+    private static CSharpEnumMember GenerateEnumMember(EnumMember member)
     {
-      var name = member.Value as string ?? ((QualifiedEnumMember)member.Value).Name;
-      var nomalizedMemberName = SpecFunctions.ToPascalCase(name);
-      var qem = member.Value as QualifiedEnumMember;
       return new CSharpEnumMember
       {
-        Name = nomalizedMemberName,
-        Value = (qem as QualifiedEnumMember)?.Value
+        Name = SpecFunctions.ToPascalCase(member.Name),
+        Value = member.Value
       };
     }
 

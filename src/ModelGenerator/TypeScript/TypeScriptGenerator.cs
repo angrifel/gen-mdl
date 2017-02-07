@@ -75,7 +75,7 @@ namespace ModelGenerator.TypeScript
       };
     }
 
-    private static TypeScriptFile GenerateEnum(string enumName, IList<Alternative<string, QualifiedEnumMember>> enumMembers)
+    private static TypeScriptFile GenerateEnum(string enumName, IList<EnumMember> enumMembers)
     {
       var normalizedEnumName = SpecFunctions.ToPascalCase(enumName);
       return new TypeScriptFile
@@ -85,12 +85,22 @@ namespace ModelGenerator.TypeScript
           new TypeScriptEnum
           {
             Name = normalizedEnumName,
-            Members = enumMembers.Select(GenerateEnumMemberOutput).ToList()
+            Members = enumMembers.Select(GenerateEnumMember).ToList()
           },
           new TypeScriptExportStatement { IsDefault = true, Object = normalizedEnumName }
         }
       };
     }
+
+    private static TypeScriptEnumMember GenerateEnumMember(EnumMember member)
+    {
+      return new TypeScriptEnumMember
+      {
+        Name = SpecFunctions.ToPascalCase(member.Name),
+        Value = member.Value
+      };
+    }
+
 
     private TypeScriptFile GenerateEntity(string entityName, IDictionary<string, Alternative<string, EntityMemberInfo>> entityMembers)
     {
@@ -111,30 +121,19 @@ namespace ModelGenerator.TypeScript
             new TypeScriptClass
             {
               Name = normalizedEntityName,
-              Members = entityMembers.Select(GenerateEntity).ToList()
+              Members = entityMembers.Select(GenerateEntityMember).ToList()
             }
         });
       return result;
     }
 
-    private TypeScriptClassMember GenerateEntity(KeyValuePair<string, Alternative<string, EntityMemberInfo>> member)
+    private TypeScriptClassMember GenerateEntityMember(KeyValuePair<string, Alternative<string, EntityMemberInfo>> member)
     {
       var specType = member.Value.GetMemberType();
       var resolvedType = _specInterpreter.GetResolvedType(Constants.TypeScriptTarget, specType);
       var normalizedType = _specInterpreter.IsNativeType(Constants.TypeScriptTarget, resolvedType) ? resolvedType : SpecFunctions.ToPascalCase(resolvedType);
       var normalizedMemberName = SpecFunctions.ToCamelCase(member.Key);
       return new TypeScriptClassMember { Name = normalizedMemberName, Type = normalizedType };
-    }
-
-    private static TypeScriptEnumMember GenerateEnumMemberOutput(Alternative<string, QualifiedEnumMember> member)
-    {
-      var name = member.Value as string ?? ((QualifiedEnumMember)member.Value).Name;
-      var nomalizedMemberName = SpecFunctions.ToPascalCase(name);
-      return new TypeScriptEnumMember
-      {
-        Name = nomalizedMemberName,
-        Value = (member.Value as QualifiedEnumMember)?.Value
-      };
     }
 
     private static string GetFileName(string type) => SpecFunctions.ToHyphenatedCase(type);

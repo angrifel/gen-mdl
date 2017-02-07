@@ -99,7 +99,7 @@
     <Compile Include="ITargetAmmedment.cs" />
     <Compile Include="Model\Alternative.cs" />
     <Compile Include="Model\EntityMemberInfo.cs" />
-    <Compile Include="Model\QualifiedEnumMember.cs" />
+    <Compile Include="Model\EnumMember.cs" />
     <Compile Include="Model\Spec.cs" />
     <Compile Include="Model\TargetInfo.cs" />
     <Compile Include="TypeScript\TypeScriptClass.cs" />
@@ -123,7 +123,7 @@
     <Compile Include="TypeScript\TypeScriptAmmendment.cs" />
     <Compile Include="TypeScript\TypeScriptGenerator.cs" />
     <Compile Include="YamlDotNetExtensions\ValueOrEntityMemberInfoAlternativeConverter.cs" />
-    <Compile Include="YamlDotNetExtensions\ValueOrQualifiedEnumMemberAlternativeConverter.cs" />
+    <Compile Include="YamlDotNetExtensions\EnumMemberConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.1">

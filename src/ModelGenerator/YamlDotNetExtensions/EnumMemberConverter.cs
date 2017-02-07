@@ -19,12 +19,41 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-namespace ModelGenerator.Model
+namespace ModelGenerator.YamlDotNetExtensions
 {
-  public class QualifiedEnumMember
-  {
-    public string Name { get; set; }
+  using Model;
+  using System;
+  using YamlDotNet.Core;
+  using YamlDotNet.Core.Events;
+  using YamlDotNet.Serialization;
 
-    public long Value { get; set; }
+  public class EnumMemberConverter : IYamlTypeConverter
+  {
+    public bool Accepts(Type type)
+    {
+      return type == typeof(EnumMember);
+    }
+
+    public object ReadYaml(IParser parser, Type type)
+    {
+      if (parser.Accept<Scalar>())
+      {
+        var scalar = parser.Expect<Scalar>();
+        return new EnumMember { Name = scalar.Value };
+      }
+      else
+      {
+        parser.Expect<MappingStart>();
+        var nameScalar = parser.Expect<Scalar>();
+        var valueScalar = parser.Expect<Scalar>();
+        parser.Expect<MappingEnd>();
+        return new EnumMember { Name = nameScalar.Value, Value = long.Parse(valueScalar.Value) };
+      }
+    }
+
+    public void WriteYaml(IEmitter emitter, object value, Type type)
+    {
+      throw new NotSupportedException();
+    }
   }
 }
