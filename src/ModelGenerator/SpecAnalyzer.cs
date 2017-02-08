@@ -27,43 +27,15 @@ namespace ModelGenerator
   using System.Linq;
   using System.Text;
 
-  public class SpecInterpreter
+  public class SpecAnalyzer
   {
     private static readonly string[] _emptyArray = new string[0];
     private readonly Spec _spec;
-    private readonly Dictionary<string, Dictionary<string, string>> _resolvedAliases;
+    private Dictionary<string, Dictionary<string, string>> _resolvedAliasesInternal;
 
-    public SpecInterpreter(Spec spec)
+    public SpecAnalyzer(Spec spec)
     {
       _spec = spec;
-      _resolvedAliases =  new Dictionary<string, Dictionary<string, string>>();
-
-      foreach (var target in _spec.Targets.Keys)
-      {
-        var targetInfo = _spec.Targets[target];
-        var resolvedAliases = new Dictionary<string, string>();
-        var visitedAliases = new LinkedList<string>();
-        foreach (var alias in targetInfo.TypeAliases.Keys)
-        {
-          visitedAliases.AddLast(alias);
-          var resolvedType = targetInfo.TypeAliases[alias];
-          while (!IsProperType(target, resolvedType))
-          {
-            if (visitedAliases.Contains(resolvedType))
-            {
-              throw CreateCircularReferenceException(target, resolvedType, visitedAliases);
-            }
-
-            visitedAliases.AddLast(resolvedType);
-            resolvedType = targetInfo.TypeAliases[resolvedType];
-          }
-
-          resolvedAliases.Add(alias, resolvedType);
-          visitedAliases.Clear();
-        }
-
-        _resolvedAliases.Add(target, resolvedAliases);
-      }
     }
 
     public Spec Spec { get { return _spec; } }
@@ -79,20 +51,62 @@ namespace ModelGenerator
         : _emptyArray;
 
     public bool IsTypeResolvable(string target, string type) =>
-      _resolvedAliases[target].ContainsKey(type) ||
+      ResolvedAliases[target].ContainsKey(type) ||
       IsEnum(type) ||
       IsEntity(type);
 
     public bool IsNativeType(string target, string type) => _spec.Targets[target].NativeTypes.Contains(type);
 
     public string GetResolvedType(string target, string type) =>
-      _resolvedAliases.ContainsKey(target)
-        ? _resolvedAliases[target].ContainsKey(type)
-          ? _resolvedAliases[target][type]
+      ResolvedAliases.ContainsKey(target)
+        ? ResolvedAliases[target].ContainsKey(type)
+          ? ResolvedAliases[target][type]
           : IsEnum(type) || IsEntity(type)
             ? type
             : null
         : null;
+
+    private Dictionary<string, Dictionary<string, string>> ResolvedAliases
+    {
+      get
+      {
+        if (_resolvedAliasesInternal == null)
+        {
+          var ra = new Dictionary<string, Dictionary<string, string>>();
+
+          foreach (var target in _spec.Targets.Keys)
+          {
+            var targetInfo = _spec.Targets[target];
+            var resolvedAliases = new Dictionary<string, string>();
+            var visitedAliases = new LinkedList<string>();
+            foreach (var alias in targetInfo.TypeAliases.Keys)
+            {
+              visitedAliases.AddLast(alias);
+              var resolvedType = targetInfo.TypeAliases[alias];
+              while (!IsProperType(target, resolvedType))
+              {
+                if (visitedAliases.Contains(resolvedType))
+                {
+                  throw CreateCircularReferenceException(target, resolvedType, visitedAliases);
+                }
+
+                visitedAliases.AddLast(resolvedType);
+                resolvedType = targetInfo.TypeAliases[resolvedType];
+              }
+
+              resolvedAliases.Add(alias, resolvedType);
+              visitedAliases.Clear();
+            }
+
+            ra.Add(target, resolvedAliases);
+          }
+
+          _resolvedAliasesInternal = ra;
+        }
+
+        return _resolvedAliasesInternal;
+      }
+    }
 
     private bool IsEntity(string type) => _spec.Entities.ContainsKey(type);
 

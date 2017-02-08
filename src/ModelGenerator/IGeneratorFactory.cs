@@ -23,6 +23,6 @@ namespace ModelGenerator
 {
   public interface IGeneratorFactory
   {
-    IGenerator CreateGenerator(string target, SpecInterpreter specInterpreter);
+    IGenerator CreateGenerator(string target, SpecAnalyzer specInterpreter);
   }
 }

@@ -21,7 +21,7 @@
 
 namespace ModelGenerator
 {
-  using ModelGenerator.Model;
+  using Model;
 
   public interface ISpecSource
   {

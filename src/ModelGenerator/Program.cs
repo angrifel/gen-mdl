@@ -37,15 +37,14 @@ namespace ModelGenerator
       if (args.Length > 1) { ShowHelp(); return 0; }
       var modelFilePath = args[0];
       if (!File.Exists(modelFilePath)) ShowFileDoesNotExist();
-      var specSource = new FileSpecSource(modelFilePath);
+      var mdlGen = new SpecTranslator(
+        specSource: new YamlFileSpecSource(modelFilePath), 
+        generatorFactory: new GeneratorFactory(), 
+        ammendmentFactory: new AmmendmentFactory());
+
       try
       {
-        var spec = specSource.GetSpec();
-        var specProcessor = new SpecProcessor(spec, new GeneratorFactory());
-        specProcessor.AmmedSpecification();
-        specProcessor.VerifySpecification();
-        var outputs = specProcessor.GenerateOutput();
-        WriteOutputs(Path.GetDirectoryName(modelFilePath), outputs);
+        WriteOutputs(Path.GetDirectoryName(modelFilePath), mdlGen.GetOutput());
         return 0;
       }
       catch (Exception ex)
@@ -63,29 +62,6 @@ namespace ModelGenerator
     private static void ShowFileDoesNotExist()
     {
       Console.Error.WriteLine("model file does not exist.");
-    }
-
-    private static Spec GetSpecFromFile(string modelFilePath)
-    {
-      Stream modelFile = null;
-      TextReader reader = null;
-      try
-      {
-        modelFile = new FileStream(modelFilePath, FileMode.Open);
-        reader = new StreamReader(modelFile);
-
-        var deserializer = (Deserializer)null;
-        deserializer = new DeserializerBuilder()
-          .WithTypeConverter(new IEntityMemberInfoConverter(() => deserializer))
-          .WithTypeConverter(new EnumMemberConverter())
-          .WithNamingConvention(new UnderscoredNamingConvention()).Build();
-        return deserializer.Deserialize<Spec>(reader);
-      }
-      finally
-      {
-        reader?.Dispose();
-        modelFile?.Dispose();
-      }
     }
 
     private static void WriteOutputs(string basePath, IEnumerable<GeneratorOutput> outputs)

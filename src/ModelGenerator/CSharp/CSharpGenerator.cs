@@ -31,9 +31,9 @@ namespace ModelGenerator.CSharp
   {
     private static readonly string[] StructNativeTypes = new string[] { "bool", "byte", "short", "int", "long", "float", "double", "decimal", "char", "System.Guid", "System.DateTime", "System.TimeSpan", "System.DateTimeOffset" };
 
-    private readonly SpecInterpreter _specInterpreter;
+    private readonly SpecAnalyzer _specInterpreter;
 
-    public CSharpGenerator(SpecInterpreter specInterpreter)
+    public CSharpGenerator(SpecAnalyzer specInterpreter)
     {
       if (specInterpreter == null) throw new ArgumentNullException(nameof(specInterpreter));
       _specInterpreter = specInterpreter;

@@ -26,7 +26,7 @@ namespace ModelGenerator
 
   public class GeneratorFactory : IGeneratorFactory
   {
-    public IGenerator CreateGenerator(string target, SpecInterpreter specInterpreter)
+    public IGenerator CreateGenerator(string target, SpecAnalyzer specInterpreter)
     {
       switch (target)
       {

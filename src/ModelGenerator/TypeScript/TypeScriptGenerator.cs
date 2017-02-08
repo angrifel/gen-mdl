@@ -29,9 +29,9 @@ namespace ModelGenerator.TypeScript
 
   public class TypeScriptGenerator : IGenerator
   {
-    private readonly SpecInterpreter _specInterpreter;
+    private readonly SpecAnalyzer _specInterpreter;
     
-    public TypeScriptGenerator(SpecInterpreter specInterpreter)
+    public TypeScriptGenerator(SpecAnalyzer specInterpreter)
     {
       if (specInterpreter == null) throw new ArgumentNullException(nameof(specInterpreter));
       _specInterpreter = specInterpreter;
