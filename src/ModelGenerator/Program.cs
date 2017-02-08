@@ -21,13 +21,9 @@
 
 namespace ModelGenerator
 {
-  using Model;
   using System;
   using System.Collections.Generic;
   using System.IO;
-  using YamlDotNet.Serialization;
-  using YamlDotNet.Serialization.NamingConventions;
-  using YamlDotNetExtensions;
 
   class Program
   {
