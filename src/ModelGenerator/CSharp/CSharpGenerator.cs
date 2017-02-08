@@ -106,8 +106,10 @@ namespace ModelGenerator.CSharp
     {
       var resolvedType = _specInterpreter.GetResolvedType(Constants.CSharpTarget, member.Value.Type);
       var normalizedType = _specInterpreter.IsNativeType(Constants.CSharpTarget, member.Value.Type) ? member.Value.Type : SpecFunctions.ToPascalCase(resolvedType);
-      var isStruct = IsStruct(normalizedType);
-      var memberType = normalizedType + (isStruct && member.Value.IsNullable ? "?" : string.Empty);
+      var memberType = member.Value.IsCollection
+        ? "System.Collections.Generic.IList<" + normalizedType + ">"
+        : normalizedType + (member.Value.IsNullable && IsStruct(normalizedType) ? "?" : string.Empty);
+      
       var memberName = SpecFunctions.ToPascalCase(member.Key);
       return new CSharpClassMember { Type = memberType, Name = memberName };
     }

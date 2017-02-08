@@ -26,5 +26,7 @@ namespace ModelGenerator.Model
     string Type { get; set; }
 
     bool IsNullable { get; set; }
+
+    bool IsCollection { get; set; }
   }
 }

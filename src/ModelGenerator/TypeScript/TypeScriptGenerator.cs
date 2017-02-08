@@ -132,6 +132,11 @@ namespace ModelGenerator.TypeScript
       var resolvedType = _specInterpreter.GetResolvedType(Constants.TypeScriptTarget, member.Value.Type);
       var normalizedType = _specInterpreter.IsNativeType(Constants.TypeScriptTarget, resolvedType) ? resolvedType : SpecFunctions.ToPascalCase(resolvedType);
       var normalizedMemberName = SpecFunctions.ToCamelCase(member.Key);
+      if (member.Value.IsCollection)
+      {
+        normalizedType += "[]";
+      }
+
       return new TypeScriptClassMember { Name = normalizedMemberName, Type = normalizedType };
     }
 
