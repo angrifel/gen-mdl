@@ -1,7 +1,7 @@
 environment:
-  major_minor_version: "0.0"
+  major_minor_version: "0.1"
 
-version: $(major_minor_version).{build}-alpha.1
+version: $(major_minor_version).{build}-alpha.2
 
 assembly_info:
   patch: true
