@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelGenerator", "ModelGene
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "YamlDotNet", "YamlDotNet\YamlDotNet.shproj", "{5ED194EC-52E8-4E66-A446-BFA9EC124F9F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelGenerator.Tests", "ModelGenerator.Tests\ModelGenerator.Tests.csproj", "{2D7C0D02-2571-4D58-8552-7CC2DBBE4C2D}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		YamlDotNet\YamlDotNet.projitems*{5ed194ec-52e8-4e66-a446-bfa9ec124f9f}*SharedItemsImports = 13
@@ -21,6 +23,10 @@ Global
 		{639941AE-ECDF-41DD-BAAB-02C020922E8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{639941AE-ECDF-41DD-BAAB-02C020922E8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{639941AE-ECDF-41DD-BAAB-02C020922E8B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D7C0D02-2571-4D58-8552-7CC2DBBE4C2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D7C0D02-2571-4D58-8552-7CC2DBBE4C2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D7C0D02-2571-4D58-8552-7CC2DBBE4C2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D7C0D02-2571-4D58-8552-7CC2DBBE4C2D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
