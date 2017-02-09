@@ -34,7 +34,7 @@ namespace ModelGenerator.TypeScript
     {
       output.WriteLine($"class {Name} {{");
 
-      if (Members.Count > 0)
+      if (Members != null && Members.Count > 0)
       {
         foreach (var member in Members)
         {

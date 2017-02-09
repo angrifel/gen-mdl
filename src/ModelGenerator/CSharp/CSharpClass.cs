@@ -34,7 +34,7 @@ namespace ModelGenerator.CSharp
     {
       output.WriteLine($"  public class {Name}");
       output.WriteLine(@"  {");
-      if (Members.Count > 0)
+      if (Members != null && Members.Count > 0)
       {
         foreach (var member in Members)
         {
