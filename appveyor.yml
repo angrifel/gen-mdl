@@ -2,7 +2,9 @@ environment:
   major_minor_version: "0.1"
 
 version: $(major_minor_version).{build}-alpha.2
-
+branches:
+  only: [master]
+  
 assembly_info:
   patch: true
 
