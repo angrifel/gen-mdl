@@ -41,7 +41,7 @@ namespace ModelGenerator
       TextReader specReader = null;
       try
       {
-        specStream = new FileStream(_specFile, FileMode.Open);
+        specStream = new FileStream(_specFile, FileMode.Open,FileAccess.Read, FileShare.Read, 65536, FileOptions.SequentialScan);
         specReader = new StreamReader(specStream);
 
         var yamlReaderSpecSource = new YamlReaderSpecSource(specReader);

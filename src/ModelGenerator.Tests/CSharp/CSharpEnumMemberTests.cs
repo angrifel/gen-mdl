@@ -23,53 +23,69 @@ namespace ModelGenerator.Tests.CSharp
 {
   using ModelGenerator.CSharp;
   using System;
-  using System.Collections.Generic;
   using System.IO;
   using Xunit;
 
-  public class CSharpClassTests
+  public class CSharpEnumMemberTests
   {
     [Fact]
-    public void TestGenerateClassWithNoMembers()
+    public void TestEnumMemberWithoutValueIsNotLastMember()
     {
       // arrange
-      var csharpClass = new CSharpClass { Name = "Blog" };
+      var csharpEnumMember = new CSharpEnumMember { Name = "None" };
       var output = new StringWriter();
-      var expectedOutput =
-        "  public class Blog" + Environment.NewLine +
-        "  {" + Environment.NewLine +
-        "  }" + Environment.NewLine;
+      var expected = "    None," + Environment.NewLine;
 
       // act
-      csharpClass.Generate(output);
+      csharpEnumMember.Generate(output, isLastOne: false);
 
       // assert
-      var generatedOutput = output.GetStringBuilder().ToString();
-      Assert.Equal(expectedOutput, generatedOutput);
+      Assert.Equal(expected, output.GetStringBuilder().ToString());
     }
 
     [Fact]
-    public void TestGenerateClassWithMembers()
+    public void TestEnumMemberWithValueIsNotLastMember()
     {
       // arrange
-      var idMember = new CSharpClassMember { Name = "Id", Type = "int" };
-      var descriptionMembers = new CSharpClassMember { Name = "Description", Type = "string" };
-      var csharpClass = new CSharpClass { Name = "Blog", Members = new List<CSharpClassMember> { idMember, descriptionMembers } };
+      var csharpEnumMember = new CSharpEnumMember { Name = "None", Value = 0 };
       var output = new StringWriter();
-      var expectedOutputWriter = new StringWriter();
-      expectedOutputWriter.Write("  public class Blog" + Environment.NewLine);
-      expectedOutputWriter.Write("  {" + Environment.NewLine);
-      idMember.Generate(expectedOutputWriter);
-      expectedOutputWriter.WriteLine();
-      descriptionMembers.Generate(expectedOutputWriter);
-      expectedOutputWriter.Write("  }" + Environment.NewLine);
+      var expected = "    None = 0," + Environment.NewLine;
 
       // act
-      csharpClass.Generate(output);
+      csharpEnumMember.Generate(output, isLastOne: false);
 
       // assert
-      var generatedOutput = output.GetStringBuilder().ToString();
-      Assert.Equal(expectedOutputWriter.GetStringBuilder().ToString(), generatedOutput);
+      Assert.Equal(expected, output.GetStringBuilder().ToString());
+    }
+
+    [Fact]
+    public void TestEnumMemberWithoutValueIsLastMember()
+    {
+      // arrange
+      var csharpEnumMember = new CSharpEnumMember { Name = "None" };
+      var output = new StringWriter();
+      var expected = "    None" + Environment.NewLine;
+
+      // act
+      csharpEnumMember.Generate(output, isLastOne: true);
+
+      // assert
+      Assert.Equal(expected, output.GetStringBuilder().ToString());
+    }
+
+    [Fact]
+    public void TestEnumMemberWithValueIsLastMember()
+    {
+      // arrange
+      var csharpEnumMember = new CSharpEnumMember { Name = "None", Value = 0 };
+      var output = new StringWriter();
+      var expected = "    None = 0" + Environment.NewLine;
+
+      // act
+      csharpEnumMember.Generate(output, isLastOne: true);
+
+      // assert
+      Assert.Equal(expected, output.GetStringBuilder().ToString());
     }
   }
 }
