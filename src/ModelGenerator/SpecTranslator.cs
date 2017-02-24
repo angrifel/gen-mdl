@@ -90,9 +90,10 @@ namespace ModelGenerator
         {
           foreach (var member in (IDictionary<string, IEntityMemberInfo>)entity.Value)
           {
-            if (!_specAnalyzer.IsTypeResolvable(target, member.Value.Type))
+            var type = member.Value.Type;
+            if (!_specAnalyzer.IsTypeResolvable(target, type))
             {
-              throw new Exception($"{target} verification failed: Unrecognized type '{member.Value}' in '{entity.Key}.{member.Key}'.");
+              throw new Exception($"{target} verification failed: Unrecognized type '{type}' in '{entity.Key}.{member.Key}'.");
             }
           }
         }
