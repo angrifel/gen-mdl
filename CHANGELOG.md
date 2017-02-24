@@ -1,6 +1,7 @@
 ## Version 0.1
 - Changed main artifact name to include '-release' suffix.
 - Fixed incorrect generation of 'datetime' type for C#.
+- Migrated to YamlDotNet 4.1.0.
 
 ## Version 0.0
 - Added CHANGELOG.md for tracking release notes.
