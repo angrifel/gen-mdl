@@ -1,5 +1,6 @@
 ## Version 0.1
 - Changed main artifact name to include '-release' suffix.
+- Fixed incorrect generation of 'datetime' type for C#.
 
 ## Version 0.0
 - Added CHANGELOG.md for tracking release notes.
