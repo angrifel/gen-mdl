@@ -43,10 +43,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)Core\IScanner.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\LookAheadBuffer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Mark.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\MaximumRecursionLevelReachedException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\MergingParser.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Parser.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\ParserExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\ParserState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Core\RecursionLevel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\ScalarStyle.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\Scanner.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Core\SemanticErrorException.cs" />
@@ -99,11 +101,13 @@
     <Compile Include="$(MSBuildThisFileDirectory)RepresentationModel\YamlVisitor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)RepresentationModel\YamlVisitorBase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\BuilderSkeleton.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Serialization\Converters\DateTimeConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\Converters\GuidConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\Deserializer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\DeserializerBuilder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\EmissionPhaseObjectGraphVisitorArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\EventEmitters\ChainedEventEmitter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Serialization\EventEmitters\CustomTagEventEmitter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\EventEmitters\JsonEventEmitter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\EventEmitters\TypeAssigningEventEmitter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\EventEmitters\WriterEventEmitter.cs" />
@@ -161,6 +165,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\ObjectGraphVisitors\CustomSerializationObjectGraphVisitor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\ObjectGraphVisitors\DefaultExclusiveObjectGraphVisitor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\ObjectGraphVisitors\EmittingObjectGraphVisitor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Serialization\ObjectGraphVisitors\PreProcessingPhaseObjectGraphVisitorSkeleton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\PropertyDescriptor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\SerializationOptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Serialization\Serializer.cs" />

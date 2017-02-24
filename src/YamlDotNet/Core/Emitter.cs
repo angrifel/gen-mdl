@@ -648,11 +648,12 @@ namespace YamlDotNet.Core
             }
             else
             {
-                WriteBreak();
+                WriteIndent();
             }
 
             Write("# ");
             Write(comment.Value);
+            WriteBreak();
 
             isIndentation = true;
         }
@@ -1159,11 +1160,24 @@ namespace YamlDotNet.Core
                             break;
 
                         default:
-                            var code = (short)character;
+                            var code = (ushort)character;
                             if (code <= 0xFF)
                             {
                                 Write('x');
                                 Write(code.ToString("X02", CultureInfo.InvariantCulture));
+                            }
+                            else if (IsHighSurrogate(character))
+                            {
+                                if (index + 1 < value.Length && IsLowSurrogate(value[index + 1]))
+                                {
+                                    Write('U');
+                                    Write(char.ConvertToUtf32(character, value[index + 1]).ToString("X08", CultureInfo.InvariantCulture));
+                                    index++;
+                                }
+                                else
+                                {
+                                    throw new SyntaxErrorException("While writing a quoted scalar, found an orphaned high surrogate.");
+                                }
                             }
                             else
                             {
@@ -1339,6 +1353,16 @@ namespace YamlDotNet.Core
                     character == '\x85' ||
                     (character >= '\xA0' && character <= '\xD7FF') ||
                     (character >= '\xE000' && character <= '\xFFFD');
+        }
+
+        private static bool IsHighSurrogate(char c)
+        {
+           return 0xD800 <= c && c <= 0xDBFF;
+        }
+
+        private static bool IsLowSurrogate(char c)
+        {
+            return 0xDC00 <= c && c <= 0xDFFF;
         }
 
         #endregion
@@ -1762,7 +1786,7 @@ namespace YamlDotNet.Core
 
             if (analyzer.IsSpace() || analyzer.IsBreak())
             {
-                var indentHint = string.Format(CultureInfo.InvariantCulture, "{0}\0", bestIndent);
+                var indentHint = string.Format(CultureInfo.InvariantCulture, "{0}", bestIndent);
                 WriteIndicator(indentHint, false, false, false);
             }
 

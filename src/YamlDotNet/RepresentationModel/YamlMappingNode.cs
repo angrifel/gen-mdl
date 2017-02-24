@@ -92,22 +92,6 @@ namespace YamlDotNet.RepresentationModel
             {
                 state.AddNodeWithUnresolvedAliases(this);
             }
-#if DEBUG
-            else
-            {
-                foreach (var child in children)
-                {
-                    if (child.Key is YamlAliasNode)
-                    {
-                        throw new InvalidOperationException("Error in alias resolution.");
-                    }
-                    if (child.Value is YamlAliasNode)
-                    {
-                        throw new InvalidOperationException("Error in alias resolution.");
-                    }
-                }
-            }
-#endif
 
             parser.Expect<MappingEnd>();
         }
@@ -320,25 +304,26 @@ namespace YamlDotNet.RepresentationModel
         }
 
         /// <summary>
-        /// Gets all nodes from the document, starting on the current node.
+        /// Recursively enumerates all the nodes from the document, starting on the current node,
+        /// and throwing <see cref="MaximumRecursionLevelReachedException"/>
+        /// if <see cref="RecursionLevel.Maximum"/> is reached.
         /// </summary>
-        public override IEnumerable<YamlNode> AllNodes
+        internal override IEnumerable<YamlNode> SafeAllNodes(RecursionLevel level)
         {
-            get
+            level.Increment();
+            yield return this;
+            foreach (var child in children)
             {
-                yield return this;
-                foreach (var child in children)
+                foreach (var node in child.Key.SafeAllNodes(level))
                 {
-                    foreach (var node in child.Key.AllNodes)
-                    {
-                        yield return node;
-                    }
-                    foreach (var node in child.Value.AllNodes)
-                    {
-                        yield return node;
-                    }
+                    yield return node;
+                }
+                foreach (var node in child.Value.SafeAllNodes(level))
+                {
+                    yield return node;
                 }
             }
+            level.Decrement();
         }
 
         /// <summary>
@@ -355,8 +340,13 @@ namespace YamlDotNet.RepresentationModel
         /// <returns>
         /// A <see cref="System.String"/> that represents this instance.
         /// </returns>
-        public override string ToString()
+        internal override string ToString(RecursionLevel level)
         {
+            if (!level.TryIncrement())
+            {
+                return MaximumRecursionLevelReachedToStringValue;
+            }
+
             var text = new StringBuilder("{ ");
 
             foreach (var child in children)
@@ -365,10 +355,12 @@ namespace YamlDotNet.RepresentationModel
                 {
                     text.Append(", ");
                 }
-                text.Append("{ ").Append(child.Key).Append(", ").Append(child.Value).Append(" }");
+                text.Append("{ ").Append(child.Key.ToString(level)).Append(", ").Append(child.Value.ToString(level)).Append(" }");
             }
 
             text.Append(" }");
+
+            level.Decrement();
 
             return text.ToString();
         }

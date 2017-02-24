@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using YamlDotNet.Serialization.NodeDeserializers;
 using YamlDotNet.Serialization.NodeTypeResolvers;
 using YamlDotNet.Serialization.ObjectFactories;
@@ -154,6 +153,54 @@ namespace YamlDotNet.Serialization
         }
 
         /// <summary>
+        /// Registers an additional <see cref="INodeDeserializer" /> to be used by the deserializer.
+        /// </summary>
+        /// <param name="nodeDeserializerFactory">A factory that creates the <see cref="INodeDeserializer" /> based on a previously registered <see cref="INodeDeserializer" />.</param>
+        /// <param name="where">Configures the location where to insert the <see cref="INodeDeserializer" /></param>
+        public DeserializerBuilder WithNodeDeserializer<TNodeDeserializer>(
+            WrapperFactory<INodeDeserializer, TNodeDeserializer> nodeDeserializerFactory,
+            Action<ITrackingRegistrationLocationSelectionSyntax<INodeDeserializer>> where
+        )
+            where TNodeDeserializer : INodeDeserializer
+        {
+            if (nodeDeserializerFactory == null)
+            {
+                throw new ArgumentNullException("nodeDeserializerFactory");
+            }
+
+            if (where == null)
+            {
+                throw new ArgumentNullException("where");
+            }
+
+            where(nodeDeserializerFactories.CreateTrackingRegistrationLocationSelector(typeof(TNodeDeserializer), (wrapped, _) => nodeDeserializerFactory(wrapped)));
+            return this;
+        }
+
+        /// <summary>
+        /// Unregisters an existing <see cref="INodeDeserializer" /> of type <typeparam name="TNodeDeserializer" />.
+        /// </summary>
+        public DeserializerBuilder WithoutNodeDeserializer<TNodeDeserializer>()
+            where TNodeDeserializer : INodeDeserializer
+        {
+            return WithoutNodeDeserializer(typeof(TNodeDeserializer));
+        }
+
+        /// <summary>
+        /// Unregisters an existing <see cref="INodeDeserializer" /> of type <param name="nodeDeserializerType" />.
+        /// </summary>
+        public DeserializerBuilder WithoutNodeDeserializer(Type nodeDeserializerType)
+        {
+            if (nodeDeserializerType == null)
+            {
+                throw new ArgumentNullException("nodeDeserializerType");
+            }
+
+            nodeDeserializerFactories.Remove(nodeDeserializerType);
+            return this;
+        }
+
+        /// <summary>
         /// Registers an additional <see cref="INodeTypeResolver" /> to be used by the deserializer.
         /// </summary>
         public DeserializerBuilder WithNodeTypeResolver(INodeTypeResolver nodeTypeResolver)
@@ -186,6 +233,54 @@ namespace YamlDotNet.Serialization
         }
 
         /// <summary>
+        /// Registers an additional <see cref="INodeTypeResolver" /> to be used by the deserializer.
+        /// </summary>
+        /// <param name="nodeTypeResolverFactory">A factory that creates the <see cref="INodeTypeResolver" /> based on a previously registered <see cref="INodeTypeResolver" />.</param>
+        /// <param name="where">Configures the location where to insert the <see cref="INodeTypeResolver" /></param>
+        public DeserializerBuilder WithNodeTypeResolver<TNodeTypeResolver>(
+            WrapperFactory<INodeTypeResolver, TNodeTypeResolver> nodeTypeResolverFactory,
+            Action<ITrackingRegistrationLocationSelectionSyntax<INodeTypeResolver>> where
+        )
+            where TNodeTypeResolver : INodeTypeResolver
+        {
+            if (nodeTypeResolverFactory == null)
+            {
+                throw new ArgumentNullException("nodeTypeResolverFactory");
+            }
+
+            if (where == null)
+            {
+                throw new ArgumentNullException("where");
+            }
+
+            where(nodeTypeResolverFactories.CreateTrackingRegistrationLocationSelector(typeof(TNodeTypeResolver), (wrapped, _) => nodeTypeResolverFactory(wrapped)));
+            return this;
+        }
+
+        /// <summary>
+        /// Unregisters an existing <see cref="INodeTypeResolver" /> of type <typeparam name="TNodeTypeResolver" />.
+        /// </summary>
+        public DeserializerBuilder WithoutNodeTypeResolver<TNodeTypeResolver>()
+            where TNodeTypeResolver : INodeTypeResolver
+        {
+            return WithoutNodeTypeResolver(typeof(TNodeTypeResolver));
+        }
+
+        /// <summary>
+        /// Unregisters an existing <see cref="INodeTypeResolver" /> of type <param name="nodeTypeResolverType" />.
+        /// </summary>
+        public DeserializerBuilder WithoutNodeTypeResolver(Type nodeTypeResolverType)
+        {
+            if (nodeTypeResolverType == null)
+            {
+                throw new ArgumentNullException("nodeTypeResolverType");
+            }
+
+            nodeTypeResolverFactories.Remove(nodeTypeResolverType);
+            return this;
+        }
+
+        /// <summary>
         /// Registers a tag mapping.
         /// </summary>
         public DeserializerBuilder WithTagMapping(string tag, Type type)
@@ -200,7 +295,30 @@ namespace YamlDotNet.Serialization
                 throw new ArgumentNullException("type");
             }
 
+            Type alreadyRegisteredType;
+            if (tagMappings.TryGetValue(tag, out alreadyRegisteredType))
+            {
+                throw new ArgumentException(string.Format("Type already has a registered type '{0}' for tag '{1}'", alreadyRegisteredType.FullName, tag), "tag");
+            }
+
             tagMappings.Add(tag, type);
+            return this;
+        }
+
+        /// <summary>
+        /// Unregisters an existing tag mapping.
+        /// </summary>
+        public DeserializerBuilder WithoutTagMapping(string tag)
+        {
+            if (tag == null)
+            {
+                throw new ArgumentNullException("tag");
+            }
+
+            if (!tagMappings.Remove(tag))
+            {
+                throw new KeyNotFoundException(string.Format("Tag '{0}' is not registered", tag));
+            }
             return this;
         }
 
