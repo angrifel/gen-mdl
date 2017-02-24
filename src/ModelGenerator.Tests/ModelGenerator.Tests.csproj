@@ -59,6 +59,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CSharp\CSharpAmmendmentTests.cs" />
     <Compile Include="CSharp\CSharpClassMemberTests.cs" />
     <Compile Include="CSharp\CSharpClassTests.cs" />
     <Compile Include="CSharp\CSharpEnumTests.cs" />
