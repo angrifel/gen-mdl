@@ -105,7 +105,7 @@ namespace ModelGenerator.CSharp
     private CSharpClassMember GenerateEntityMember(KeyValuePair<string, IEntityMemberInfo> member)
     {
       var resolvedType = _specInterpreter.GetResolvedType(Constants.CSharpTarget, member.Value.Type);
-      var normalizedType = _specInterpreter.IsNativeType(Constants.CSharpTarget, member.Value.Type) ? member.Value.Type : SpecFunctions.ToPascalCase(resolvedType);
+      var normalizedType = _specInterpreter.IsNativeType(Constants.CSharpTarget, resolvedType) ? resolvedType : SpecFunctions.ToPascalCase(resolvedType);
       var memberType = member.Value.IsCollection
         ? "System.Collections.Generic.IList<" + normalizedType + ">"
         : normalizedType + (member.Value.IsNullable && IsStruct(normalizedType) ? "?" : string.Empty);
