@@ -67,6 +67,7 @@
     <Compile Include="CSharp\CSharpNamespaceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TypeScript\TypeScriptAmmendmentTests.cs" />
+    <Compile Include="TypeScript\TypeScriptClassMemberTests.cs" />
     <Compile Include="TypeScript\TypeScriptClassTests.cs" />
   </ItemGroup>
   <ItemGroup>
