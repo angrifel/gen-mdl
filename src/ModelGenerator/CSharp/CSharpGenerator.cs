@@ -34,7 +34,8 @@ namespace ModelGenerator.CSharp
 
     public CSharpGenerator(SpecAnalyzer specAnalizer)
     {
-      _specAnalizer = specAnalizer ?? throw new ArgumentNullException(nameof(specAnalizer));
+      if (specAnalizer == null) throw new ArgumentNullException(nameof(specAnalizer));
+      _specAnalizer = specAnalizer;
     }
 
     public IEnumerable<GeneratorOutput> GenerateOutputs()
