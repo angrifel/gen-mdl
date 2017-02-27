@@ -22,51 +22,35 @@
 namespace ModelGenerator.Tests.TypeScript
 {
   using ModelGenerator.TypeScript;
-  using System;
   using System.Collections.Generic;
   using System.IO;
   using Xunit;
 
-  public class TypeScriptClassTests
+  public class TypeScriptEnumTests
   {
     [Fact]
-    public void TestGenerateClassWithNoMembers()
+    public void TestEnumGeneration()
     {
       // arrange
-      var typeScriptClass = new TypeScriptClass { Name = "Blog" };
+      var draftEnumMember = new TypeScriptEnumMember { Name = "Draft" };
+      var finalEnumMember = new TypeScriptEnumMember { Name = "Final" };
+      var typeScriptEnum = new TypeScriptEnum
+      {
+        Name = "BillStatus",
+        Members = new List<TypeScriptEnumMember> { draftEnumMember, finalEnumMember }
+      };
       var output = new StringWriter();
-      var expectedOutput =
-        "class Blog {" + Environment.NewLine +
-        "}" + Environment.NewLine;
+      var expectOutputWriter = new StringWriter();
+      expectOutputWriter.WriteLine("enum BillStatus {");
+      draftEnumMember.Generate(expectOutputWriter, false);
+      finalEnumMember.Generate(expectOutputWriter, true);
+      expectOutputWriter.WriteLine("}");
 
       // act
-      typeScriptClass.Generate(output);
+      typeScriptEnum.Generate(output);
 
       // assert
-      var generatedOutput = output.GetStringBuilder().ToString();
-      Assert.Equal(expectedOutput, generatedOutput);
-    }
-
-    [Fact]
-    public void TestGenerateClassWithMembers()
-    {
-      // arrange
-      var idMember = new TypeScriptClassMember { Name = "id", Type = "number" };
-      var descriptionMembers = new TypeScriptClassMember { Name = "description", Type = "string" };
-      var typeScriptClass = new TypeScriptClass { Name = "Blog", Members = new List<TypeScriptClassMember> { idMember, descriptionMembers } };
-      var output = new StringWriter();
-      var expectedOutputWriter = new StringWriter();
-      expectedOutputWriter.Write("class Blog {" + Environment.NewLine);
-      idMember.Generate(expectedOutputWriter);
-      descriptionMembers.Generate(expectedOutputWriter);
-      expectedOutputWriter.Write("}" + Environment.NewLine);
-
-      // act
-      typeScriptClass.Generate(output);
-
-      // assert
-      var generatedOutput = output.GetStringBuilder().ToString();
-      Assert.Equal(expectedOutputWriter.GetStringBuilder().ToString(), generatedOutput);
+      Assert.Equal(expectOutputWriter.GetStringBuilder().ToString(), output.GetStringBuilder().ToString());
     }
   }
 }
