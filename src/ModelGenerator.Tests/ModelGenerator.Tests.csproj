@@ -72,6 +72,7 @@
     <Compile Include="TypeScript\TypeScriptEnumMemberTests.cs" />
     <Compile Include="TypeScript\TypeScriptEnumTests.cs" />
     <Compile Include="TypeScript\TypeScriptExportStatementTests.cs" />
+    <Compile Include="TypeScript\TypeScriptImportStatementTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ModelGenerator\ModelGenerator.csproj">
