@@ -25,44 +25,54 @@ namespace ModelGenerator.CSharp
   using System;
   using System.Collections.Generic;
   using System.IO;
-  using System.Linq;
 
   public class CSharpGenerator : IGenerator
   {
     private static readonly string[] StructNativeTypes = new string[] { "bool", "byte", "short", "int", "long", "float", "double", "decimal", "char", "System.Guid", "System.DateTime", "System.TimeSpan", "System.DateTimeOffset" };
 
-    private readonly SpecAnalyzer _specInterpreter;
+    private readonly SpecAnalyzer _specAnalizer;
 
-    public CSharpGenerator(SpecAnalyzer specInterpreter)
+    public CSharpGenerator(SpecAnalyzer specAnalizer)
     {
-      if (specInterpreter == null) throw new ArgumentNullException(nameof(specInterpreter));
-      _specInterpreter = specInterpreter;
+      _specAnalizer = specAnalizer ?? throw new ArgumentNullException(nameof(specAnalizer));
     }
 
     public IEnumerable<GeneratorOutput> GenerateOutputs()
     {
-      var targetInfo = _specInterpreter.Spec.Targets[Constants.CSharpTarget];
-      foreach (var @enum in _specInterpreter.Spec.Enums)
+      var targetInfo = _specAnalizer.Spec.Targets[Constants.CSharpTarget];
+      var result = new GeneratorOutput[_specAnalizer.Spec.Enums.Count + _specAnalizer.Spec.Entities.Count];
+      var index = 0;
+      foreach (var @enum in _specAnalizer.Spec.Enums)
       {
-        yield return new GeneratorOutput
-        {
-          Path = Path.Combine(targetInfo.Path, Path.ChangeExtension(GetFilename(@enum.Key), Constants.CSharpExtension)),
-          GenerationRoot = GenerateEnum(targetInfo.Namespace, @enum.Key, @enum.Value)
-        };
+        result[index++] = 
+          new GeneratorOutput
+          {
+            Path = Path.Combine(targetInfo.Path, Path.ChangeExtension(GetFilename(@enum.Key), Constants.CSharpExtension)),
+            GenerationRoot = GenerateEnum(targetInfo.Namespace, @enum.Key, @enum.Value)
+          };
       }
 
-      foreach (var entity in _specInterpreter.Spec.Entities)
+      foreach (var entity in _specAnalizer.Spec.Entities)
       {
-        yield return new GeneratorOutput
-        {
-          Path = Path.Combine(targetInfo.Path, Path.ChangeExtension(GetFilename(entity.Key), Constants.CSharpExtension)),
-          GenerationRoot = GenerateEntity(entity.Key, entity.Value)
-        };
+        result[index++] =
+          new GeneratorOutput
+          {
+            Path = Path.Combine(targetInfo.Path, Path.ChangeExtension(GetFilename(entity.Key), Constants.CSharpExtension)),
+            GenerationRoot = GenerateEntity(entity.Key, entity.Value)
+          };
       }
+
+      return result;
     }
 
     private static IGenerationRoot GenerateEnum(string @namespace, string enumName, IList<EnumMember> enumMembers)
     {
+      var members = new List<CSharpEnumMember>(enumMembers.Count);
+      foreach (var member in enumMembers)
+      {
+        members.Add(GenerateEnumMember(member));
+      }
+
       return new CSharpNamespace
       {
         Name = @namespace,
@@ -71,7 +81,7 @@ namespace ModelGenerator.CSharp
           new CSharpEnum
           {
             Name = SpecFunctions.ToPascalCase(enumName),
-            Members = enumMembers.Select(GenerateEnumMember).ToList()
+            Members = members
           }
         }
       };
@@ -88,15 +98,21 @@ namespace ModelGenerator.CSharp
 
     private IGenerationRoot GenerateEntity(string entityName, IDictionary<string, IEntityMemberInfo> entityMembers)
     {
+      var members = new List<CSharpClassMember>(entityMembers.Count);
+      foreach (var entityMember in entityMembers)
+      {
+        members.Add(GenerateEntityMember(entityMember));
+      }
+
       return new CSharpNamespace
       {
-        Name = _specInterpreter.Spec.Targets[Constants.CSharpTarget].Namespace,
+        Name = _specAnalizer.Spec.Targets[Constants.CSharpTarget].Namespace,
         Types = new List<CSharpType>
         {
           new CSharpClass
           {
             Name = SpecFunctions.ToPascalCase(entityName),
-            Members = entityMembers.Select(GenerateEntityMember).ToList()
+            Members = members
           }
         }
       };
@@ -104,8 +120,8 @@ namespace ModelGenerator.CSharp
 
     private CSharpClassMember GenerateEntityMember(KeyValuePair<string, IEntityMemberInfo> member)
     {
-      var resolvedType = _specInterpreter.GetResolvedType(Constants.CSharpTarget, member.Value.Type);
-      var normalizedType = _specInterpreter.IsNativeType(Constants.CSharpTarget, resolvedType) ? resolvedType : SpecFunctions.ToPascalCase(resolvedType);
+      var resolvedType = _specAnalizer.GetResolvedType(Constants.CSharpTarget, member.Value.Type);
+      var normalizedType = _specAnalizer.IsNativeType(Constants.CSharpTarget, resolvedType) ? resolvedType : SpecFunctions.ToPascalCase(resolvedType);
       var memberType = member.Value.IsCollection
         ? "System.Collections.Generic.IList<" + normalizedType + ">"
         : normalizedType + (member.Value.IsNullable && IsStruct(normalizedType) ? "?" : string.Empty);
@@ -116,6 +132,17 @@ namespace ModelGenerator.CSharp
     
     private static string GetFilename(string type) => SpecFunctions.ToPascalCase(type);
 
-    private static bool IsStruct(string type) => StructNativeTypes.Contains(type);
+    private static bool IsStruct(string type)
+    {
+      for (int i = 0; i < StructNativeTypes.Length; i++)
+      {
+        if (StructNativeTypes[i] == type)
+        {
+          return true;
+        }
+      }
+
+      return false;
+    }
   }
 }
