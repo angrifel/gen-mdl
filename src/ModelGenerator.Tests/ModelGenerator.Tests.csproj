@@ -64,6 +64,7 @@
     <Compile Include="CSharp\CSharpClassTests.cs" />
     <Compile Include="CSharp\CSharpEnumTests.cs" />
     <Compile Include="CSharp\CSharpEnumMemberTests.cs" />
+    <Compile Include="CSharp\CSharpGeneratorTests.cs" />
     <Compile Include="CSharp\CSharpNamespaceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TypeScript\TypeScriptAmmendmentTests.cs" />
