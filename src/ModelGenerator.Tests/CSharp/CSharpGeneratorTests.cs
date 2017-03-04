@@ -138,8 +138,8 @@
             Constants.CSharpTarget,
             new TargetInfo
             {
-              Namespace = "My.Blog",
-              Path = "Model",
+              Namespace = "Blog.Model.Data",
+              Path = "Blog.Model\\Data",
               TypeAliases = new Dictionary<string, string>
               {
                 { "id_t", "int" }
@@ -215,8 +215,8 @@
 
       Assert.Equal(5, outputList.Count);
       Assert.True(outputList.Exists(_ =>
-          _.Path == Path.Combine("Model", "BlogPostStatus.cs") &&
-          ((CSharpNamespace)_.GenerationRoot).Name == "My.Blog" &&
+          _.Path == Path.Combine("Blog.Model", "Data", "BlogPostStatus.cs") &&
+          ((CSharpNamespace)_.GenerationRoot).Name == "Blog.Model.Data" &&
           ((CSharpNamespace)_.GenerationRoot).Types.Count == 1 &&
           ((CSharpEnum)((CSharpNamespace)_.GenerationRoot).Types[0]).Name == "BlogPostStatus" &&
           ((CSharpEnum)((CSharpNamespace)_.GenerationRoot).Types[0]).Members.Count == 2 &&
@@ -227,8 +227,8 @@
         ));
 
       Assert.True(outputList.Exists(_ =>
-          _.Path == Path.Combine("Model", "Author.cs") &&
-          ((CSharpNamespace)_.GenerationRoot).Name == "My.Blog" &&
+          _.Path == Path.Combine("Blog.Model", "Data", "Author.cs") &&
+          ((CSharpNamespace)_.GenerationRoot).Name == "Blog.Model.Data" &&
           ((CSharpNamespace)_.GenerationRoot).Types.Count == 1 &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Name == "Author" &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members.Count == 3 &&
@@ -241,8 +241,8 @@
           ));
 
       Assert.True(outputList.Exists(_ =>
-          _.Path == Path.Combine("Model", "Blog.cs") &&
-          ((CSharpNamespace)_.GenerationRoot).Name == "My.Blog" &&
+          _.Path == Path.Combine("Blog.Model", "Data", "Blog.cs") &&
+          ((CSharpNamespace)_.GenerationRoot).Name == "Blog.Model.Data" &&
           ((CSharpNamespace)_.GenerationRoot).Types.Count == 1 &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Name == "Blog" &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members.Count == 4 &&
@@ -257,8 +257,8 @@
           ));
 
       Assert.True(outputList.Exists(_ =>
-          _.Path == Path.Combine("Model", "BlogPost.cs") &&
-          ((CSharpNamespace)_.GenerationRoot).Name == "My.Blog" &&
+          _.Path == Path.Combine("Blog.Model", "Data", "BlogPost.cs") &&
+          ((CSharpNamespace)_.GenerationRoot).Name == "Blog.Model.Data" &&
           ((CSharpNamespace)_.GenerationRoot).Types.Count == 1 &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Name == "BlogPost" &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members.Count == 5 &&
@@ -275,8 +275,8 @@
           ));
 
       Assert.True(outputList.Exists(_ =>
-          _.Path == Path.Combine("Model", "Comment.cs") &&
-          ((CSharpNamespace)_.GenerationRoot).Name == "My.Blog" &&
+          _.Path == Path.Combine("Blog.Model", "Data", "Comment.cs") &&
+          ((CSharpNamespace)_.GenerationRoot).Name == "Blog.Model.Data" &&
           ((CSharpNamespace)_.GenerationRoot).Types.Count == 1 &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Name == "Comment" &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members.Count == 2 &&
