@@ -1,24 +1,216 @@
-# mdlgen
-
-A Source code generator for model definitions.
+# mdlgen 
 
 [![Build status](https://ci.appveyor.com/api/projects/status/qpwt9kk7wgbtp86a/branch/master?svg=true)](https://ci.appveyor.com/project/angrifel/mdlgen/branch/master)
 
-## Description
+## What is it?
 
-**mdlgen** is a source code generator that generates model classes used by [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) services.
+**mdlgen** is a code generator that takes a data model definition as input and produces code in C# and TypeScript for that model.
 
-## Features
+## What is it good for?
 
-- Generates entities (as classes) and enums.
-- Targets C# and TypeScript.
-- Supports type aliases.
-- Single standalone console executable. No dlls or config files needed.
-- Model definitions written in yaml.
+It's great at centralizing knowledge to keep data model classes in client side (browser) and server-side updated.
+
+## Our philosophy
+We attempt to follow [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself) and [KISS](https://en.wikipedia.org/wiki/KISS_principle) principles.
+
+Our core principles
+ - Knowledge should be centered in a single place. 
+   - *You shouldn't have to  look at files in different languages to understand your model.*
+ - Data modeling should be simple.
+   - *You should only provide as much detail as is actually needed, but rely on the defaults to do the rest.*
+
+
+ 
+## How does mdlgen work?
+
+ - You write model definitions in YAML.
+ - You invoke mdlgen with your model definition.
+ - You get code. :)
+
+## What does a model definition look like?
+
+A model definition for a blog application looks like this.
+
+```yaml
+%YAML 1.1
+---
+targets : 
+    csharp : 
+        path         : Blog.Model\\Data
+        namespace    : Blog.Model.Data
+        type_aliases : 
+            id_t : int 
+
+    typescript : 
+        path         : client\\app\\model
+        type_aliases : 
+            id_t : int
+
+enums : 
+    blog_post_status : [draft, final]
+
+entities :
+    author :
+        id    : id_t
+        name  : string
+        alias : string
+
+    blog :
+        id     : id_t
+        title  : string
+        posts  : 
+            type          : blog_post
+            is_collection : true
+        author : author
+
+    blog_post : 
+        id             : id_t
+        date_published : datetime
+        description    : string
+        comments       :
+            type          : comment
+            is_collection : true
+        status         : blog_post_status
+
+    comment :
+        id   : id_t
+        text : string
+
+```
+## What do I get after invoking mdlgen?
+
+For the model above you would get the following files
+
+- Blog.Model\Data\Author.cs
+```csharp
+namespace Blog.Model.Data
+{
+  public class Author
+  {
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string Alias { get; set; }
+  }
+}
+```
+
+- Blog.Model\Data\Blog.cs
+```csharp
+namespace Blog.Model.Data
+{
+  public class Blog
+  {
+    public int Id { get; set; }
+    public string Title { get; set; }
+    public System.Collections.Generic.IList<BlogPost> Posts { get; set; }
+    public Author Author { get; set; }
+  }
+}
+```
+
+- Blog.Model\Data\BlogPost.cs
+```csharp
+namespace Blog.Model.Data
+{
+  public class BlogPost
+  {
+    public int Id { get; set; }
+    public System.DateTimeOffset DatePublished { get; set; }
+    public string Description { get; set; }
+    public System.Collections.Generic.IList<Comment> Comments { get; set; }
+    public BlogPostStatus Status { get; set; }
+  }
+}
+```
+
+- Blog.Model\Data\BlogPostStatus.cs
+```csharp
+namespace Blog.Model.Data
+{
+  public enum BlogPostStatus
+  {
+    Draft,
+    Final
+  }
+}
+```
+
+- Blog.Model\Data\Comment.cs
+```csharp
+namespace Blog.Model.Data
+{
+  public class Comment
+  {
+    public int Id { get; set; }
+    public string Text { get; set; }
+  }
+}
+```
+
+- client\app\model\author.ts
+```typescript
+export default class Author {
+  id : number;
+  name : string;
+  alias : string;
+}
+```
+
+- client\app\model\blog-post-status.ts
+```typescript
+enum BlogPostStatus {
+  Draft,
+  Final
+}
+
+export default BlogPostStatus;
+```
+
+- client\app\model\blog-post.ts
+```typescript
+import BlogPostStatus from './blog-post-status'
+import Comment from './comment'
+
+export default class BlogPost {
+  id : number;
+  datePublished : Date;
+  description : string;
+  comments : Comment[];
+  status : BlogPostStatus;
+}
+```
+
+- client\app\model\blog.ts
+```typescript
+import BlogPost from './blog-post'
+import Author from './author'
+
+export default class Blog {
+  id : number;
+  title : string;
+  posts : BlogPost[];
+  author : Author;
+}
+```
+
+- client\app\model\comment.ts
+```typescript
+export default class Comment {
+  id : number;
+  text : string;
+}
+```
+
+- client\app\model\index.ts
+```typescript
+export * from './blog-post-status';
+export * from './author';
+export * from './blog';
+export * from './blog-post';
+export * from './comment';
+```
 
 ## Requirements
 
-- [.NET Framework 4](https://www.microsoft.com/en-us/download/details.aspx?id=17718) or higher.
+* [.NET Framework](https://www.microsoft.com/en-us/download/details.aspx?id=17718) 4 or higher.
 
-``` 
-Usage: mdlgen <model-file-path>

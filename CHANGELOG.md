@@ -3,6 +3,7 @@
 - Fixed incorrect generation of 'datetime' type for C#.
 - Migrated to YamlDotNet 4.1.0.
 - Added examples to project.
+- Updated README.md.
 
 ## Version 0.0
 - Added CHANGELOG.md for tracking release notes.
