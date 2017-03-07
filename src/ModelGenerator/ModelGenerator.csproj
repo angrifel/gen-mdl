@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!-- 
-  This file is part of mdlgen - A Source code generator for model definitions.
+  This file is part of genmdl - A Source code generator for model definitions.
   Copyright (c) angrifel
 
   Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -30,7 +30,7 @@
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ModelGenerator</RootNamespace>
-    <AssemblyName>mdlgen</AssemblyName>
+    <AssemblyName>genmdl</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

@@ -1,10 +1,10 @@
-# mdlgen 
+# genmdl 
 
-[![Build status](https://ci.appveyor.com/api/projects/status/qpwt9kk7wgbtp86a/branch/master?svg=true)](https://ci.appveyor.com/project/angrifel/mdlgen/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/baeho8r25ny89044/branch/master?svg=true)](https://ci.appveyor.com/project/angrifel/genmdl/branch/master)
 
 ## What is it?
 
-**mdlgen** is a code generator that takes a data model definition as input and produces code in C# and TypeScript for that model.
+**genmdl** is a code generator that takes a data model definition as input and produces code in C# and TypeScript for that model.
 
 ## What is it good for?
 
@@ -21,10 +21,10 @@ Our core principles
 
 
  
-## How does mdlgen work?
+## How does genmdl work?
 
  - You write model definitions in YAML.
- - You invoke mdlgen with your model definition.
+ - You invoke genmdl with your model definition.
  - You get code. :)
 
 ## What does a model definition look like?
@@ -77,7 +77,7 @@ entities :
         text : string
 
 ```
-## What do I get after invoking mdlgen?
+## What do I get after invoking genmdl?
 
 For the model above you would get the following files
 

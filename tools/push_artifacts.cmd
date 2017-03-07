@@ -2,19 +2,19 @@
 setlocal
 set BUILD_FOLDER=%1
 set VERSION=%2
-set MDLGEN_PATH=%BUILD_FOLDER%\mdlgen-%VERSION%-release.zip
-set MDLGEN_RELEASE_PATH=%BUILD_FOLDER%\mdlgen-%VERSION%-release-with-pdb.zip
-set MDLGEN_DEBUG_PATH=%BUILD_FOLDER%\mdlgen-%VERSION%-debug-with-pdb.zip
+set GENMDL_PATH=%BUILD_FOLDER%\genmdl-%VERSION%-release.zip
+set GENMDL_RELEASE_PATH=%BUILD_FOLDER%\genmdl-%VERSION%-release-with-pdb.zip
+set GENMDL_DEBUG_PATH=%BUILD_FOLDER%\genmdl-%VERSION%-debug-with-pdb.zip
 
-if exist "%MDLGEN_PATH%" (
-    appveyor PushArtifact %MDLGEN_PATH% -DeploymentName "mdlgen release"
+if exist "%GENMDL_PATH%" (
+    appveyor PushArtifact %GENMDL_PATH% -DeploymentName "genmdl release"
 )
 
-if exist "%MDLGEN_RELEASE_PATH%" (
-    appveyor PushArtifact %MDLGEN_RELEASE_PATH% -DeploymentName "mdlgen release with pdb"
+if exist "%GENMDL_RELEASE_PATH%" (
+    appveyor PushArtifact %GENMDL_RELEASE_PATH% -DeploymentName "genmdl release with pdb"
 )
 
-if exist "%MDLGEN_DEBUG_PATH%" (
-    appveyor PushArtifact %MDLGEN_DEBUG_PATH% -DeploymentName "mdlgen debug with pdb"
+if exist "%GENMDL_DEBUG_PATH%" (
+    appveyor PushArtifact %GENMDL_DEBUG_PATH% -DeploymentName "genmdl debug with pdb"
 )
 endlocal
