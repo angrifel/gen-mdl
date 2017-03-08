@@ -1,4 +1,4 @@
-﻿//  This file is part of genmdl - A Source code generator for model definitions.
+﻿//  This file is part of mdlgen - A Source code generator for model definitions.
 //  Copyright (c) angrifel
 
 //  Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -19,33 +19,38 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-namespace ModelGenerator.CSharp
+namespace ModelGenerator.Tests.TypeScript
 {
+  using ModelGenerator.TypeScript;
   using System.Collections.Generic;
   using System.IO;
+  using Xunit;
 
-  public class CSharpNamespace : IGenerationRoot
+  public class TypeScriptEnumTests
   {
-    public string Name { get; set; }
-
-    public IList<CSharpType> Types { get; set; }
-
-    public void Generate(TextWriter output)
+    [Fact]
+    public void TestEnumGeneration()
     {
-      output.WriteLine($"namespace {Name}");
-      output.WriteLine(@"{");
-
-      if (Types != null && Types.Count > 0)
+      // arrange
+      var draftEnumMember = new TypeScriptEnumMember { Name = "Draft" };
+      var finalEnumMember = new TypeScriptEnumMember { Name = "Final" };
+      var typeScriptEnum = new TypeScriptEnum
       {
-        Types[0].Generate(output);
-        for (var i = 1; i < Types.Count; i++)
-        {
-          output.WriteLine();
-          Types[i].Generate(output);
-        }
-      }
+        Name = "BillStatus",
+        Members = new List<TypeScriptEnumMember> { draftEnumMember, finalEnumMember }
+      };
+      var output = new StringWriter();
+      var expectOutputWriter = new StringWriter();
+      expectOutputWriter.WriteLine("enum BillStatus {");
+      draftEnumMember.Generate(expectOutputWriter, false);
+      finalEnumMember.Generate(expectOutputWriter, true);
+      expectOutputWriter.WriteLine("}");
 
-      output.WriteLine(@"}");
+      // act
+      typeScriptEnum.Generate(output);
+
+      // assert
+      Assert.Equal(expectOutputWriter.GetStringBuilder().ToString(), output.GetStringBuilder().ToString());
     }
   }
 }

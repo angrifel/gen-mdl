@@ -36,9 +36,11 @@ namespace ModelGenerator.CSharp
       output.WriteLine(@"  {");
       if (Members != null && Members.Count > 0)
       {
-        foreach (var member in Members)
+        Members[0].Generate(output);
+        for (int i = 1; i < Members.Count; i++)
         {
-          member.Generate(output);
+          output.WriteLine();
+          Members[i].Generate(output);
         }
       }
 

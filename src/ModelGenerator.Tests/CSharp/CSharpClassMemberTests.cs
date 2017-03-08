@@ -1,4 +1,4 @@
-﻿//  This file is part of genmdl - A Source code generator for model definitions.
+﻿//  This file is part of mdlgen - A Source code generator for model definitions.
 //  Copyright (c) angrifel
 
 //  Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -19,33 +19,28 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-namespace ModelGenerator.CSharp
+namespace ModelGenerator.Tests.CSharp
 {
-  using System.Collections.Generic;
+  using ModelGenerator.CSharp;
+  using System;
   using System.IO;
+  using Xunit;
 
-  public class CSharpNamespace : IGenerationRoot
+  public class CSharpClassMemberTests
   {
-    public string Name { get; set; }
-
-    public IList<CSharpType> Types { get; set; }
-
-    public void Generate(TextWriter output)
+    [Fact]
+    public void TestGenerate()
     {
-      output.WriteLine($"namespace {Name}");
-      output.WriteLine(@"{");
+      // arrange
+      var classMember = new CSharpClassMember { Name = "Id", Type = "int" };
+      var output = new StringWriter();
+      var expectedOutput = "    public int Id { get; set; }" + Environment.NewLine;
 
-      if (Types != null && Types.Count > 0)
-      {
-        Types[0].Generate(output);
-        for (var i = 1; i < Types.Count; i++)
-        {
-          output.WriteLine();
-          Types[i].Generate(output);
-        }
-      }
+      // act
+      classMember.Generate(output);
 
-      output.WriteLine(@"}");
+      // assert
+      Assert.Equal(expectedOutput, output.GetStringBuilder().ToString());
     }
   }
 }
