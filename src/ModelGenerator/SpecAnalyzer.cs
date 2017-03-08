@@ -42,12 +42,12 @@ namespace ModelGenerator
 
     public IEnumerable<string> GetDirectEnumDependencies(string type) =>
       IsEntity(type)
-        ? _spec.Entities[type].Where(_ => IsEnum(_.Value.Type)).Select(_ => _.Value.Type)
+        ? _spec.Entities[type].Members.Where(_ => IsEnum(_.Value.Type)).Select(_ => _.Value.Type)
         : _emptyArray;
 
     public IEnumerable<string> GetDirectEntityDependencies(string type) =>
       IsEntity(type)
-        ? _spec.Entities[type].Where(_ => IsEntity(_.Value.Type)).Select(_ => _.Value.Type)
+        ? _spec.Entities[type].Members.Where(_ => IsEntity(_.Value.Type)).Select(_ => _.Value.Type)
         : _emptyArray;
 
     public bool IsTypeResolvable(string target, string type) =>

@@ -1,3 +1,6 @@
+## Version 0.2
+- Fixed bug in entity syntax, added 'members' property.
+
 ## Version 0.1
 - Changed main artifact name to include '-release' suffix.
 - Fixed incorrect generation of 'datetime' type for C#.

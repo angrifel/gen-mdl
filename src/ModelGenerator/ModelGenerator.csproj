@@ -93,6 +93,7 @@
     <Compile Include="CSharp\CSharpNamespace.cs" />
     <Compile Include="CSharp\CSharpType.cs" />
     <Compile Include="DictionaryExtensions.cs" />
+    <Compile Include="Model\EntityInfo.cs" />
     <Compile Include="YamlFileSpecSource.cs" />
     <Compile Include="GeneratorFactory.cs" />
     <Compile Include="GeneratorOutput.cs" />

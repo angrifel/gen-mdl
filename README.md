@@ -51,30 +51,34 @@ enums :
 
 entities :
     author :
-        id    : id_t
-        name  : string
-        alias : string
+        members: 
+            id    : id_t
+            name  : string
+            alias : string
 
     blog :
-        id     : id_t
-        title  : string
-        posts  : 
-            type          : blog_post
-            is_collection : true
-        author : author
+        members:
+            id     : id_t
+            title  : string
+            posts  : 
+                type          : blog_post
+                is_collection : true
+            author : author
 
     blog_post : 
-        id             : id_t
-        date_published : datetime
-        description    : string
-        comments       :
-            type          : comment
-            is_collection : true
-        status         : blog_post_status
+        members:
+            id             : id_t
+            date_published : datetime
+            description    : string
+            comments       :
+                type          : comment
+                is_collection : true
+            status         : blog_post_status
 
     comment :
-        id   : id_t
-        text : string
+        members:
+            id   : id_t
+            text : string
 
 ```
 ## What do I get after invoking genmdl?
