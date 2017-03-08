@@ -59,7 +59,7 @@ namespace ModelGenerator.CSharp
           new GeneratorOutput
           {
             Path = Path.Combine(targetInfo.Path, Path.ChangeExtension(GetFilename(entity.Key), Constants.CSharpExtension)),
-            GenerationRoot = GenerateEntity(entity.Key, entity.Value)
+            GenerationRoot = GenerateEntity(entity.Key, entity.Value.Members)
           };
       }
 

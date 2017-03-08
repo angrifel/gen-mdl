@@ -62,7 +62,7 @@ namespace ModelGenerator.TypeScript
           new GeneratorOutput
           {
             Path = Path.Combine(targetInfo.Path, Path.ChangeExtension(entityFileName, Constants.TypeScriptExtension)),
-            GenerationRoot = GenerateEntity(entity.Key, entity.Value)
+            GenerationRoot = GenerateEntity(entity.Key, entity.Value.Members)
           };
 
         barrelContents.Add(new TypeScriptReExportStatement { FileName = entityFileName });

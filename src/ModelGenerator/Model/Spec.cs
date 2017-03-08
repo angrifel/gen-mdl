@@ -27,13 +27,13 @@ namespace ModelGenerator.Model
   {
     public Spec()
     {
-      this.Entities = new Dictionary<string, OrderedDictionary<string, IEntityMemberInfo>>();
+      this.Entities = new Dictionary<string, EntityInfo>();
       this.Enums = new Dictionary<string, List<EnumMember>>();
     }
 
     public Dictionary<string, TargetInfo> Targets { get; set; }
 
-    public Dictionary<string, OrderedDictionary<string, IEntityMemberInfo>> Entities { get; set; }
+    public Dictionary<string, EntityInfo> Entities { get; set; }
 
     public Dictionary<string, List<EnumMember>> Enums { get; set; }
   }

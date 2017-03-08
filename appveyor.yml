@@ -1,7 +1,7 @@
 environment:
-  major_minor_version: "0.1"
+  major_minor_version: "0.2"
 
-version: $(major_minor_version).{build}-alpha.2
+version: $(major_minor_version).{build}-beta.1
 branches:
   only: [master]
   

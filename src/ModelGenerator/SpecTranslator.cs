@@ -88,7 +88,7 @@ namespace ModelGenerator
 
         foreach (var entity in spec.Entities)
         {
-          foreach (var member in (IDictionary<string, IEntityMemberInfo>)entity.Value)
+          foreach (var member in (IDictionary<string, IEntityMemberInfo>)entity.Value.Members)
           {
             if (!_specAnalyzer.IsTypeResolvable(target, member.Value.Type))
             {

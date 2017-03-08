@@ -84,16 +84,19 @@
       var spec =
         new Spec
         {
-          Entities = new Dictionary<string, OrderedDictionary<string, IEntityMemberInfo>>
+          Entities = new Dictionary<string, EntityInfo>
           {
             {
               "blog_entry",
-              new OrderedDictionary<string, IEntityMemberInfo>
+              new EntityInfo
               {
-                { "id", new EntityMemberInfo { Type = "int" } },
-                { "title", new EntityMemberInfo { Type = "string"} }
+                Members =
+                new OrderedDictionary<string, IEntityMemberInfo>
+                {
+                  { "id", new EntityMemberInfo { Type = "int" } },
+                  { "title", new EntityMemberInfo { Type = "string"} }
+                }
               }
-
             }
           },
           Targets = new Dictionary<string, TargetInfo>
@@ -158,44 +161,60 @@
             }
           } 
         },
-        Entities = new Dictionary<string, OrderedDictionary<string, IEntityMemberInfo>>
+        Entities = new Dictionary<string, EntityInfo>
         {
           {
             "author",
-            new OrderedDictionary<string, IEntityMemberInfo>
+            new EntityInfo
             {
-              { "id", new EntityMemberInfo { Type = "id_t" } },
-              { "name", new EntityMemberInfo { Type = "string" } },
-              { "alias", new EntityMemberInfo { Type = "string" } }
+              Members =
+                new OrderedDictionary<string, IEntityMemberInfo>
+                {
+                  { "id", new EntityMemberInfo { Type = "id_t" } },
+                  { "name", new EntityMemberInfo { Type = "string" } },
+                  { "alias", new EntityMemberInfo { Type = "string" } }
+                }
             }
           },
           {
             "blog",
-            new OrderedDictionary<string, IEntityMemberInfo>
+            new EntityInfo
             {
-              { "id", new EntityMemberInfo { Type = "id_t" } },
-              { "title", new EntityMemberInfo { Type = "string" } },
-              { "posts", new EntityMemberInfo { Type = "blog_post", IsCollection = true } },
-              { "author", new EntityMemberInfo { Type = "author" } }
+              Members =
+                new OrderedDictionary<string, IEntityMemberInfo>
+                {
+                  { "id", new EntityMemberInfo { Type = "id_t" } },
+                  { "title", new EntityMemberInfo { Type = "string" } },
+                  { "posts", new EntityMemberInfo { Type = "blog_post", IsCollection = true } },
+                  { "author", new EntityMemberInfo { Type = "author" } }
+                }
             }
           },
           {
             "blog_post",
-            new OrderedDictionary<string, IEntityMemberInfo>
+            new EntityInfo
             {
-              { "id", new EntityMemberInfo { Type = "id_t" } },
-              { "date_published", new EntityMemberInfo { Type = "datetime" } },
-              { "description", new EntityMemberInfo { Type = "string" } },
-              { "comments", new EntityMemberInfo { Type = "comment", IsCollection = true } },
-              { "status", new EntityMemberInfo { Type = "blog_post_status" } }
+              Members =
+                new OrderedDictionary<string, IEntityMemberInfo>
+                {
+                  { "id", new EntityMemberInfo { Type = "id_t" } },
+                  { "date_published", new EntityMemberInfo { Type = "datetime" } },
+                  { "description", new EntityMemberInfo { Type = "string" } },
+                  { "comments", new EntityMemberInfo { Type = "comment", IsCollection = true } },
+                  { "status", new EntityMemberInfo { Type = "blog_post_status" } }
+                }
             }
           },
           {
             "comment",
-            new OrderedDictionary<string, IEntityMemberInfo>
+            new EntityInfo
             {
-              { "id", new EntityMemberInfo { Type = "id_t" } },
-              { "text", new EntityMemberInfo { Type = "string" } }
+              Members =
+                new OrderedDictionary<string, IEntityMemberInfo>
+                {
+                  { "id", new EntityMemberInfo { Type = "id_t" } },
+                  { "text", new EntityMemberInfo { Type = "string" } }
+                }
             }
           }
         }
