@@ -1,0 +1,43 @@
+%YAML 1.1
+---
+targets : 
+    csharp : 
+        path         : Blog.Model\\Data
+        namespace    : Blog.Model.Data
+        type_aliases : 
+            id_t : int 
+
+    typescript : 
+        path         : client\\app\\model
+        type_aliases : 
+            id_t : int
+
+enums : 
+    blog_post_status : [draft, final]
+
+entities :
+    author :
+        id    : id_t
+        name  : string
+        alias : string
+
+    blog :
+        id     : id_t
+        title  : string
+        posts  : 
+            type          : blog_post
+            is_collection : true
+        author : author
+
+    blog_post : 
+        id             : id_t
+        date_published : datetime
+        description    : string
+        comments       :
+            type          : comment
+            is_collection : true
+        status         : blog_post_status
+
+    comment :
+        id   : id_t
+        text : string

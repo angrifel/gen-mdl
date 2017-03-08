@@ -19,8 +19,8 @@ skip_tags: true
 
 deploy:
   tag: v$(appveyor_build_version)
-  release: mdlgen-v$(appveyor_build_version)
-  description: 'mdlgen v$(appveyor_build_version)'
+  release: genmdl-v$(appveyor_build_version)
+  description: 'genmdl v$(appveyor_build_version)'
   provider: GitHub
   auth_token:
     secure: hR3Jaba/zuFlZJiS17qD60zHccr7+6mC+dLU5Yix2KD/EHlxYvaV+ANKZHUE+vP2

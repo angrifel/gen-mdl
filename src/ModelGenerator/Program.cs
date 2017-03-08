@@ -1,4 +1,4 @@
-﻿//  This file is part of mdlgen - A Source code generator for model definitions.
+﻿//  This file is part of genmdl - A Source code generator for model definitions.
 //  Copyright (c) angrifel
 
 //  Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -33,14 +33,14 @@ namespace ModelGenerator
       if (args.Length > 1) { ShowHelp(); return 0; }
       var modelFilePath = args[0];
       if (!File.Exists(modelFilePath)) ShowFileDoesNotExist();
-      var mdlGen = new SpecTranslator(
+      var genMdl = new SpecTranslator(
         specSource: new YamlFileSpecSource(modelFilePath), 
         generatorFactory: new GeneratorFactory(), 
         ammendmentFactory: new AmmendmentFactory());
 
       try
       {
-        WriteOutputs(Path.GetDirectoryName(modelFilePath), mdlGen.GetOutput());
+        WriteOutputs(Path.GetDirectoryName(modelFilePath), genMdl.GetOutput());
         return 0;
       }
       catch (Exception ex)
@@ -52,7 +52,7 @@ namespace ModelGenerator
 
     private static void ShowHelp()
     {
-      Console.Write("usage: mdlgen <model-file-path>");
+      Console.Write("usage: genmdl <model-file-path>");
     }
 
     private static void ShowFileDoesNotExist()

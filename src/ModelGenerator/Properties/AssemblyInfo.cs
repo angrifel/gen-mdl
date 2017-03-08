@@ -26,11 +26,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("mdlgen")]
+[assembly: AssemblyTitle("genmdl")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("mdlgen")]
+[assembly: AssemblyProduct("genmdl")]
 [assembly: AssemblyCopyright("Copyright © angrifel")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
