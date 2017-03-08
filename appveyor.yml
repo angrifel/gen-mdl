@@ -10,6 +10,8 @@ assembly_info:
 
 platform: Any CPU
 configuration: [Debug, Release]
+before_build:
+  - appveyor-retry nuget restore src\ModelGenerator.sln
 after_build:
   - tools\package_on_debug.cmd %CONFIGURATION% %APPVEYOR_BUILD_FOLDER% %APPVEYOR_BUILD_VERSION%
   - tools\package_on_release.cmd %CONFIGURATION% %APPVEYOR_BUILD_FOLDER% %APPVEYOR_BUILD_VERSION%
