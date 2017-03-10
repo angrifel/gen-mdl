@@ -123,12 +123,24 @@ namespace ModelGenerator.CSharp
     {
       var resolvedType = _specAnalizer.GetResolvedType(Constants.CSharpTarget, member.Value.Type);
       var normalizedType = _specAnalizer.IsNativeType(Constants.CSharpTarget, resolvedType) ? resolvedType : SpecFunctions.ToPascalCase(resolvedType);
+      var isStruct = IsStruct(normalizedType);
       var memberType = member.Value.IsCollection
         ? "System.Collections.Generic.IList<" + normalizedType + ">"
-        : normalizedType + (member.Value.IsNullable && IsStruct(normalizedType) ? "?" : string.Empty);
+        : normalizedType + (member.Value.IsNullable && isStruct ? "?" : string.Empty);
       
       var memberName = SpecFunctions.ToPascalCase(member.Key);
-      return new CSharpClassMember { Type = memberType, Name = memberName };
+      var isString = resolvedType == "string";
+      return new CSharpClassMember
+      {
+        Type = memberType,
+        Name = memberName,
+        RequiredAttributeBehavior =
+          !member.Value.IsNullable && !isStruct
+            ? isString
+              ? CSharpRequiredAttributeBehavior.IssueRequiredAllowEmptyStrings
+              : CSharpRequiredAttributeBehavior.IssueRequired
+            : CSharpRequiredAttributeBehavior.NoRequiredAttribute
+      };
     }
     
     private static string GetFilename(string type) => SpecFunctions.ToPascalCase(type);

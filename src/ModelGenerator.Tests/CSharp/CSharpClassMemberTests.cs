@@ -29,10 +29,10 @@ namespace ModelGenerator.Tests.CSharp
   public class CSharpClassMemberTests
   {
     [Fact]
-    public void TestGenerate()
+    public void TestGenerateDoNotIssueRequired()
     {
       // arrange
-      var classMember = new CSharpClassMember { Name = "Id", Type = "int" };
+      var classMember = new CSharpClassMember { Name = "Id", Type = "int", RequiredAttributeBehavior = CSharpRequiredAttributeBehavior.NoRequiredAttribute };
       var output = new StringWriter();
       var expectedOutput = "    public int Id { get; set; }" + Environment.NewLine;
 
@@ -42,5 +42,41 @@ namespace ModelGenerator.Tests.CSharp
       // assert
       Assert.Equal(expectedOutput, output.GetStringBuilder().ToString());
     }
+
+    [Fact]
+    public void TestGenerateIssueRequiredForNullValuesOnly()
+    {
+      // arrange
+      var classMember = new CSharpClassMember { Name = "Id", Type = "string", RequiredAttributeBehavior = CSharpRequiredAttributeBehavior.IssueRequiredAllowEmptyStrings };
+      var output = new StringWriter();
+
+      var expectedOutput =
+        "    [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]" + Environment.NewLine + 
+        "    public string Id { get; set; }" + Environment.NewLine;
+
+      // act
+      classMember.Generate(output);
+
+      // assert
+      Assert.Equal(expectedOutput, output.GetStringBuilder().ToString());
+    }
+
+    [Fact]
+    public void TestGenerateIssueRequiredForNullAndEmptyValues()
+    {
+      // arrange
+      var classMember = new CSharpClassMember { Name = "Id", Type = "string", RequiredAttributeBehavior = CSharpRequiredAttributeBehavior.IssueRequired };
+      var output = new StringWriter();
+      var expectedOutput =
+        "    [System.ComponentModel.DataAnnotations.Required]" + Environment.NewLine +
+        "    public string Id { get; set; }" + Environment.NewLine;
+
+      // act
+      classMember.Generate(output);
+
+      // assert
+      Assert.Equal(expectedOutput, output.GetStringBuilder().ToString());
+    }
+
   }
 }

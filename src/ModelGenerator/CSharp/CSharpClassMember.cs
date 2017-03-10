@@ -29,8 +29,20 @@ namespace ModelGenerator.CSharp
 
     public string Type { get; set; }
 
+    public CSharpRequiredAttributeBehavior RequiredAttributeBehavior { get; set; }
+
     public void Generate(TextWriter output)
     {
+      switch (RequiredAttributeBehavior)
+      {
+        case CSharpRequiredAttributeBehavior.IssueRequiredAllowEmptyStrings:
+          output.WriteLine($"    [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]");
+          break;
+        case CSharpRequiredAttributeBehavior.IssueRequired:
+          output.WriteLine($"    [System.ComponentModel.DataAnnotations.Required]");
+          break;
+      }
+
       output.WriteLine($"    public {Type} {Name} {{ get; set; }}");
     }
   }

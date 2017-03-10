@@ -91,6 +91,7 @@
     <Compile Include="CSharp\CSharpEnumMember.cs" />
     <Compile Include="CSharp\CSharpGenerator.cs" />
     <Compile Include="CSharp\CSharpNamespace.cs" />
+    <Compile Include="CSharp\CSharpRequiredAttributeBehavior.cs" />
     <Compile Include="CSharp\CSharpType.cs" />
     <Compile Include="DictionaryExtensions.cs" />
     <Compile Include="Model\EntityInfo.cs" />

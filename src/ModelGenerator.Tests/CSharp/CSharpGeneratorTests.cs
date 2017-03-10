@@ -124,8 +124,10 @@
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members.Count == 2 &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[0].Name == "Id" &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[0].Type == "int" &&
+          ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[0].RequiredAttributeBehavior == CSharpRequiredAttributeBehavior.NoRequiredAttribute &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[1].Name == "Title" &&
-          ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[1].Type == "string"
+          ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[1].Type == "string" &&
+          ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[1].RequiredAttributeBehavior == CSharpRequiredAttributeBehavior.IssueRequiredAllowEmptyStrings
         ));
     }
 
@@ -198,8 +200,8 @@
                 new OrderedDictionary<string, IEntityMemberInfo>
                 {
                   { "id", new EntityMemberInfo { Type = "id_t" } },
-                  { "date_published", new EntityMemberInfo { Type = "datetime" } },
-                  { "description", new EntityMemberInfo { Type = "string" } },
+                  { "date_published", new EntityMemberInfo { Type = "datetime", IsNullable = true } },
+                  { "description", new EntityMemberInfo { Type = "string", IsNullable = true } },
                   { "comments", new EntityMemberInfo { Type = "comment", IsCollection = true } },
                   { "status", new EntityMemberInfo { Type = "blog_post_status" } }
                 }
@@ -253,10 +255,13 @@
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members.Count == 3 &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[0].Name == "Id" &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[0].Type == "int" &&
+          ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[0].RequiredAttributeBehavior == CSharpRequiredAttributeBehavior.NoRequiredAttribute &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[1].Name == "Name" &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[1].Type == "string" &&
+          ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[1].RequiredAttributeBehavior == CSharpRequiredAttributeBehavior.IssueRequiredAllowEmptyStrings &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[2].Name == "Alias" &&
-          ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[2].Type == "string"
+          ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[2].Type == "string" &&
+          ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[2].RequiredAttributeBehavior == CSharpRequiredAttributeBehavior.IssueRequiredAllowEmptyStrings
           ));
 
       Assert.True(outputList.Exists(_ =>
@@ -267,12 +272,16 @@
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members.Count == 4 &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[0].Name == "Id" &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[0].Type == "int" &&
+          ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[0].RequiredAttributeBehavior == CSharpRequiredAttributeBehavior.NoRequiredAttribute &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[1].Name == "Title" &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[1].Type == "string" &&
+          ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[1].RequiredAttributeBehavior == CSharpRequiredAttributeBehavior.IssueRequiredAllowEmptyStrings &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[2].Name == "Posts" &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[2].Type == "System.Collections.Generic.IList<BlogPost>" &&
+          ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[2].RequiredAttributeBehavior == CSharpRequiredAttributeBehavior.IssueRequired &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[3].Name == "Author" &&
-          ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[3].Type == "Author"
+          ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[3].Type == "Author" &&
+          ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[3].RequiredAttributeBehavior == CSharpRequiredAttributeBehavior.IssueRequired
           ));
 
       Assert.True(outputList.Exists(_ =>
@@ -283,14 +292,19 @@
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members.Count == 5 &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[0].Name == "Id" &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[0].Type == "int" &&
+          ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[0].RequiredAttributeBehavior == CSharpRequiredAttributeBehavior.NoRequiredAttribute &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[1].Name == "DatePublished" &&
-          ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[1].Type == "System.DateTimeOffset" &&
+          ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[1].Type == "System.DateTimeOffset?" &&
+          ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[1].RequiredAttributeBehavior == CSharpRequiredAttributeBehavior.NoRequiredAttribute &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[2].Name == "Description" &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[2].Type == "string" &&
+          ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[2].RequiredAttributeBehavior == CSharpRequiredAttributeBehavior.NoRequiredAttribute &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[3].Name == "Comments" &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[3].Type == "System.Collections.Generic.IList<Comment>" &&
+          ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[3].RequiredAttributeBehavior == CSharpRequiredAttributeBehavior.IssueRequired &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[4].Name == "Status" &&
-          ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[4].Type == "BlogPostStatus"
+          ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[4].Type == "BlogPostStatus" &&
+          ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[4].RequiredAttributeBehavior == CSharpRequiredAttributeBehavior.IssueRequired
           ));
 
       Assert.True(outputList.Exists(_ =>
@@ -301,8 +315,10 @@
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members.Count == 2 &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[0].Name == "Id" &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[0].Type == "int" &&
+          ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[0].RequiredAttributeBehavior == CSharpRequiredAttributeBehavior.NoRequiredAttribute &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[1].Name == "Text" &&
-          ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[1].Type == "string"
+          ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[1].Type == "string" &&
+          ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[1].RequiredAttributeBehavior == CSharpRequiredAttributeBehavior.IssueRequiredAllowEmptyStrings
           ));
     }
   }
