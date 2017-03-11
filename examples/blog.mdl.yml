@@ -34,8 +34,8 @@ entities :
     blog_post : 
         members:
             id             : id_t
-            date_published : datetime
-            description    : string
+            date_published : { type: datetime, is_nullable: true }
+            description    : { type: string, is_nullable: true }
             comments       :
                 type          : comment
                 is_collection : true

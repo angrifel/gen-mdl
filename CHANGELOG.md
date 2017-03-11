@@ -2,6 +2,7 @@
 - Fixed bug in entity syntax, added 'members' property.
 - Completed unit test coverage for C# generation.
 - RequiredAttribute is now being generated.
+- Updated examples.
 
 ## Version 0.1
 - Changed main artifact name to include '-release' suffix.

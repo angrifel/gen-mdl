@@ -68,8 +68,8 @@ entities :
     blog_post : 
         members:
             id             : id_t
-            date_published : datetime
-            description    : string
+            date_published : { type: datetime, is_nullable: true }
+            description    : { type: string, is_nullable: true }
             comments       :
                 type          : comment
                 is_collection : true
@@ -92,7 +92,11 @@ namespace Blog.Model.Data
   public class Author
   {
     public int Id { get; set; }
+
+    [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
     public string Name { get; set; }
+
+    [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
     public string Alias { get; set; }
   }
 }
@@ -105,8 +109,14 @@ namespace Blog.Model.Data
   public class Blog
   {
     public int Id { get; set; }
+
+    [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
     public string Title { get; set; }
+
+    [System.ComponentModel.DataAnnotations.Required]
     public System.Collections.Generic.IList<BlogPost> Posts { get; set; }
+
+    [System.ComponentModel.DataAnnotations.Required]
     public Author Author { get; set; }
   }
 }
@@ -119,9 +129,15 @@ namespace Blog.Model.Data
   public class BlogPost
   {
     public int Id { get; set; }
-    public System.DateTimeOffset DatePublished { get; set; }
+
+    public System.DateTimeOffset? DatePublished { get; set; }
+
     public string Description { get; set; }
+
+    [System.ComponentModel.DataAnnotations.Required]
     public System.Collections.Generic.IList<Comment> Comments { get; set; }
+
+    [System.ComponentModel.DataAnnotations.Required]
     public BlogPostStatus Status { get; set; }
   }
 }
@@ -146,6 +162,8 @@ namespace Blog.Model.Data
   public class Comment
   {
     public int Id { get; set; }
+
+    [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
     public string Text { get; set; }
   }
 }
