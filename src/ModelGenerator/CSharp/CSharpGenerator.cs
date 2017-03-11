@@ -122,11 +122,11 @@ namespace ModelGenerator.CSharp
     private CSharpClassMember GenerateEntityMember(KeyValuePair<string, IEntityMemberInfo> member)
     {
       var resolvedType = _specAnalizer.GetResolvedType(Constants.CSharpTarget, member.Value.Type);
-      var normalizedType = _specAnalizer.IsNativeType(Constants.CSharpTarget, resolvedType) ? resolvedType : SpecFunctions.ToPascalCase(resolvedType);
-      var isStruct = IsStruct(normalizedType);
+      var implementationType = _specAnalizer.IsNativeType(Constants.CSharpTarget, resolvedType) ? resolvedType : SpecFunctions.ToPascalCase(resolvedType);
+      var isValueType = IsValueType(implementationType) || _specAnalizer.Spec.Enums.ContainsKey(resolvedType);
       var memberType = member.Value.IsCollection
-        ? "System.Collections.Generic.IList<" + normalizedType + ">"
-        : normalizedType + (member.Value.IsNullable && isStruct ? "?" : string.Empty);
+        ? "System.Collections.Generic.IList<" + implementationType + ">"
+        : implementationType + (member.Value.IsNullable && isValueType ? "?" : string.Empty);
       
       var memberName = SpecFunctions.ToPascalCase(member.Key);
       var isString = resolvedType == "string";
@@ -135,7 +135,7 @@ namespace ModelGenerator.CSharp
         Type = memberType,
         Name = memberName,
         RequiredAttributeBehavior =
-          !member.Value.IsNullable && !isStruct
+          !member.Value.IsNullable && !isValueType
             ? isString
               ? CSharpRequiredAttributeBehavior.IssueRequiredAllowEmptyStrings
               : CSharpRequiredAttributeBehavior.IssueRequired
@@ -145,7 +145,7 @@ namespace ModelGenerator.CSharp
     
     private static string GetFilename(string type) => SpecFunctions.ToPascalCase(type);
 
-    private static bool IsStruct(string type)
+    private static bool IsValueType(string type)
     {
       for (int i = 0; i < StructNativeTypes.Length; i++)
       {

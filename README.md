@@ -137,7 +137,6 @@ namespace Blog.Model.Data
     [System.ComponentModel.DataAnnotations.Required]
     public System.Collections.Generic.IList<Comment> Comments { get; set; }
 
-    [System.ComponentModel.DataAnnotations.Required]
     public BlogPostStatus Status { get; set; }
   }
 }
