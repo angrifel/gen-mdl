@@ -58,6 +58,8 @@ namespace ModelGenerator
         }
       }
 
+      ValidateIdentifierAreLowerCasewithUnderscores(spec);
+
       AmmedSpecification(spec);
       VerifySpecification(spec);
 
@@ -94,6 +96,77 @@ namespace ModelGenerator
             {
               throw new Exception($"{target} verification failed: Unrecognized type '{member.Value}' in '{entity.Key}.{member.Key}'.");
             }
+          }
+        }
+      }
+    }
+
+    private static void ValidateIdentifierAreLowerCasewithUnderscores(Spec spec)
+    {
+      foreach (var target in spec.Targets)
+      {
+        foreach (var typeAlias in target.Value.TypeAliases)
+        {
+          if (!SpecFunctions.IsLowerCaseWithUnderscore(typeAlias.Key))
+          {
+            throw new Exception($"'{target.Key}' type alias '{typeAlias.Key}' must be composed of lowercase letters, digits and underscores only.");
+          }
+
+          if (!char.IsLetter(typeAlias.Key[0]))
+          {
+            throw new Exception($"'{target.Key}' type alias '{typeAlias.Key}' cannot start with a digit or underscore.");
+          }
+        }
+      }
+
+      foreach (var @enum in spec.Enums)
+      {
+        if (!SpecFunctions.IsLowerCaseWithUnderscore(@enum.Key))
+        {
+          throw new Exception($"Enum '{@enum.Key}' must be composed of lowercase letters, digits and underscores only.");
+        }
+
+        if (!char.IsLetter(@enum.Key[0]))
+        {
+          throw new Exception($"Enum '{@enum.Key}' cannot start with a digit or underscore.");
+        }
+
+        foreach (var member in @enum.Value)
+        {
+          if (!SpecFunctions.IsLowerCaseWithUnderscore(member.Name))
+          {
+            throw new Exception($"Enum member '{@enum.Key}.{member.Name}'must be composed of lowercase letters, digits and underscores only.");
+          }
+
+          if (!char.IsLetter(member.Name[0]))
+          {
+            throw new Exception($"Enum member '{@enum.Key}.{member.Name}' cannot start with a digit or underscore.");
+          }
+        }
+      }
+
+      foreach (var entity in spec.Entities)
+      {
+        if (!SpecFunctions.IsLowerCaseWithUnderscore(entity.Key))
+        {
+          throw new Exception($"Entity '{entity.Key}' must be composed of lowercase letters, digits and underscores only.");
+        }
+
+        if (!char.IsLetter(entity.Key[0]))
+        {
+          throw new Exception($"Entity '{entity.Key}' cannot start with a digit or underscore.");
+        }
+
+        foreach (var member in (IDictionary<string, IEntityMemberInfo>)entity.Value.Members)
+        {
+          if (!SpecFunctions.IsLowerCaseWithUnderscore(member.Key))
+          {
+            throw new Exception($"Entity member '{entity.Key}.{member.Key}' must be composed of lowercase letters, digits and underscores only.");
+          }
+
+          if (!char.IsLetter(member.Key[0]))
+          {
+            throw new Exception($"Entity member '{entity.Key}.{member.Key}' cannot start with a digit or underscore.");
           }
         }
       }

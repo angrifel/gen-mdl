@@ -52,6 +52,20 @@ namespace ModelGenerator
       return resultBuilder.ToString();
     }
 
+    public static bool IsLowerCaseWithUnderscore(string identifier)
+    {
+      for (var i = 0; i < identifier.Length; i++)
+      {
+        var c = identifier[i];
+        if (!(char.IsLower(c) || char.IsDigit(c)) && c != '_')
+        {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
     public static string ToHyphenatedCase(string identifier)
     {
       var parts = identifier.Split('_');
