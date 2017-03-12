@@ -34,8 +34,7 @@ namespace ModelGenerator
 
     public static bool IsPathRelative(string path)
     {
-      if (path == null) throw new ArgumentNullException(nameof(path));
-      return !Path.IsPathRooted(path);
+      return !Path.IsPathRooted(path ?? throw new ArgumentNullException(nameof(path)));
     }
   }
 }

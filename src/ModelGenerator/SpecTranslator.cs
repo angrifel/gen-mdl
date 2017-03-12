@@ -103,71 +103,44 @@ namespace ModelGenerator
 
     private static void ValidateIdentifierAreLowerCasewithUnderscores(Spec spec)
     {
+      void validateIdentifier (string identifier, string errorLocationPrefix)
+      {
+        if (!SpecFunctions.IsLowerCaseWithUnderscore(identifier))
+        {
+          throw new Exception(errorLocationPrefix + " must be composed of lowercase letters, digits and underscores only.");
+        }
+
+        if (!char.IsLetter(identifier[0]))
+        {
+          throw new Exception(errorLocationPrefix + " cannot start with a digit or underscore.");
+        }
+      }
+
       foreach (var target in spec.Targets)
       {
         foreach (var typeAlias in target.Value.TypeAliases)
         {
-          if (!SpecFunctions.IsLowerCaseWithUnderscore(typeAlias.Key))
-          {
-            throw new Exception($"'{target.Key}' type alias '{typeAlias.Key}' must be composed of lowercase letters, digits and underscores only.");
-          }
-
-          if (!char.IsLetter(typeAlias.Key[0]))
-          {
-            throw new Exception($"'{target.Key}' type alias '{typeAlias.Key}' cannot start with a digit or underscore.");
-          }
+          validateIdentifier(typeAlias.Key, $"'{target.Key}' type alias '{typeAlias.Key}'");
         }
       }
 
       foreach (var @enum in spec.Enums)
       {
-        if (!SpecFunctions.IsLowerCaseWithUnderscore(@enum.Key))
-        {
-          throw new Exception($"Enum '{@enum.Key}' must be composed of lowercase letters, digits and underscores only.");
-        }
-
-        if (!char.IsLetter(@enum.Key[0]))
-        {
-          throw new Exception($"Enum '{@enum.Key}' cannot start with a digit or underscore.");
-        }
+        validateIdentifier(@enum.Key, $"Enum '{@enum.Key}'");
 
         foreach (var member in @enum.Value)
         {
-          if (!SpecFunctions.IsLowerCaseWithUnderscore(member.Name))
-          {
-            throw new Exception($"Enum member '{@enum.Key}.{member.Name}'must be composed of lowercase letters, digits and underscores only.");
-          }
-
-          if (!char.IsLetter(member.Name[0]))
-          {
-            throw new Exception($"Enum member '{@enum.Key}.{member.Name}' cannot start with a digit or underscore.");
-          }
+          validateIdentifier(member.Name, $"Enum member '{@enum.Key}.{member.Name}'");
         }
       }
 
       foreach (var entity in spec.Entities)
       {
-        if (!SpecFunctions.IsLowerCaseWithUnderscore(entity.Key))
-        {
-          throw new Exception($"Entity '{entity.Key}' must be composed of lowercase letters, digits and underscores only.");
-        }
-
-        if (!char.IsLetter(entity.Key[0]))
-        {
-          throw new Exception($"Entity '{entity.Key}' cannot start with a digit or underscore.");
-        }
+        validateIdentifier(entity.Key, $"Entity '{entity.Key}'");
 
         foreach (var member in (IDictionary<string, IEntityMemberInfo>)entity.Value.Members)
         {
-          if (!SpecFunctions.IsLowerCaseWithUnderscore(member.Key))
-          {
-            throw new Exception($"Entity member '{entity.Key}.{member.Key}' must be composed of lowercase letters, digits and underscores only.");
-          }
-
-          if (!char.IsLetter(member.Key[0]))
-          {
-            throw new Exception($"Entity member '{entity.Key}.{member.Key}' cannot start with a digit or underscore.");
-          }
+          validateIdentifier(member.Key, $"Entity member '{entity.Key}.{member.Key}'");
         }
       }
     }

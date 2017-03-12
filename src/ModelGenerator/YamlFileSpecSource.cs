@@ -31,8 +31,7 @@ namespace ModelGenerator
 
     public YamlFileSpecSource(string specFile)
     {
-      if (specFile == null) throw new ArgumentNullException(nameof(specFile));
-      _specFile = specFile;
+      _specFile = specFile ?? throw new ArgumentNullException(nameof(specFile));
     }
 
     public Spec GetSpec()
