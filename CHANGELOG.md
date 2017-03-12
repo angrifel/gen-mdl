@@ -5,6 +5,7 @@
 - Updated examples.
 - Added validation for entities, enums and type aliases identifiers.
 - Updated project to use C# 7.0.
+- Added 'exclude' property to entity members.
 
 ## Version 0.1
 - Changed main artifact name to include '-release' suffix.

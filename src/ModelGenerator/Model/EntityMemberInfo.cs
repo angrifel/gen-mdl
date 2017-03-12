@@ -21,6 +21,8 @@
 
 namespace ModelGenerator.Model
 {
+  using System.Collections.Generic;
+
   public class EntityMemberInfo : IEntityMemberInfo
   {
     public string Type { get; set; }
@@ -28,5 +30,7 @@ namespace ModelGenerator.Model
     public bool IsNullable { get; set; }
 
     public bool IsCollection { get; set; }
+
+    public IList<string> Exclude { get; set; } = new List<string>();
   }
 }

@@ -102,7 +102,10 @@ namespace ModelGenerator.CSharp
       var members = new List<CSharpClassMember>(entityMembers.Count);
       foreach (var entityMember in entityMembers)
       {
-        members.Add(GenerateEntityMember(entityMember));
+        if (!entityMember.Value.Exclude.Contains(Constants.CSharpTarget))
+        {
+          members.Add(GenerateEntityMember(entityMember));
+        }
       }
 
       return new CSharpNamespace

@@ -24,7 +24,6 @@ namespace ModelGenerator
   using Model;
   using System;
   using System.Collections.Generic;
-  using System.Linq;
 
   public class SpecTranslator
   {
@@ -50,16 +49,7 @@ namespace ModelGenerator
       var spec = _specSource.GetSpec();
       _specAnalyzer = new SpecAnalyzer(spec);
 
-      foreach (var target in spec.Targets.Keys)
-      {
-        if (!Targets.Contains(target))
-        {
-          throw new Exception($"Unsupported Target '{target}'");
-        }
-      }
-
-      ValidateIdentifierAreLowerCasewithUnderscores(spec);
-
+      ValidateSpec(spec);
       AmmedSpecification(spec);
       VerifySpecification(spec);
 
@@ -101,9 +91,11 @@ namespace ModelGenerator
       }
     }
 
-    private static void ValidateIdentifierAreLowerCasewithUnderscores(Spec spec)
+    private static void ValidateSpec(Spec spec)
     {
-      void validateIdentifier (string identifier, string errorLocationPrefix)
+      #region Local functions
+
+      void validateIdentifier(string identifier, string errorLocationPrefix)
       {
         if (!SpecFunctions.IsLowerCaseWithUnderscore(identifier))
         {
@@ -116,8 +108,28 @@ namespace ModelGenerator
         }
       }
 
+      bool containsUnsupportedTarget(IList<string> targetList)
+      {
+        for (int i = 0; i < targetList.Count; i++)
+        {
+          if (!IsSupportedTarget(targetList[i]))
+          {
+            return true;
+          }
+        }
+
+        return false;
+      }
+
+      #endregion
+
       foreach (var target in spec.Targets)
       {
+        if (!IsSupportedTarget(target.Key))
+        {
+          throw new Exception($"Unsupported Target '{target.Key}'");
+        }
+
         foreach (var typeAlias in target.Value.TypeAliases)
         {
           validateIdentifier(typeAlias.Key, $"'{target.Key}' type alias '{typeAlias.Key}'");
@@ -140,9 +152,17 @@ namespace ModelGenerator
 
         foreach (var member in (IDictionary<string, IEntityMemberInfo>)entity.Value.Members)
         {
+          var prefix = $"Entity member '{entity.Key}.{member.Key}'";
           validateIdentifier(member.Key, $"Entity member '{entity.Key}.{member.Key}'");
+          if (containsUnsupportedTarget(member.Value.Exclude))
+          {
+            throw new Exception(prefix + " excludes an unsupported target.");
+          }
         }
       }
     }
+
+    private static bool IsSupportedTarget(string target) => 
+      target == Constants.CSharpTarget || target == Constants.TypeScriptTarget;
   }
 }

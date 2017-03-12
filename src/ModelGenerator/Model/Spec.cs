@@ -25,16 +25,10 @@ namespace ModelGenerator.Model
 
   public class Spec
   {
-    public Spec()
-    {
-      this.Entities = new Dictionary<string, EntityInfo>();
-      this.Enums = new Dictionary<string, List<EnumMember>>();
-    }
-
     public Dictionary<string, TargetInfo> Targets { get; set; }
 
-    public Dictionary<string, EntityInfo> Entities { get; set; }
+    public Dictionary<string, EntityInfo> Entities { get; set; } = new Dictionary<string, EntityInfo>();
 
-    public Dictionary<string, List<EnumMember>> Enums { get; set; }
+    public Dictionary<string, List<EnumMember>> Enums { get; set; } = new Dictionary<string, List<EnumMember>>();
   }
 }

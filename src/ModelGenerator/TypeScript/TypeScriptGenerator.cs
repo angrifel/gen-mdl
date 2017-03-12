@@ -115,11 +115,14 @@ namespace ModelGenerator.TypeScript
       var normalizedEntityName = SpecFunctions.ToPascalCase(entityName);
       var fileContents = new List<TypeScriptDeclarationOrStatement>();
       var enumDependencies = _specAnalyzer.GetDirectEnumDependencies(entityName);
-      var entityDependencies = _specAnalyzer.GetDirectEntityDependencies(entityName);
+      var entityDependencies = _specAnalyzer.GetDirectEntityDependencies(Constants.TypeScriptTarget, entityName);
       var members = new List<TypeScriptClassMember>(entityMembers.Count);
       foreach (var entityMember in entityMembers)
       {
-        members.Add(GenerateEntityMember(entityMember));
+        if (!entityMember.Value.Exclude.Contains(Constants.TypeScriptTarget))
+        {
+          members.Add(GenerateEntityMember(entityMember));
+        }
       }
 
       foreach (var @enum in _specAnalyzer.GetDirectEnumDependencies(entityName))
@@ -127,7 +130,7 @@ namespace ModelGenerator.TypeScript
         fileContents.Add(new TypeScriptImportStatement { ObjectName = SpecFunctions.ToPascalCase(@enum), File = GetFileName(@enum) });
       }
 
-      foreach (var entity in _specAnalyzer.GetDirectEntityDependencies(entityName))
+      foreach (var entity in _specAnalyzer.GetDirectEntityDependencies(Constants.TypeScriptTarget, entityName))
       {
         fileContents.Add(new TypeScriptImportStatement { ObjectName = SpecFunctions.ToPascalCase(entity), File = GetFileName(entity) });
       }
