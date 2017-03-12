@@ -3,7 +3,8 @@
 - Completed unit test coverage for C# generation.
 - RequiredAttribute is now being generated.
 - Updated examples.
-- Added validation for entities, enums and type aliases identifiers
+- Added validation for entities, enums and type aliases identifiers.
+- Updated project to use C# 7.0.
 
 ## Version 0.1
 - Changed main artifact name to include '-release' suffix.
