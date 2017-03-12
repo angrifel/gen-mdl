@@ -24,7 +24,6 @@ namespace ModelGenerator
   using Model;
   using System;
   using System.Collections.Generic;
-  using System.Linq;
 
   public class SpecTranslator
   {
@@ -50,14 +49,7 @@ namespace ModelGenerator
       var spec = _specSource.GetSpec();
       _specAnalyzer = new SpecAnalyzer(spec);
 
-      foreach (var target in spec.Targets.Keys)
-      {
-        if (!Targets.Contains(target))
-        {
-          throw new Exception($"Unsupported Target '{target}'");
-        }
-      }
-
+      ValidateSpec(spec);
       AmmedSpecification(spec);
       VerifySpecification(spec);
 
@@ -98,5 +90,79 @@ namespace ModelGenerator
         }
       }
     }
+
+    private static void ValidateSpec(Spec spec)
+    {
+      #region Local functions
+
+      void validateIdentifier(string identifier, string errorLocationPrefix)
+      {
+        if (!SpecFunctions.IsLowerCaseWithUnderscore(identifier))
+        {
+          throw new Exception(errorLocationPrefix + " must be composed of lowercase letters, digits and underscores only.");
+        }
+
+        if (!char.IsLetter(identifier[0]))
+        {
+          throw new Exception(errorLocationPrefix + " cannot start with a digit or underscore.");
+        }
+      }
+
+      bool containsUnsupportedTarget(IList<string> targetList)
+      {
+        for (int i = 0; i < targetList.Count; i++)
+        {
+          if (!IsSupportedTarget(targetList[i]))
+          {
+            return true;
+          }
+        }
+
+        return false;
+      }
+
+      #endregion
+
+      foreach (var target in spec.Targets)
+      {
+        if (!IsSupportedTarget(target.Key))
+        {
+          throw new Exception($"Unsupported Target '{target.Key}'");
+        }
+
+        foreach (var typeAlias in target.Value.TypeAliases)
+        {
+          validateIdentifier(typeAlias.Key, $"'{target.Key}' type alias '{typeAlias.Key}'");
+        }
+      }
+
+      foreach (var @enum in spec.Enums)
+      {
+        validateIdentifier(@enum.Key, $"Enum '{@enum.Key}'");
+
+        foreach (var member in @enum.Value)
+        {
+          validateIdentifier(member.Name, $"Enum member '{@enum.Key}.{member.Name}'");
+        }
+      }
+
+      foreach (var entity in spec.Entities)
+      {
+        validateIdentifier(entity.Key, $"Entity '{entity.Key}'");
+
+        foreach (var member in (IDictionary<string, IEntityMemberInfo>)entity.Value.Members)
+        {
+          var prefix = $"Entity member '{entity.Key}.{member.Key}'";
+          validateIdentifier(member.Key, $"Entity member '{entity.Key}.{member.Key}'");
+          if (containsUnsupportedTarget(member.Value.Exclude))
+          {
+            throw new Exception(prefix + " excludes an unsupported target.");
+          }
+        }
+      }
+    }
+
+    private static bool IsSupportedTarget(string target) => 
+      target == Constants.CSharpTarget || target == Constants.TypeScriptTarget;
   }
 }

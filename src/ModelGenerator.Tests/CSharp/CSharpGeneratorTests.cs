@@ -216,7 +216,8 @@
                 new OrderedDictionary<string, IEntityMemberInfo>
                 {
                   { "id", new EntityMemberInfo { Type = "id_t" } },
-                  { "text", new EntityMemberInfo { Type = "string" } }
+                  { "text", new EntityMemberInfo { Type = "string" } },
+                  { "shared_in_fb", new EntityMemberInfo { Type = "bool", Exclude = { "typescript" } } }
                 }
             }
           }
@@ -313,13 +314,16 @@
           ((CSharpNamespace)_.GenerationRoot).Name == "Blog.Model.Data" &&
           ((CSharpNamespace)_.GenerationRoot).Types.Count == 1 &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Name == "Comment" &&
-          ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members.Count == 2 &&
+          ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members.Count == 3 &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[0].Name == "Id" &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[0].Type == "int" &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[0].RequiredAttributeBehavior == CSharpRequiredAttributeBehavior.NoRequiredAttribute &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[1].Name == "Text" &&
           ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[1].Type == "string" &&
-          ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[1].RequiredAttributeBehavior == CSharpRequiredAttributeBehavior.IssueRequiredAllowEmptyStrings
+          ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[1].RequiredAttributeBehavior == CSharpRequiredAttributeBehavior.IssueRequiredAllowEmptyStrings &&
+          ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[2].Name == "SharedInFb" &&
+          ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[2].Type == "bool" &&
+          ((CSharpClass)((CSharpNamespace)_.GenerationRoot).Types[0]).Members[2].RequiredAttributeBehavior == CSharpRequiredAttributeBehavior.NoRequiredAttribute
           ));
     }
   }

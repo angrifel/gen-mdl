@@ -79,6 +79,7 @@ entities :
         members:
             id   : id_t
             text : string
+            shared_in_fb : { type: bool, exclude: [typescript] }
 
 ```
 ## What do I get after invoking genmdl?
@@ -164,6 +165,8 @@ namespace Blog.Model.Data
 
     [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
     public string Text { get; set; }
+
+    public bool SharedInFb { get; set; }
   }
 }
 ```

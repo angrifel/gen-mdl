@@ -26,14 +26,9 @@ namespace ModelGenerator.Model
 
   public class TargetInfo
   {
-    public TargetInfo()
-    {
-      this.TypeAliases = new Dictionary<string, string>();
-    }
-
     public string Path { get; set; }
 
-    public IDictionary<string, string> TypeAliases { get; set; }
+    public IDictionary<string, string> TypeAliases { get; set; } = new Dictionary<string, string>();
 
     [YamlIgnore]
     public ISet<string> NativeTypes { get; set; }
