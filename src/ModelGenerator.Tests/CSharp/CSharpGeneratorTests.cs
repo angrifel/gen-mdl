@@ -1,6 +1,7 @@
 ﻿namespace ModelGenerator.Tests.CSharp
 {
   using ModelGenerator.CSharp;
+  using ModelGenerator.CSharp.Services;
   using ModelGenerator.Model;
   using System;
   using System.Collections.Generic;
@@ -25,7 +26,7 @@
           }
         };
       var specAnalyzer = new SpecAnalyzer(spec);
-      var generator = new CSharpGenerator(specAnalyzer);
+      var generator = new CSharpGenerator(specAnalyzer, new CSharpEntityGeneratorFactory(new CSharpEntityMemberGeneratorFactory()));
 
       // act
       var outputs = generator.GenerateOutputs();
@@ -55,7 +56,7 @@
         };
 
       var specAnalyzer = new SpecAnalyzer(spec);
-      var generator = new CSharpGenerator(specAnalyzer);
+      var generator = new CSharpGenerator(specAnalyzer, new CSharpEntityGeneratorFactory(new CSharpEntityMemberGeneratorFactory()));
 
       // act
       var outputs = generator.GenerateOutputs();
@@ -107,7 +108,7 @@
       var ammendment = new AmmendmentFactory().CreateAmmendment(Constants.CSharpTarget);
       ammendment.AmmedSpecification(spec);
       var specAnalyzer = new SpecAnalyzer(spec);
-      var generator = new CSharpGenerator(specAnalyzer);
+      var generator = new CSharpGenerator(specAnalyzer, new CSharpEntityGeneratorFactory(new CSharpEntityMemberGeneratorFactory()));
 
       // act
       var outputs = generator.GenerateOutputs();
@@ -225,7 +226,7 @@
       var ammendment = new AmmendmentFactory().CreateAmmendment(Constants.CSharpTarget);
       ammendment.AmmedSpecification(spec);
       var specAnalyzer = new SpecAnalyzer(spec);
-      var generator = new CSharpGenerator(specAnalyzer);
+      var generator = new CSharpGenerator(specAnalyzer, new CSharpEntityGeneratorFactory(new CSharpEntityMemberGeneratorFactory()));
 
       // act
       var outputs = generator.GenerateOutputs();

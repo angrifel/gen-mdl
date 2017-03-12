@@ -19,7 +19,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-namespace ModelGenerator.CSharp
+namespace ModelGenerator.CSharp.Services
 {
   using Model;
   using System;
@@ -28,14 +28,16 @@ namespace ModelGenerator.CSharp
 
   public class CSharpGenerator : IGenerator
   {
-    private static readonly string[] StructNativeTypes = new string[] { "bool", "byte", "short", "int", "long", "float", "double", "decimal", "char", "System.Guid", "System.DateTime", "System.TimeSpan", "System.DateTimeOffset" };
-
     private readonly SpecAnalyzer _specAnalizer;
 
-    public CSharpGenerator(SpecAnalyzer specAnalizer)
+    private readonly ICSharpEntityGenerator _entityGenerator;
+
+    public CSharpGenerator(SpecAnalyzer specAnalizer, ICSharpEntityGeneratorFactory csharpEntityGeneratorFactory)
     {
       if (specAnalizer == null) throw new ArgumentNullException(nameof(specAnalizer));
+      if (csharpEntityGeneratorFactory == null) throw new ArgumentNullException(nameof(csharpEntityGeneratorFactory));
       _specAnalizer = specAnalizer;
+      _entityGenerator = csharpEntityGeneratorFactory.CreateCSharpEntityGenerator(specAnalizer);
     }
 
     public IEnumerable<GeneratorOutput> GenerateOutputs()
@@ -99,63 +101,16 @@ namespace ModelGenerator.CSharp
 
     private IGenerationRoot GenerateEntity(string entityName, IDictionary<string, IEntityMemberInfo> entityMembers)
     {
-      var members = new List<CSharpClassMember>(entityMembers.Count);
-      foreach (var entityMember in entityMembers)
-      {
-        members.Add(GenerateEntityMember(entityMember));
-      }
-
       return new CSharpNamespace
       {
         Name = _specAnalizer.Spec.Targets[Constants.CSharpTarget].Namespace,
         Types = new List<CSharpType>
         {
-          new CSharpClass
-          {
-            Name = SpecFunctions.ToPascalCase(entityName),
-            Members = members
-          }
+          _entityGenerator.GenerateEntity(entityName, entityMembers)
         }
       };
     }
 
-    private CSharpClassMember GenerateEntityMember(KeyValuePair<string, IEntityMemberInfo> member)
-    {
-      var resolvedType = _specAnalizer.GetResolvedType(Constants.CSharpTarget, member.Value.Type);
-      var implementationType = _specAnalizer.IsNativeType(Constants.CSharpTarget, resolvedType) ? resolvedType : SpecFunctions.ToPascalCase(resolvedType);
-      var isValueType = IsValueType(implementationType) || _specAnalizer.Spec.Enums.ContainsKey(resolvedType);
-      var memberType = member.Value.IsCollection
-        ? "System.Collections.Generic.IList<" + implementationType + ">"
-        : implementationType + (member.Value.IsNullable && isValueType ? "?" : string.Empty);
-      
-      var memberName = SpecFunctions.ToPascalCase(member.Key);
-      var isString = resolvedType == "string";
-      return new CSharpClassMember
-      {
-        Type = memberType,
-        Name = memberName,
-        RequiredAttributeBehavior =
-          !member.Value.IsNullable && !isValueType
-            ? isString
-              ? CSharpRequiredAttributeBehavior.IssueRequiredAllowEmptyStrings
-              : CSharpRequiredAttributeBehavior.IssueRequired
-            : CSharpRequiredAttributeBehavior.NoRequiredAttribute
-      };
-    }
-    
     private static string GetFilename(string type) => SpecFunctions.ToPascalCase(type);
-
-    private static bool IsValueType(string type)
-    {
-      for (int i = 0; i < StructNativeTypes.Length; i++)
-      {
-        if (StructNativeTypes[i] == type)
-        {
-          return true;
-        }
-      }
-
-      return false;
-    }
   }
 }

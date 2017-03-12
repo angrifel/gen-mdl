@@ -21,6 +21,7 @@
 
 namespace ModelGenerator
 {
+  using ModelGenerator.CSharp.Services;
   using System;
   using System.Collections.Generic;
   using System.IO;
@@ -35,7 +36,7 @@ namespace ModelGenerator
       if (!File.Exists(modelFilePath)) ShowFileDoesNotExist();
       var genMdl = new SpecTranslator(
         specSource: new YamlFileSpecSource(modelFilePath), 
-        generatorFactory: new GeneratorFactory(), 
+        generatorFactory: new GeneratorFactory(new CSharpGeneratorFactory(new CSharpEntityGeneratorFactory(new CSharpEntityMemberGeneratorFactory()))), 
         ammendmentFactory: new AmmendmentFactory());
 
       try

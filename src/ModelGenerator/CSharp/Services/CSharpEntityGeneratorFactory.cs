@@ -19,29 +19,21 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-namespace ModelGenerator
+namespace ModelGenerator.CSharp.Services
 {
-  using CSharp;
-  using ModelGenerator.CSharp.Services;
   using System;
-  using TypeScript;
 
-  public class GeneratorFactory : IGeneratorFactory
+  public class CSharpEntityGeneratorFactory : ICSharpEntityGeneratorFactory
   {
-    private readonly ICSharpGeneratorFactory _csharpGeneratorFactory;
-    public GeneratorFactory(ICSharpGeneratorFactory csharpGeneratorFactory)
+    private readonly ICSharpEntityMemberGeneratorFactory _csharpEntityMemberGeneratorFactory;
+
+    public CSharpEntityGeneratorFactory(ICSharpEntityMemberGeneratorFactory csharpEntityMemberGeneratorFactory)
     {
-      if (csharpGeneratorFactory == null) throw new ArgumentNullException(nameof(csharpGeneratorFactory));
-      _csharpGeneratorFactory = csharpGeneratorFactory;
+      if (csharpEntityMemberGeneratorFactory == null) throw new ArgumentNullException(nameof(csharpEntityMemberGeneratorFactory));
+      _csharpEntityMemberGeneratorFactory = csharpEntityMemberGeneratorFactory;
     }
-    public IGenerator CreateGenerator(string target, SpecAnalyzer specAnalyzer)
-    {
-      switch (target)
-      {
-        case Constants.CSharpTarget: return _csharpGeneratorFactory.CreateGenerator(specAnalyzer);
-        case Constants.TypeScriptTarget: return new TypeScriptGenerator(specAnalyzer);
-        default: return null;
-      }
-    }
+
+    public ICSharpEntityGenerator CreateCSharpEntityGenerator(SpecAnalyzer specAnalizer) =>
+      new CSharpEntityGenerator(specAnalizer, _csharpEntityMemberGeneratorFactory);
   }
 }
