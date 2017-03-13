@@ -29,8 +29,7 @@ namespace ModelGenerator.CSharp.Services
 
     public CSharpEntityGeneratorFactory(ICSharpEntityMemberGeneratorFactory csharpEntityMemberGeneratorFactory)
     {
-      if (csharpEntityMemberGeneratorFactory == null) throw new ArgumentNullException(nameof(csharpEntityMemberGeneratorFactory));
-      _csharpEntityMemberGeneratorFactory = csharpEntityMemberGeneratorFactory;
+      _csharpEntityMemberGeneratorFactory = csharpEntityMemberGeneratorFactory ?? throw new ArgumentNullException(nameof(csharpEntityMemberGeneratorFactory));
     }
 
     public ICSharpEntityGenerator CreateCSharpEntityGenerator(SpecAnalyzer specAnalizer) =>

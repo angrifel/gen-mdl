@@ -19,20 +19,32 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-namespace ModelGenerator.CSharp.Services
+namespace ModelGenerator.TypeScript.Services
 {
+  using ModelGenerator.Model;
   using System;
+  using System.Collections.Generic;
 
-  public class CSharpGeneratorFactory : ICSharpGeneratorFactory
+  public class TypeScriptEntityMemberGenerator : ITypeScriptEntityMemberGenerator
   {
-    private readonly ICSharpEntityGeneratorFactory _entityGeneratorFactory;
+    private readonly SpecAnalyzer _specAnalyzer;
 
-    public CSharpGeneratorFactory(ICSharpEntityGeneratorFactory entityGeneratorFactory)
+    public TypeScriptEntityMemberGenerator(SpecAnalyzer specAnalyzer)
     {
-      _entityGeneratorFactory = entityGeneratorFactory ?? throw new ArgumentNullException(nameof(entityGeneratorFactory));
+      _specAnalyzer = specAnalyzer ?? throw new ArgumentNullException(nameof(specAnalyzer));
     }
 
-    public IGenerator CreateGenerator(SpecAnalyzer specAnalizer) =>
-      new CSharpGenerator(specAnalizer, _entityGeneratorFactory);
+    public TypeScriptClassMember GenerateEntityMember(KeyValuePair<string, IEntityMemberInfo> member)
+    {
+      var resolvedType = _specAnalyzer.GetResolvedType(Constants.TypeScriptTarget, member.Value.Type);
+      var normalizedType = _specAnalyzer.IsNativeType(Constants.TypeScriptTarget, resolvedType) ? resolvedType : SpecFunctions.ToPascalCase(resolvedType);
+      var normalizedMemberName = SpecFunctions.ToCamelCase(member.Key);
+      if (member.Value.IsCollection)
+      {
+        normalizedType += "[]";
+      }
+
+      return new TypeScriptClassMember { Name = normalizedMemberName, Type = normalizedType };
+    }
   }
 }

@@ -19,20 +19,10 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-namespace ModelGenerator.CSharp.Services
+namespace ModelGenerator.TypeScript.Utilities
 {
-  using System;
-
-  public class CSharpGeneratorFactory : ICSharpGeneratorFactory
+  public static class TypeScriptFileUtilities
   {
-    private readonly ICSharpEntityGeneratorFactory _entityGeneratorFactory;
-
-    public CSharpGeneratorFactory(ICSharpEntityGeneratorFactory entityGeneratorFactory)
-    {
-      _entityGeneratorFactory = entityGeneratorFactory ?? throw new ArgumentNullException(nameof(entityGeneratorFactory));
-    }
-
-    public IGenerator CreateGenerator(SpecAnalyzer specAnalizer) =>
-      new CSharpGenerator(specAnalizer, _entityGeneratorFactory);
+    public static string GetFileName(string type) => SpecFunctions.ToHyphenatedCase(type);
   }
 }

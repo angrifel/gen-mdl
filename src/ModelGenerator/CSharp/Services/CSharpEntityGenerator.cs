@@ -33,10 +33,8 @@ namespace ModelGenerator.CSharp.Services
 
     public CSharpEntityGenerator(SpecAnalyzer specAnalizer, ICSharpEntityMemberGeneratorFactory entityMemberGeneratorFactory)
     {
-      if (specAnalizer == null) throw new ArgumentNullException(nameof(specAnalizer));
-      if (entityMemberGeneratorFactory == null) throw new ArgumentNullException(nameof(entityMemberGeneratorFactory));
-      _specAnalizer = specAnalizer;
-      _entityMemberGeneratorFactory = entityMemberGeneratorFactory;
+      _specAnalizer = specAnalizer ?? throw new ArgumentNullException(nameof(specAnalizer));
+      _entityMemberGeneratorFactory = entityMemberGeneratorFactory ?? throw new ArgumentNullException(nameof(entityMemberGeneratorFactory));
     }
 
     public CSharpClass GenerateEntity(string entityName, IDictionary<string, IEntityMemberInfo> entityMembers)

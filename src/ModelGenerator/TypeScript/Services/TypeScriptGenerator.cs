@@ -19,9 +19,10 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-namespace ModelGenerator.TypeScript
+namespace ModelGenerator.TypeScript.Services
 {
   using Model;
+  using ModelGenerator.TypeScript.Utilities;
   using System;
   using System.Collections.Generic;
   using System.IO;
@@ -29,11 +30,13 @@ namespace ModelGenerator.TypeScript
   public class TypeScriptGenerator : IGenerator
   {
     private readonly SpecAnalyzer _specAnalyzer;
-    
-    public TypeScriptGenerator(SpecAnalyzer specAnalyzer)
+
+    private readonly ITypeScriptEntityGeneratorFactory _typescriptEntityGeneratorFactory;
+
+    public TypeScriptGenerator(SpecAnalyzer specAnalyzer, ITypeScriptEntityGeneratorFactory typescriptEntityGeneratorFactory)
     {
-      if (specAnalyzer == null) throw new ArgumentNullException(nameof(specAnalyzer));
-      _specAnalyzer = specAnalyzer;
+      _specAnalyzer = specAnalyzer ?? throw new ArgumentNullException(nameof(specAnalyzer));
+      _typescriptEntityGeneratorFactory = typescriptEntityGeneratorFactory ?? throw new ArgumentNullException(nameof(typescriptEntityGeneratorFactory));
     }
 
     public IEnumerable<GeneratorOutput> GenerateOutputs()
@@ -44,7 +47,7 @@ namespace ModelGenerator.TypeScript
       var index = 0;
       foreach (var @enum in _specAnalyzer.Spec.Enums)
       {
-        var enumFileName = GetFileName(@enum.Key);
+        var enumFileName = TypeScriptFileUtilities.GetFileName(@enum.Key);
         result[index++] =
           new GeneratorOutput
           {
@@ -57,7 +60,7 @@ namespace ModelGenerator.TypeScript
 
       foreach (var entity in _specAnalyzer.Spec.Entities)
       {
-        var entityFileName = GetFileName(entity.Key);
+        var entityFileName = TypeScriptFileUtilities.GetFileName(entity.Key);
         result[index++] =
           new GeneratorOutput
           {
@@ -112,61 +115,7 @@ namespace ModelGenerator.TypeScript
 
     private TypeScriptFile GenerateEntity(string entityName, IDictionary<string, IEntityMemberInfo> entityMembers)
     {
-      var normalizedEntityName = SpecFunctions.ToPascalCase(entityName);
-      var fileContents = new List<TypeScriptDeclarationOrStatement>();
-      var enumDependencies = _specAnalyzer.GetDirectEnumDependencies(entityName);
-      var entityDependencies = _specAnalyzer.GetDirectEntityDependencies(Constants.TypeScriptTarget, entityName);
-      var members = new List<TypeScriptClassMember>(entityMembers.Count);
-      foreach (var entityMember in entityMembers)
-      {
-        if (!entityMember.Value.Exclude.Contains(Constants.TypeScriptTarget))
-        {
-          members.Add(GenerateEntityMember(entityMember));
-        }
-      }
-
-      foreach (var @enum in _specAnalyzer.GetDirectEnumDependencies(entityName))
-      {
-        fileContents.Add(new TypeScriptImportStatement { ObjectName = SpecFunctions.ToPascalCase(@enum), File = GetFileName(@enum) });
-      }
-
-      foreach (var entity in _specAnalyzer.GetDirectEntityDependencies(Constants.TypeScriptTarget, entityName))
-      {
-        fileContents.Add(new TypeScriptImportStatement { ObjectName = SpecFunctions.ToPascalCase(entity), File = GetFileName(entity) });
-      }
-
-      fileContents.Add(
-        new TypeScriptExportStatement
-        {
-          IsDefault = true,
-          TypeDeclaration =
-              new TypeScriptClass
-              {
-                Name = normalizedEntityName,
-                Members = members
-              }
-        });
-
-      return 
-        new TypeScriptFile
-        {
-          Contents = fileContents
-        };
+      return _typescriptEntityGeneratorFactory.CreateEntityGenerator(_specAnalyzer).GenerateEntity(entityName, entityMembers);
     }
-
-    private TypeScriptClassMember GenerateEntityMember(KeyValuePair<string, IEntityMemberInfo> member)
-    {
-      var resolvedType = _specAnalyzer.GetResolvedType(Constants.TypeScriptTarget, member.Value.Type);
-      var normalizedType = _specAnalyzer.IsNativeType(Constants.TypeScriptTarget, resolvedType) ? resolvedType : SpecFunctions.ToPascalCase(resolvedType);
-      var normalizedMemberName = SpecFunctions.ToCamelCase(member.Key);
-      if (member.Value.IsCollection)
-      {
-        normalizedType += "[]";
-      }
-
-      return new TypeScriptClassMember { Name = normalizedMemberName, Type = normalizedType };
-    }
-
-    private static string GetFileName(string type) => SpecFunctions.ToHyphenatedCase(type);
   }
 }

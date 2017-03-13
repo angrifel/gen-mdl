@@ -19,20 +19,13 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-namespace ModelGenerator.CSharp.Services
+namespace ModelGenerator.TypeScript.Services
 {
-  using System;
+  using ModelGenerator.Model;
+  using System.Collections.Generic;
 
-  public class CSharpGeneratorFactory : ICSharpGeneratorFactory
+  public interface ITypeScriptEntityMemberGenerator
   {
-    private readonly ICSharpEntityGeneratorFactory _entityGeneratorFactory;
-
-    public CSharpGeneratorFactory(ICSharpEntityGeneratorFactory entityGeneratorFactory)
-    {
-      _entityGeneratorFactory = entityGeneratorFactory ?? throw new ArgumentNullException(nameof(entityGeneratorFactory));
-    }
-
-    public IGenerator CreateGenerator(SpecAnalyzer specAnalizer) =>
-      new CSharpGenerator(specAnalizer, _entityGeneratorFactory);
+    TypeScriptClassMember GenerateEntityMember(KeyValuePair<string, IEntityMemberInfo> member);
   }
 }
