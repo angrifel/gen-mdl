@@ -48,7 +48,7 @@ namespace ModelGenerator.CSharp
         result[index++] = 
           new GeneratorOutput
           {
-            Path = Path.Combine(targetInfo.Path, Path.ChangeExtension(GetFilename(@enum.Key), Constants.CSharpExtension)),
+            Path = Path.Combine(targetInfo.Path, GetFilename(@enum.Key, targetInfo.AppendGeneratedExtension) + "." + Constants.CSharpExtension),
             GenerationRoot = GenerateEnum(targetInfo.Namespace, @enum.Key, @enum.Value)
           };
       }
@@ -58,7 +58,7 @@ namespace ModelGenerator.CSharp
         result[index++] =
           new GeneratorOutput
           {
-            Path = Path.Combine(targetInfo.Path, Path.ChangeExtension(GetFilename(entity.Key), Constants.CSharpExtension)),
+            Path = Path.Combine(targetInfo.Path, GetFilename(entity.Key, targetInfo.AppendGeneratedExtension) + "." + Constants.CSharpExtension),
             GenerationRoot = GenerateEntity(entity.Key, entity.Value.Members)
           };
       }
@@ -145,8 +145,9 @@ namespace ModelGenerator.CSharp
             : CSharpRequiredAttributeBehavior.NoRequiredAttribute
       };
     }
-    
-    private static string GetFilename(string type) => SpecFunctions.ToPascalCase(type);
+
+    private static string GetFilename(string type, bool appendGeneratedExtension) =>
+      SpecFunctions.ToPascalCase(type) + (appendGeneratedExtension ? ".generated" : string.Empty);
 
     private static bool IsValueType(string type)
     {

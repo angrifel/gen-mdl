@@ -44,11 +44,11 @@ namespace ModelGenerator.TypeScript
       var index = 0;
       foreach (var @enum in _specAnalyzer.Spec.Enums)
       {
-        var enumFileName = GetFileName(@enum.Key);
+        var enumFileName = GetFileName(@enum.Key, targetInfo.AppendGeneratedExtension);
         result[index++] =
           new GeneratorOutput
           {
-            Path = Path.Combine(targetInfo.Path, Path.ChangeExtension(enumFileName, Constants.TypeScriptExtension)),
+            Path = Path.Combine(targetInfo.Path, enumFileName + "." + Constants.TypeScriptExtension),
             GenerationRoot = GenerateEnum(@enum.Key, @enum.Value)
           };
 
@@ -57,11 +57,11 @@ namespace ModelGenerator.TypeScript
 
       foreach (var entity in _specAnalyzer.Spec.Entities)
       {
-        var entityFileName = GetFileName(entity.Key);
+        var entityFileName = GetFileName(entity.Key, targetInfo.AppendGeneratedExtension);
         result[index++] =
           new GeneratorOutput
           {
-            Path = Path.Combine(targetInfo.Path, Path.ChangeExtension(entityFileName, Constants.TypeScriptExtension)),
+            Path = Path.Combine(targetInfo.Path, entityFileName + "." + Constants.TypeScriptExtension),
             GenerationRoot = GenerateEntity(entity.Key, entity.Value.Members)
           };
 
@@ -71,6 +71,8 @@ namespace ModelGenerator.TypeScript
       result[index++] =
         new GeneratorOutput
         {
+          // index.ts must always have '.ts' extension. '.generated.ts' is not applicable here
+          // because it won't be recognized by module definition
           Path = Path.Combine(targetInfo.Path, Path.ChangeExtension("index", Constants.TypeScriptExtension)),
           GenerationRoot = new TypeScriptFile { Contents = barrelContents }
         };
@@ -112,6 +114,7 @@ namespace ModelGenerator.TypeScript
 
     private TypeScriptFile GenerateEntity(string entityName, IDictionary<string, IEntityMemberInfo> entityMembers)
     {
+      var targetInfo = _specAnalyzer.Spec.Targets[Constants.TypeScriptTarget];
       var normalizedEntityName = SpecFunctions.ToPascalCase(entityName);
       var fileContents = new List<TypeScriptDeclarationOrStatement>();
       var enumDependencies = _specAnalyzer.GetDirectEnumDependencies(entityName);
@@ -127,12 +130,12 @@ namespace ModelGenerator.TypeScript
 
       foreach (var @enum in _specAnalyzer.GetDirectEnumDependencies(entityName))
       {
-        fileContents.Add(new TypeScriptImportStatement { ObjectName = SpecFunctions.ToPascalCase(@enum), File = GetFileName(@enum) });
+        fileContents.Add(new TypeScriptImportStatement { ObjectName = SpecFunctions.ToPascalCase(@enum), File = GetFileName(@enum, targetInfo.AppendGeneratedExtension) });
       }
 
       foreach (var entity in _specAnalyzer.GetDirectEntityDependencies(Constants.TypeScriptTarget, entityName))
       {
-        fileContents.Add(new TypeScriptImportStatement { ObjectName = SpecFunctions.ToPascalCase(entity), File = GetFileName(entity) });
+        fileContents.Add(new TypeScriptImportStatement { ObjectName = SpecFunctions.ToPascalCase(entity), File = GetFileName(entity, targetInfo.AppendGeneratedExtension) });
       }
 
       fileContents.Add(
@@ -167,6 +170,7 @@ namespace ModelGenerator.TypeScript
       return new TypeScriptClassMember { Name = normalizedMemberName, Type = normalizedType };
     }
 
-    private static string GetFileName(string type) => SpecFunctions.ToHyphenatedCase(type);
+    private static string GetFileName(string type, bool appendGeneratedExtension) =>
+      SpecFunctions.ToHyphenatedCase(type) + (appendGeneratedExtension ? ".generated" : string.Empty);
   }
 }
