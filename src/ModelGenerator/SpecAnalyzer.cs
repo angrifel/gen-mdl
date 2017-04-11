@@ -47,7 +47,7 @@ namespace ModelGenerator
 
     public IEnumerable<string> GetDirectEntityDependencies(string target, string type) =>
       IsEntity(type)
-        ? _spec.Entities[type].Members.Where(_ => _.Value.Exclude.Contains(target) && IsEntity(_.Value.Type)).Select(_ => _.Value.Type)
+        ? _spec.Entities[type].Members.Where(_ => !_.Value.Exclude.Contains(target) && IsEntity(_.Value.Type)).Select(_ => _.Value.Type)
         : _emptyArray;
 
     public bool IsTypeResolvable(string target, string type) =>

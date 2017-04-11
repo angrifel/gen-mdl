@@ -23,6 +23,7 @@ namespace ModelGenerator.Tests.CSharp
 {
   using ModelGenerator.CSharp;
   using ModelGenerator.Model;
+  using System;
   using System.Collections.Generic;
   using System.Linq;
   using Xunit;
@@ -121,7 +122,7 @@ namespace ModelGenerator.Tests.CSharp
     }
 
     [Fact]
-    public void TestAmmendSpecificationDoesNotReplacePreexistingTypeAliases()
+    public void TestAmmendSpecificationFailsToReplaceBuiltinTypes()
     {
       // arrange
       var spec = 
@@ -140,13 +141,15 @@ namespace ModelGenerator.Tests.CSharp
             }
           }
         };
+
       var ammendment = new CSharpAmmendment();
+      var exception = (Exception)null;
 
       // act
-      ammendment.AmmedSpecification(spec);
+      try { ammendment.AmmedSpecification(spec); } catch (Exception ex) { exception = ex; }
 
       // assert
-      Assert.True(spec.Targets[Constants.CSharpTarget].TypeAliases.Contains(new KeyValuePair<string, string>("datetime", "System.DateTime")));
+      Assert.NotNull(exception);
     }
   }
 }

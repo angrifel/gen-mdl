@@ -1,3 +1,6 @@
+## Version 0.3
+- Prevented replacement of built-in types.
+
 ## Version 0.2
 - Fixed bug in entity syntax, added 'members' property.
 - Completed unit test coverage for C# generation.

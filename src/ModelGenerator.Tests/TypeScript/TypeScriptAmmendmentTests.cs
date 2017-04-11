@@ -23,6 +23,7 @@ namespace ModelGenerator.Tests.TypeScript
 {
   using ModelGenerator.Model;
   using ModelGenerator.TypeScript;
+  using System;
   using System.Collections.Generic;
   using System.Linq;
   using Xunit;
@@ -111,7 +112,7 @@ namespace ModelGenerator.Tests.TypeScript
     }
 
     [Fact]
-    public void TestAmmendSpecificationDoesNotReplacePreexistingTypeAliases()
+    public void TestAmmendSpecificationFailsToReplaceBuiltinTypes()
     {
       // arrange
       var spec =
@@ -131,12 +132,13 @@ namespace ModelGenerator.Tests.TypeScript
           }
         };
       var ammendment = new TypeScriptAmmendment();
+      var exception = (Exception)null;
 
       // act
-      ammendment.AmmedSpecification(spec);
+      try { ammendment.AmmedSpecification(spec); } catch (Exception ex) { exception = ex; }
 
       // assert
-      Assert.True(spec.Targets[Constants.TypeScriptTarget].TypeAliases.Contains(new KeyValuePair<string, string>("datetime", "MyDate")));
+      Assert.NotNull(exception);
     }
   }
 }

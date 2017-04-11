@@ -31,21 +31,23 @@ namespace ModelGenerator.TypeScript
       if (!spec.Targets.ContainsKey("typescript")) return;
       var target = spec.Targets["typescript"];
       var ta = target.TypeAliases;
-      ta.AddIfNotExists("bool", "boolean");
-      ta.AddIfNotExists("byte", "number");
-      ta.AddIfNotExists("short", "number");
-      ta.AddIfNotExists("int", "number");
-      ta.AddIfNotExists("long", "string");
-      ta.AddIfNotExists("float", "number");
-      ta.AddIfNotExists("double", "number");
-      ta.AddIfNotExists("decimal", "string");
-      ta.AddIfNotExists("char", "string");
-      ta.AddIfNotExists("string", "string");
-      ta.AddIfNotExists("guid", "string");
-      ta.AddIfNotExists("date", "Date");
-      ta.AddIfNotExists("time", "Date");
-      ta.AddIfNotExists("datetime", "Date");
-      ta.AddIfNotExists("object", "any");
+      string getExceptionMessage(string builtInType) => "builtin type '" + builtInType + "' cannot be overriden.";
+
+      ta.Add("bool", "boolean", getExceptionMessage);
+      ta.Add("byte", "number", getExceptionMessage);
+      ta.Add("short", "number", getExceptionMessage);
+      ta.Add("int", "number", getExceptionMessage);
+      ta.Add("long", "string", getExceptionMessage);
+      ta.Add("float", "number", getExceptionMessage);
+      ta.Add("double", "number", getExceptionMessage);
+      ta.Add("decimal", "string", getExceptionMessage);
+      ta.Add("char", "string", getExceptionMessage);
+      ta.Add("string", "string", getExceptionMessage);
+      ta.Add("guid", "string", getExceptionMessage);
+      ta.Add("date", "Date", getExceptionMessage);
+      ta.Add("time", "Date", getExceptionMessage);
+      ta.Add("datetime", "Date", getExceptionMessage);
+      ta.Add("object", "any", getExceptionMessage);
       target.NativeTypes = new HashSet<string>(new[] { "boolean", "number", "string", "Date", "any" });
     }
   }
