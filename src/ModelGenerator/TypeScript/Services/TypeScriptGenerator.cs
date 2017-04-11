@@ -115,7 +115,18 @@ namespace ModelGenerator.TypeScript.Services
 
     private TypeScriptFile GenerateEntity(string entityName, IDictionary<string, IEntityMemberInfo> entityMembers)
     {
-      return _typescriptEntityGeneratorFactory.CreateEntityGenerator(_specAnalyzer).GenerateEntity(entityName, entityMembers);
+      var fileContents = new List<TypeScriptDeclarationOrStatement>();
+      var entityGenerator = _typescriptEntityGeneratorFactory.CreateEntityGenerator(_specAnalyzer);
+
+      fileContents.AddRange(entityGenerator.GetImportStatementsForEntity(entityName, entityMembers));
+      fileContents.Add(
+        new TypeScriptExportStatement
+        {
+          IsDefault = true,
+          TypeDeclaration = entityGenerator.GenerateEntity(entityName, entityMembers)
+        });
+
+      return new TypeScriptFile { Contents = fileContents };
     }
   }
 }

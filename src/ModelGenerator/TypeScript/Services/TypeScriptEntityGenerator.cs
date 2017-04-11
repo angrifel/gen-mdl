@@ -38,12 +38,24 @@ namespace ModelGenerator.TypeScript.Services
       _typeScriptEntityMemberGeneratorFactory = typeScriptEntityMemberGeneratorFactory ?? throw new ArgumentNullException(nameof(typeScriptEntityMemberGeneratorFactory));
     }
 
-    public TypeScriptFile GenerateEntity(string entityName, IDictionary<string, IEntityMemberInfo> entityMembers)
+    public IEnumerable<TypeScriptDeclarationOrStatement> GetImportStatementsForEntity(string entityName, IDictionary<string, IEntityMemberInfo> entityMembers)
     {
-      var normalizedEntityName = SpecFunctions.ToPascalCase(entityName);
-      var fileContents = new List<TypeScriptDeclarationOrStatement>();
-      var enumDependencies = _specAnalyzer.GetDirectEnumDependencies(entityName);
+      var enumDependencies = _specAnalyzer.GetDirectEnumDependencies(Constants.TypeScriptTarget, entityName);
       var entityDependencies = _specAnalyzer.GetDirectEntityDependencies(Constants.TypeScriptTarget, entityName);
+
+      foreach (var @enum in enumDependencies)
+      {
+        yield return new TypeScriptImportStatement { ObjectName = SpecFunctions.ToPascalCase(@enum), File = TypeScriptFileUtilities.GetFileName(@enum) };
+      }
+
+      foreach (var entity in entityDependencies)
+      {
+        yield return new TypeScriptImportStatement { ObjectName = SpecFunctions.ToPascalCase(entity), File = TypeScriptFileUtilities.GetFileName(entity) };
+      }
+    }
+
+    public TypeScriptClass GenerateEntity(string entityName, IDictionary<string, IEntityMemberInfo> entityMembers)
+    {
       var members = new List<TypeScriptClassMember>(entityMembers.Count);
       var typeScriptEntityMemberGenerator = _typeScriptEntityMemberGeneratorFactory.CreateTypeScriptEntityGenerator(_specAnalyzer);
       foreach (var entityMember in entityMembers)
@@ -54,33 +66,11 @@ namespace ModelGenerator.TypeScript.Services
         }
       }
 
-      foreach (var @enum in enumDependencies)
+      return new TypeScriptClass
       {
-        fileContents.Add(new TypeScriptImportStatement { ObjectName = SpecFunctions.ToPascalCase(@enum), File = TypeScriptFileUtilities.GetFileName(@enum) });
-      }
-
-      foreach (var entity in entityDependencies)
-      {
-        fileContents.Add(new TypeScriptImportStatement { ObjectName = SpecFunctions.ToPascalCase(entity), File = TypeScriptFileUtilities.GetFileName(entity) });
-      }
-
-      fileContents.Add(
-        new TypeScriptExportStatement
-        {
-          IsDefault = true,
-          TypeDeclaration =
-              new TypeScriptClass
-              {
-                Name = normalizedEntityName,
-                Members = members
-              }
-        });
-
-      return
-        new TypeScriptFile
-        {
-          Contents = fileContents
-        };
+        Name = SpecFunctions.ToPascalCase(entityName),
+        Members = members
+      };
     }
   }
 }

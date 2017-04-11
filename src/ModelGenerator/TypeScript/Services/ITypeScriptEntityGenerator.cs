@@ -26,6 +26,7 @@ namespace ModelGenerator.TypeScript.Services
 
   public interface ITypeScriptEntityGenerator
   {
-    TypeScriptFile GenerateEntity(string entityName, IDictionary<string, IEntityMemberInfo> entityMembers);
+    IEnumerable<TypeScriptDeclarationOrStatement> GetImportStatementsForEntity(string entityName, IDictionary<string, IEntityMemberInfo> entityMembers);
+    TypeScriptClass GenerateEntity(string entityName, IDictionary<string, IEntityMemberInfo> entityMembers);
   }
 }

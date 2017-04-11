@@ -40,9 +40,9 @@ namespace ModelGenerator
 
     public Spec Spec { get { return _spec; } }
 
-    public IEnumerable<string> GetDirectEnumDependencies(string type) =>
+    public IEnumerable<string> GetDirectEnumDependencies(string target, string type) =>
       IsEntity(type)
-        ? _spec.Entities[type].Members.Where(_ => IsEnum(_.Value.Type)).Select(_ => _.Value.Type)
+        ? _spec.Entities[type].Members.Where(_ => _.Value.Exclude.Contains(target) && IsEnum(_.Value.Type)).Select(_ => _.Value.Type)
         : _emptyArray;
 
     public IEnumerable<string> GetDirectEntityDependencies(string target, string type) =>

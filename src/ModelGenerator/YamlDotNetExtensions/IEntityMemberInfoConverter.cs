@@ -33,8 +33,7 @@ namespace ModelGenerator.YamlDotNetExtensions
 
     public IEntityMemberInfoConverter(Func<Deserializer> deserializerFactory)
     {
-      if (deserializerFactory == null) throw new ArgumentNullException(nameof(deserializerFactory));
-      _deserializerFactory = deserializerFactory;
+      _deserializerFactory = deserializerFactory ?? throw new ArgumentNullException(nameof(deserializerFactory));
     }
 
     public bool Accepts(Type type)
