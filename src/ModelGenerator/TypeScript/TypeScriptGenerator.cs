@@ -32,8 +32,7 @@ namespace ModelGenerator.TypeScript
     
     public TypeScriptGenerator(SpecAnalyzer specAnalyzer)
     {
-      if (specAnalyzer == null) throw new ArgumentNullException(nameof(specAnalyzer));
-      _specAnalyzer = specAnalyzer;
+      _specAnalyzer = specAnalyzer ?? throw new ArgumentNullException(nameof(specAnalyzer));
     }
 
     public IEnumerable<GeneratorOutput> GenerateOutputs()
