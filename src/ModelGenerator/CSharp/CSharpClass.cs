@@ -46,5 +46,13 @@ namespace ModelGenerator.CSharp
 
       output.WriteLine(@"  }");
     }
+
+    public override void PopulateNamespaces(IList<string> namespaces)
+    {
+      for (int i = 0; i < Members.Count; i++)
+      {
+        Members[i].PopulateNamespaces(namespaces);
+      }
+    }
   }
 }

@@ -21,6 +21,7 @@
 
 namespace ModelGenerator.CSharp
 {
+  using System;
   using System.Collections.Generic;
   using System.IO;
 
@@ -42,6 +43,11 @@ namespace ModelGenerator.CSharp
 
       Members[Members.Count - 1].Generate(output, true);
       output.WriteLine(@"  }");
+    }
+
+    public override void PopulateNamespaces(IList<string> namespaces)
+    {
+      // always empty
     }
   }
 }

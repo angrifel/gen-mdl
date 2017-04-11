@@ -28,7 +28,7 @@ namespace ModelGenerator.CSharp
 
   public class CSharpGenerator : IGenerator
   {
-    private static readonly string[] StructNativeTypes = new string[] { "bool", "byte", "short", "int", "long", "float", "double", "decimal", "char", "System.Guid", "System.DateTime", "System.TimeSpan", "System.DateTimeOffset" };
+    private static readonly string[] StructNativeTypes = new string[] { "bool", "byte", "short", "int", "long", "float", "double", "decimal", "char", "Guid", "DateTime", "TimeSpan", "DateTimeOffset" };
 
     private readonly SpecAnalyzer _specAnalizer;
 
@@ -107,17 +107,27 @@ namespace ModelGenerator.CSharp
         }
       }
 
-      return new CSharpNamespace
-      {
-        Name = _specAnalizer.Spec.Targets[Constants.CSharpTarget].Namespace,
-        Types = new List<CSharpType>
+      var namespaces = new List<string>();
+      var types = new List<CSharpType>
         {
           new CSharpClass
           {
             Name = SpecFunctions.ToPascalCase(entityName),
             Members = members
           }
-        }
+        };
+      for (int i = 0; i < types.Count; i++)
+      {
+        types[i].PopulateNamespaces(namespaces);
+      }
+
+      namespaces.Sort();
+
+      return new CSharpNamespace
+      {
+        Name = _specAnalizer.Spec.Targets[Constants.CSharpTarget].Namespace,
+        Namespaces = namespaces,
+        Types = types
       };
     }
 
@@ -127,13 +137,29 @@ namespace ModelGenerator.CSharp
       var implementationType = _specAnalizer.IsNativeType(Constants.CSharpTarget, resolvedType) ? resolvedType : SpecFunctions.ToPascalCase(resolvedType);
       var isValueType = IsValueType(implementationType) || _specAnalizer.Spec.Enums.ContainsKey(resolvedType);
       var memberType = member.Value.IsCollection
-        ? "System.Collections.Generic.IList<" + implementationType + ">"
+        ? "IList<" + implementationType + ">"
         : implementationType + (member.Value.IsNullable && isValueType ? "?" : string.Empty);
       
       var memberName = SpecFunctions.ToPascalCase(member.Key);
       var isString = resolvedType == "string";
+      var implementationNamespace = GetImplementationTypeNamespace(implementationType);
+      var namespaces = (IList<string>)null;
+      if (implementationNamespace != null)
+      {
+        namespaces = new List<string> { implementationNamespace };
+        if (member.Value.IsCollection)
+        {
+          namespaces.AddIfNotExists("System.Collections.Generic");
+        }
+      }
+      else if (member.Value.IsCollection)
+      {
+        namespaces = new List<string> { "System.Collections.Generic" };
+      }
+      
       return new CSharpClassMember
       {
+        Namespaces = namespaces,
         Type = memberType,
         Name = memberName,
         RequiredAttributeBehavior =
@@ -147,6 +173,19 @@ namespace ModelGenerator.CSharp
 
     private static string GetFilename(string type, bool appendGeneratedExtension) =>
       SpecFunctions.ToPascalCase(type) + (appendGeneratedExtension ? ".generated" : string.Empty);
+
+    private static string GetImplementationTypeNamespace(string type)
+    {
+      switch (type)
+      {
+        case "Guid":
+        case "DateTime":
+        case "TimeSpan":
+        case "DateTimeOffset":
+          return "System";
+        default: return null;
+      }
+    }
 
     private static bool IsValueType(string type)
     {

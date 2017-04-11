@@ -51,7 +51,7 @@ namespace ModelGenerator.Tests.CSharp
       var output = new StringWriter();
 
       var expectedOutput =
-        "    [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]" + Environment.NewLine + 
+        "    [Required(AllowEmptyStrings = true)]" + Environment.NewLine + 
         "    public string Id { get; set; }" + Environment.NewLine;
 
       // act
@@ -68,7 +68,7 @@ namespace ModelGenerator.Tests.CSharp
       var classMember = new CSharpClassMember { Name = "Id", Type = "string", RequiredAttributeBehavior = CSharpRequiredAttributeBehavior.IssueRequired };
       var output = new StringWriter();
       var expectedOutput =
-        "    [System.ComponentModel.DataAnnotations.Required]" + Environment.NewLine +
+        "    [Required]" + Environment.NewLine +
         "    public string Id { get; set; }" + Environment.NewLine;
 
       // act
