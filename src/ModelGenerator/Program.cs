@@ -39,7 +39,7 @@ namespace ModelGenerator
         specSource: new YamlFileSpecSource(modelFilePath), 
         generatorFactory: 
           new GeneratorFactory(
-            new CSharpGeneratorFactory(new CSharpEntityGeneratorFactory(new CSharpEntityMemberGeneratorFactory())),
+            new CSharpGeneratorFactory(),
             new TypeScriptGeneratorFactory(new TypeScriptEntityGeneratorFactory(new TypeScriptEntityMemberGeneratorFactory()))), 
         ammendmentFactory: new AmmendmentFactory());
 

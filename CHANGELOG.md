@@ -1,3 +1,8 @@
+## Version 0.3
+- Prevented replacement of built-in types.
+- added property to target to support adding '.generated' extension to files.
+- added namespace hoisting.
+
 ## Version 0.2
 - Fixed bug in entity syntax, added 'members' property.
 - Completed unit test coverage for C# generation.

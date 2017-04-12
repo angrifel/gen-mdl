@@ -22,42 +22,64 @@
 namespace ModelGenerator.CSharp.Services
 {
   using ModelGenerator.Model;
-  using System;
   using System.Collections.Generic;
 
-  public class CSharpEntityMemberGenerator : ICSharpEntityMemberGenerator
+  public class CSharpEntityMemberGenerator
   {
-    private static readonly string[] StructNativeTypes = new string[] { "bool", "byte", "short", "int", "long", "float", "double", "decimal", "char", "System.Guid", "System.DateTime", "System.TimeSpan", "System.DateTimeOffset" };
+    private static readonly string[] StructNativeTypes = new string[] { "bool", "byte", "short", "int", "long", "float", "double", "decimal", "char", "Guid", "DateTime", "TimeSpan", "DateTimeOffset" };
 
-    private readonly SpecAnalyzer _specAnalizer;
-
-    public CSharpEntityMemberGenerator(SpecAnalyzer specAnalizer)
+    public static CSharpClassMember GenerateEntityMember(Spec spec, string entity, string member)
     {
-      _specAnalizer = specAnalizer ?? throw new ArgumentNullException(nameof(specAnalizer));
-    }
+      var memberInfo = spec.Entities[entity].Members[member];
+      var resolvedType = spec.GetResolvedType(Constants.CSharpTarget, memberInfo.Type);
+      var implementationType = spec.IsNativeType(Constants.CSharpTarget, resolvedType) ? resolvedType : SpecFunctions.ToPascalCase(resolvedType);
+      var isValueType = IsValueType(implementationType) || spec.Enums.ContainsKey(resolvedType);
+      var memberType = memberInfo.IsCollection
+        ? "IList<" + implementationType + ">"
+        : implementationType + (memberInfo.IsNullable && isValueType ? "?" : string.Empty);
 
-    public CSharpClassMember GenerateEntityMember(KeyValuePair<string, IEntityMemberInfo> member)
-    {
-      var resolvedType = _specAnalizer.GetResolvedType(Constants.CSharpTarget, member.Value.Type);
-      var implementationType = _specAnalizer.IsNativeType(Constants.CSharpTarget, resolvedType) ? resolvedType : SpecFunctions.ToPascalCase(resolvedType);
-      var isValueType = IsValueType(implementationType) || _specAnalizer.Spec.Enums.ContainsKey(resolvedType);
-      var memberType = member.Value.IsCollection
-        ? "System.Collections.Generic.IList<" + implementationType + ">"
-        : implementationType + (member.Value.IsNullable && isValueType ? "?" : string.Empty);
-
-      var memberName = SpecFunctions.ToPascalCase(member.Key);
+      var memberName = SpecFunctions.ToPascalCase(member);
       var isString = resolvedType == "string";
+      var implementationNamespace = GetImplementationTypeNamespace(implementationType);
+      var namespaces = (IList<string>)null;
+      if (implementationNamespace != null)
+      {
+        namespaces = new List<string> { implementationNamespace };
+        if (memberInfo.IsCollection)
+        {
+          namespaces.AddIfNotExists("System.Collections.Generic");
+        }
+      }
+      else if (memberInfo.IsCollection)
+      {
+        namespaces = new List<string> { "System.Collections.Generic" };
+      }
+
       return new CSharpClassMember
       {
+        Namespaces = namespaces,
         Type = memberType,
         Name = memberName,
         RequiredAttributeBehavior =
-          !member.Value.IsNullable && !isValueType
+          !memberInfo.IsNullable && !isValueType
             ? isString
               ? CSharpRequiredAttributeBehavior.IssueRequiredAllowEmptyStrings
               : CSharpRequiredAttributeBehavior.IssueRequired
             : CSharpRequiredAttributeBehavior.NoRequiredAttribute
       };
+    }
+
+    private static string GetImplementationTypeNamespace(string type)
+    {
+      switch (type)
+      {
+        case "Guid":
+        case "DateTime":
+        case "TimeSpan":
+        case "DateTimeOffset":
+          return "System";
+        default: return null;
+      }
     }
 
     private static bool IsValueType(string type)

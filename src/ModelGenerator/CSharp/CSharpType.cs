@@ -21,10 +21,13 @@
 
 namespace ModelGenerator.CSharp
 {
+  using System.Collections.Generic;
   using System.IO;
 
   public abstract class CSharpType
   {
     public abstract void Generate(TextWriter output);
+
+    public abstract void PopulateNamespaces(IList<string> namespaces);
   }
 }

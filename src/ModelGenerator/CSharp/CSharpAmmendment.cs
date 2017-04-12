@@ -31,24 +31,25 @@ namespace ModelGenerator.CSharp
       if (!spec.Targets.ContainsKey(Constants.CSharpTarget)) return;
       var target = spec.Targets[Constants.CSharpTarget];
       var ta = target.TypeAliases;
+      string getExceptionMessage(string builtInType) => "builtin type '" + builtInType + "' cannot be overriden.";
 
-      ta.AddIfNotExists("bool", "bool");
-      ta.AddIfNotExists("byte", "byte");
-      ta.AddIfNotExists("short", "short");
-      ta.AddIfNotExists("int", "int");
-      ta.AddIfNotExists("long", "long");
-      ta.AddIfNotExists("float", "float");
-      ta.AddIfNotExists("double", "double");
-      ta.AddIfNotExists("decimal", "decimal");
-      ta.AddIfNotExists("char", "char");
-      ta.AddIfNotExists("string", "string");
-      ta.AddIfNotExists("guid", "System.Guid");
-      ta.AddIfNotExists("date", "System.DateTime");
-      ta.AddIfNotExists("time", "System.TimeSpan");
-      ta.AddIfNotExists("datetime", "System.DateTimeOffset");
-      ta.AddIfNotExists("object", "object");
+      ta.Add("bool", "bool", getExceptionMessage);
+      ta.Add("byte", "byte", getExceptionMessage);
+      ta.Add("short", "short", getExceptionMessage);
+      ta.Add("int", "int", getExceptionMessage);
+      ta.Add("long", "long", getExceptionMessage);
+      ta.Add("float", "float", getExceptionMessage);
+      ta.Add("double", "double", getExceptionMessage);
+      ta.Add("decimal", "decimal", getExceptionMessage);
+      ta.Add("char", "char", getExceptionMessage);
+      ta.Add("string", "string", getExceptionMessage);
+      ta.Add("guid", "Guid", getExceptionMessage);
+      ta.Add("date", "DateTime", getExceptionMessage);
+      ta.Add("time", "TimeSpan", getExceptionMessage);
+      ta.Add("datetime", "DateTimeOffset", getExceptionMessage);
+      ta.Add("object", "object", getExceptionMessage);
 
-      target.NativeTypes = new HashSet<string>(new[] { "bool", "byte", "short", "int", "long", "float", "double", "decimal", "char", "string", "System.Guid", "System.DateTime", "System.TimeSpan", "System.DateTimeOffset", "object" });
+      target.NativeTypes = new HashSet<string>(new[] { "bool", "byte", "short", "int", "long", "float", "double", "decimal", "char", "string", "Guid", "DateTime", "TimeSpan", "DateTimeOffset", "object" });
     }
   }
 }

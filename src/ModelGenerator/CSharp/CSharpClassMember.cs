@@ -21,25 +21,46 @@
 
 namespace ModelGenerator.CSharp
 {
+  using System.Collections.Generic;
   using System.IO;
 
   public class CSharpClassMember
   {
     public string Name { get; set; }
 
+    public IList<string> Namespaces { get; set; }
+
     public string Type { get; set; }
 
     public CSharpRequiredAttributeBehavior RequiredAttributeBehavior { get; set; }
+
+    public void PopulateNamespaces(IList<string> namespaces)
+    {
+      if (Namespaces != null)
+      {
+        for (int i = 0; i < Namespaces.Count; i++)
+        {
+          namespaces.AddIfNotExists(Namespaces[i]);
+        }
+      }
+
+      if (
+        RequiredAttributeBehavior == CSharpRequiredAttributeBehavior.IssueRequired || 
+        RequiredAttributeBehavior == CSharpRequiredAttributeBehavior.IssueRequiredAllowEmptyStrings)
+      {
+        namespaces.AddIfNotExists("System.ComponentModel.DataAnnotations");
+      }
+    }
 
     public void Generate(TextWriter output)
     {
       switch (RequiredAttributeBehavior)
       {
         case CSharpRequiredAttributeBehavior.IssueRequiredAllowEmptyStrings:
-          output.WriteLine($"    [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]");
+          output.WriteLine($"    [Required(AllowEmptyStrings = true)]");
           break;
         case CSharpRequiredAttributeBehavior.IssueRequired:
-          output.WriteLine($"    [System.ComponentModel.DataAnnotations.Required]");
+          output.WriteLine($"    [Required]");
           break;
       }
 

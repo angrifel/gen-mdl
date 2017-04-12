@@ -21,6 +21,7 @@
 
 namespace ModelGenerator
 {
+  using System;
   using System.Collections.Generic;
 
   public static class DictionaryExtensions
@@ -28,6 +29,12 @@ namespace ModelGenerator
     public static void AddIfNotExists<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue value)
     {
       if (dictionary.ContainsKey(key)) return;
+      dictionary.Add(key, value);
+    }
+
+    public static void Add<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue value, Func<TKey, string> exceptionMessageBuilder)
+    {
+      if (dictionary.ContainsKey(key)) throw new Exception(exceptionMessageBuilder(key));
       dictionary.Add(key, value);
     }
   }

@@ -23,6 +23,7 @@ namespace ModelGenerator.Tests.CSharp
 {
   using ModelGenerator.CSharp;
   using ModelGenerator.Model;
+  using System;
   using System.Collections.Generic;
   using System.Linq;
   using Xunit;
@@ -53,10 +54,10 @@ namespace ModelGenerator.Tests.CSharp
       Assert.True(nativeTypes.Remove("decimal"));
       Assert.True(nativeTypes.Remove("string"));
       Assert.True(nativeTypes.Remove("object"));
-      Assert.True(nativeTypes.Remove("System.TimeSpan"));
-      Assert.True(nativeTypes.Remove("System.DateTime"));
-      Assert.True(nativeTypes.Remove("System.DateTimeOffset"));
-      Assert.True(nativeTypes.Remove("System.Guid"));
+      Assert.True(nativeTypes.Remove("TimeSpan"));
+      Assert.True(nativeTypes.Remove("DateTime"));
+      Assert.True(nativeTypes.Remove("DateTimeOffset"));
+      Assert.True(nativeTypes.Remove("Guid"));
       Assert.True(nativeTypes.Count == 0, "Additional Native types present than those that were tested. Adjust your unit test.");
     }
 
@@ -113,15 +114,15 @@ namespace ModelGenerator.Tests.CSharp
       Assert.True(typeAliases.Remove(new KeyValuePair<string, string>("decimal", "decimal")));
       Assert.True(typeAliases.Remove(new KeyValuePair<string, string>("string", "string")));
       Assert.True(typeAliases.Remove(new KeyValuePair<string, string>("object", "object")));
-      Assert.True(typeAliases.Remove(new KeyValuePair<string, string>("time", "System.TimeSpan")));
-      Assert.True(typeAliases.Remove(new KeyValuePair<string, string>("date", "System.DateTime")));
-      Assert.True(typeAliases.Remove(new KeyValuePair<string, string>("datetime", "System.DateTimeOffset")));
-      Assert.True(typeAliases.Remove(new KeyValuePair<string, string>("guid", "System.Guid")));
+      Assert.True(typeAliases.Remove(new KeyValuePair<string, string>("time", "TimeSpan")));
+      Assert.True(typeAliases.Remove(new KeyValuePair<string, string>("date", "DateTime")));
+      Assert.True(typeAliases.Remove(new KeyValuePair<string, string>("datetime", "DateTimeOffset")));
+      Assert.True(typeAliases.Remove(new KeyValuePair<string, string>("guid", "Guid")));
       Assert.True(typeAliases.Count == 0, "Additional TypeAliases present than those that were tested. Adjust your unit test.");
     }
 
     [Fact]
-    public void TestAmmendSpecificationDoesNotReplacePreexistingTypeAliases()
+    public void TestAmmendSpecificationFailsToReplaceBuiltinTypes()
     {
       // arrange
       var spec = 
@@ -134,19 +135,21 @@ namespace ModelGenerator.Tests.CSharp
               {
                 TypeAliases = new Dictionary<string, string>
                 {
-                  { "datetime", "System.DateTime"}
+                  { "datetime", "DateTime"}
                 }
               }
             }
           }
         };
+
       var ammendment = new CSharpAmmendment();
+      var exception = (Exception)null;
 
       // act
-      ammendment.AmmedSpecification(spec);
+      try { ammendment.AmmedSpecification(spec); } catch (Exception ex) { exception = ex; }
 
       // assert
-      Assert.True(spec.Targets[Constants.CSharpTarget].TypeAliases.Contains(new KeyValuePair<string, string>("datetime", "System.DateTime")));
+      Assert.NotNull(exception);
     }
   }
 }

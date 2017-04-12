@@ -28,6 +28,8 @@ namespace ModelGenerator.CSharp
   {
     public string Name { get; set; }
 
+    public IList<string> Namespaces { get; set; }
+
     public IList<CSharpType> Types { get; set; }
 
     public void Generate(TextWriter output)
@@ -37,6 +39,16 @@ namespace ModelGenerator.CSharp
 
       if (Types != null && Types.Count > 0)
       {
+        if (Namespaces != null && Namespaces.Count != 0)
+        {
+          for (int i = 0; i < Namespaces.Count; i++)
+          {
+            output.WriteLine($"  using {Namespaces[i]};");
+          }
+
+          output.WriteLine();
+        }
+
         Types[0].Generate(output);
         for (var i = 1; i < Types.Count; i++)
         {

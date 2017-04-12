@@ -88,8 +88,6 @@
     <Compile Include="CSharp\CSharpClass.cs" />
     <Compile Include="CSharp\CSharpClassMember.cs" />
     <Compile Include="CSharp\Services\CSharpEntityGenerator.cs" />
-    <Compile Include="CSharp\Services\CSharpEntityGeneratorFactory.cs" />
-    <Compile Include="CSharp\Services\CSharpEntityMembeGeneratorFactory.cs" />
     <Compile Include="CSharp\Services\CSharpEntityMemberGenerator.cs" />
     <Compile Include="CSharp\CSharpEnum.cs" />
     <Compile Include="CSharp\CSharpEnumMember.cs" />
@@ -98,12 +96,9 @@
     <Compile Include="CSharp\CSharpRequiredAttributeBehavior.cs" />
     <Compile Include="CSharp\CSharpType.cs" />
     <Compile Include="CSharp\Services\CSharpGeneratorFactory.cs" />
-    <Compile Include="CSharp\Services\ICSharpEntityGenerator.cs" />
-    <Compile Include="CSharp\Services\ICSharpEntityGeneratorFactory.cs" />
-    <Compile Include="CSharp\Services\ICSharpEntityMemberGeneratorFactory.cs" />
-    <Compile Include="CSharp\Services\ICSharpEntityMemberGenerator.cs" />
     <Compile Include="CSharp\Services\ICSharpGeneratorFactory.cs" />
     <Compile Include="DictionaryExtensions.cs" />
+    <Compile Include="ListExtensions.cs" />
     <Compile Include="Model\EntityInfo.cs" />
     <Compile Include="TypeScript\Services\ITypeScriptEntityMemberGeneratorFactory.cs" />
     <Compile Include="TypeScript\Services\ITypeScriptEntityGenerator.cs" />

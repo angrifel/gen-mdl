@@ -21,18 +21,8 @@
 
 namespace ModelGenerator.CSharp.Services
 {
-  using System;
-
   public class CSharpGeneratorFactory : ICSharpGeneratorFactory
   {
-    private readonly ICSharpEntityGeneratorFactory _entityGeneratorFactory;
-
-    public CSharpGeneratorFactory(ICSharpEntityGeneratorFactory entityGeneratorFactory)
-    {
-      _entityGeneratorFactory = entityGeneratorFactory ?? throw new ArgumentNullException(nameof(entityGeneratorFactory));
-    }
-
-    public IGenerator CreateGenerator(SpecAnalyzer specAnalizer) =>
-      new CSharpGenerator(specAnalizer, _entityGeneratorFactory);
+    public IGenerator CreateGenerator(SpecAnalyzer specAnalizer) => new CSharpGenerator(specAnalizer);
   }
 }

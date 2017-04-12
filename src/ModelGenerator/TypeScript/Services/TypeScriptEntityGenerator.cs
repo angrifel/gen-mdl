@@ -40,17 +40,18 @@ namespace ModelGenerator.TypeScript.Services
 
     public IEnumerable<TypeScriptDeclarationOrStatement> GetImportStatementsForEntity(string entityName, IDictionary<string, IEntityMemberInfo> entityMembers)
     {
+      var targetInfo = _specAnalyzer.Spec.Targets[Constants.TypeScriptTarget];
       var enumDependencies = _specAnalyzer.GetDirectEnumDependencies(Constants.TypeScriptTarget, entityName);
       var entityDependencies = _specAnalyzer.GetDirectEntityDependencies(Constants.TypeScriptTarget, entityName);
 
       foreach (var @enum in enumDependencies)
       {
-        yield return new TypeScriptImportStatement { ObjectName = SpecFunctions.ToPascalCase(@enum), File = TypeScriptFileUtilities.GetFileName(@enum) };
+        yield return new TypeScriptImportStatement { ObjectName = SpecFunctions.ToPascalCase(@enum), File = TypeScriptFileUtilities.GetFileName(@enum, targetInfo.AppendGeneratedExtension) };
       }
 
       foreach (var entity in entityDependencies)
       {
-        yield return new TypeScriptImportStatement { ObjectName = SpecFunctions.ToPascalCase(entity), File = TypeScriptFileUtilities.GetFileName(entity) };
+        yield return new TypeScriptImportStatement { ObjectName = SpecFunctions.ToPascalCase(entity), File = TypeScriptFileUtilities.GetFileName(entity, targetInfo.AppendGeneratedExtension) };
       }
     }
 

@@ -23,6 +23,9 @@ namespace ModelGenerator.TypeScript.Utilities
 {
   public static class TypeScriptFileUtilities
   {
-    public static string GetFileName(string type) => SpecFunctions.ToHyphenatedCase(type);
+    public static string GetFileName(string type, bool appendGeneratedExtension) =>
+      appendGeneratedExtension 
+        ? SpecFunctions.ToHyphenatedCase(type) + ".generated"
+        : SpecFunctions.ToHyphenatedCase(type);
   }
 }

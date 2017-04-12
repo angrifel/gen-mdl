@@ -1,9 +1,9 @@
 image: Visual Studio 2017
 
 environment:
-  major_minor_version: "0.2"
+  major_minor_version: "0.3"
 
-version: $(major_minor_version).{build}-beta.1
+version: $(major_minor_version).{build}-beta.2
 branches:
   only: [master]
   

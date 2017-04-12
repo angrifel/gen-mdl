@@ -90,14 +90,16 @@ For the model above you would get the following files
 ```csharp
 namespace Blog.Model.Data
 {
+  using System.ComponentModel.DataAnnotations;
+
   public class Author
   {
     public int Id { get; set; }
 
-    [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
+    [Required(AllowEmptyStrings = true)]
     public string Name { get; set; }
 
-    [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
+    [Required(AllowEmptyStrings = true)]
     public string Alias { get; set; }
   }
 }
@@ -107,17 +109,20 @@ namespace Blog.Model.Data
 ```csharp
 namespace Blog.Model.Data
 {
+  using System.Collections.Generic;
+  using System.ComponentModel.DataAnnotations;
+
   public class Blog
   {
     public int Id { get; set; }
 
-    [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
+    [Required(AllowEmptyStrings = true)]
     public string Title { get; set; }
 
-    [System.ComponentModel.DataAnnotations.Required]
-    public System.Collections.Generic.IList<BlogPost> Posts { get; set; }
+    [Required]
+    public IList<BlogPost> Posts { get; set; }
 
-    [System.ComponentModel.DataAnnotations.Required]
+    [Required]
     public Author Author { get; set; }
   }
 }
@@ -127,16 +132,20 @@ namespace Blog.Model.Data
 ```csharp
 namespace Blog.Model.Data
 {
+  using System;
+  using System.Collections.Generic;
+  using System.ComponentModel.DataAnnotations;
+
   public class BlogPost
   {
     public int Id { get; set; }
 
-    public System.DateTimeOffset? DatePublished { get; set; }
+    public DateTimeOffset? DatePublished { get; set; }
 
     public string Description { get; set; }
 
-    [System.ComponentModel.DataAnnotations.Required]
-    public System.Collections.Generic.IList<Comment> Comments { get; set; }
+    [Required]
+    public IList<Comment> Comments { get; set; }
 
     public BlogPostStatus Status { get; set; }
   }
@@ -159,11 +168,13 @@ namespace Blog.Model.Data
 ```csharp
 namespace Blog.Model.Data
 {
+  using System.ComponentModel.DataAnnotations;
+
   public class Comment
   {
     public int Id { get; set; }
 
-    [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
+    [Required(AllowEmptyStrings = true)]
     public string Text { get; set; }
 
     public bool SharedInFb { get; set; }

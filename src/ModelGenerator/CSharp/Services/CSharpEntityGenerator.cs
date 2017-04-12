@@ -22,33 +22,22 @@
 namespace ModelGenerator.CSharp.Services
 {
   using ModelGenerator.Model;
-  using System;
   using System.Collections.Generic;
 
-  public class CSharpEntityGenerator : ICSharpEntityGenerator
+  public class CSharpEntityGenerator
   {
-    private readonly SpecAnalyzer _specAnalizer;
-
-    private readonly ICSharpEntityMemberGeneratorFactory _entityMemberGeneratorFactory;
-
-    public CSharpEntityGenerator(SpecAnalyzer specAnalizer, ICSharpEntityMemberGeneratorFactory entityMemberGeneratorFactory)
+    public static CSharpClass GenerateEntity(Spec spec, string entity)
     {
-      _specAnalizer = specAnalizer ?? throw new ArgumentNullException(nameof(specAnalizer));
-      _entityMemberGeneratorFactory = entityMemberGeneratorFactory ?? throw new ArgumentNullException(nameof(entityMemberGeneratorFactory));
-    }
-
-    public CSharpClass GenerateEntity(string entityName, IDictionary<string, IEntityMemberInfo> entityMembers)
-    {
-      var entityMemberGenerator = _entityMemberGeneratorFactory.CreateCSharpEntityMemberGenerator(_specAnalizer);
+      var entityMembers = spec.Entities[entity].Members;
       var members = new List<CSharpClassMember>(entityMembers.Count);
-      foreach (var entityMember in entityMembers)
+      foreach (var entityMember in (IDictionary<string, IEntityMemberInfo>)entityMembers)
       {
-        members.Add(entityMemberGenerator.GenerateEntityMember(entityMember));
+        members.Add(CSharpEntityMemberGenerator.GenerateEntityMember(spec, entity, entityMember.Key));
       }
-      return 
+      return
         new CSharpClass
         {
-          Name = SpecFunctions.ToPascalCase(entityName),
+          Name = SpecFunctions.ToPascalCase(entity),
           Members = members
         };
     }

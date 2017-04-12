@@ -33,6 +33,8 @@ namespace ModelGenerator.Model
     [YamlIgnore]
     public ISet<string> NativeTypes { get; set; }
 
+    public bool AppendGeneratedExtension { get; set; }
+
     public string Namespace { get; set; }
   }
 }

@@ -47,11 +47,11 @@ namespace ModelGenerator.TypeScript.Services
       var index = 0;
       foreach (var @enum in _specAnalyzer.Spec.Enums)
       {
-        var enumFileName = TypeScriptFileUtilities.GetFileName(@enum.Key);
+        var enumFileName = TypeScriptFileUtilities.GetFileName(@enum.Key, targetInfo.AppendGeneratedExtension);
         result[index++] =
           new GeneratorOutput
           {
-            Path = Path.Combine(targetInfo.Path, Path.ChangeExtension(enumFileName, Constants.TypeScriptExtension)),
+            Path = Path.Combine(targetInfo.Path, enumFileName + "." + Constants.TypeScriptExtension),
             GenerationRoot = GenerateEnum(@enum.Key, @enum.Value)
           };
 
@@ -60,11 +60,11 @@ namespace ModelGenerator.TypeScript.Services
 
       foreach (var entity in _specAnalyzer.Spec.Entities)
       {
-        var entityFileName = TypeScriptFileUtilities.GetFileName(entity.Key);
+        var entityFileName = TypeScriptFileUtilities.GetFileName(entity.Key, targetInfo.AppendGeneratedExtension);
         result[index++] =
           new GeneratorOutput
           {
-            Path = Path.Combine(targetInfo.Path, Path.ChangeExtension(entityFileName, Constants.TypeScriptExtension)),
+            Path = Path.Combine(targetInfo.Path, entityFileName + "." + Constants.TypeScriptExtension),
             GenerationRoot = GenerateEntity(entity.Key, entity.Value.Members)
           };
 
@@ -74,6 +74,8 @@ namespace ModelGenerator.TypeScript.Services
       result[index++] =
         new GeneratorOutput
         {
+          // index.ts must always have '.ts' extension. '.generated.ts' is not applicable here
+          // because it won't be recognized by module definition
           Path = Path.Combine(targetInfo.Path, Path.ChangeExtension("index", Constants.TypeScriptExtension)),
           GenerationRoot = new TypeScriptFile { Contents = barrelContents }
         };
