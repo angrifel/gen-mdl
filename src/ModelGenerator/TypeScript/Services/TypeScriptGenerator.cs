@@ -23,29 +23,19 @@ namespace ModelGenerator.TypeScript.Services
 {
   using Model;
   using ModelGenerator.TypeScript.Utilities;
-  using System;
   using System.Collections.Generic;
   using System.IO;
 
   public class TypeScriptGenerator : IGenerator
   {
-    private readonly SpecAnalyzer _specAnalyzer;
 
-    private readonly ITypeScriptEntityGeneratorFactory _typescriptEntityGeneratorFactory;
-
-    public TypeScriptGenerator(SpecAnalyzer specAnalyzer, ITypeScriptEntityGeneratorFactory typescriptEntityGeneratorFactory)
+    public IEnumerable<GeneratorOutput> GenerateOutputs(Spec spec)
     {
-      _specAnalyzer = specAnalyzer ?? throw new ArgumentNullException(nameof(specAnalyzer));
-      _typescriptEntityGeneratorFactory = typescriptEntityGeneratorFactory ?? throw new ArgumentNullException(nameof(typescriptEntityGeneratorFactory));
-    }
-
-    public IEnumerable<GeneratorOutput> GenerateOutputs()
-    {
-      var targetInfo = _specAnalyzer.Spec.Targets[Constants.TypeScriptTarget];
+      var targetInfo = spec.Targets[Constants.TypeScriptTarget];
       var barrelContents = new List<TypeScriptDeclarationOrStatement>();
-      var result = new GeneratorOutput[_specAnalyzer.Spec.Enums.Count + _specAnalyzer.Spec.Entities.Count + 1];
+      var result = new GeneratorOutput[spec.Enums.Count + spec.Entities.Count + 1];
       var index = 0;
-      foreach (var @enum in _specAnalyzer.Spec.Enums)
+      foreach (var @enum in spec.Enums)
       {
         var enumFileName = TypeScriptFileUtilities.GetFileName(@enum.Key, targetInfo.AppendGeneratedExtension);
         result[index++] =
@@ -58,14 +48,14 @@ namespace ModelGenerator.TypeScript.Services
         barrelContents.Add(new TypeScriptReExportStatement { FileName = enumFileName });
       }
 
-      foreach (var entity in _specAnalyzer.Spec.Entities)
+      foreach (var entity in spec.Entities)
       {
         var entityFileName = TypeScriptFileUtilities.GetFileName(entity.Key, targetInfo.AppendGeneratedExtension);
         result[index++] =
           new GeneratorOutput
           {
             Path = Path.Combine(targetInfo.Path, entityFileName + "." + Constants.TypeScriptExtension),
-            GenerationRoot = GenerateEntity(entity.Key, entity.Value.Members)
+            GenerationRoot = GenerateEntity(spec, entity.Key, entity.Value.Members)
           };
 
         barrelContents.Add(new TypeScriptReExportStatement { FileName = entityFileName });
@@ -81,6 +71,7 @@ namespace ModelGenerator.TypeScript.Services
         };
 
       return result;
+
     }
 
     private static TypeScriptFile GenerateEnum(string enumName, IList<EnumMember> enumMembers)
@@ -115,17 +106,16 @@ namespace ModelGenerator.TypeScript.Services
       };
     }
 
-    private TypeScriptFile GenerateEntity(string entityName, IDictionary<string, IEntityMemberInfo> entityMembers)
+    private TypeScriptFile GenerateEntity(Spec spec, string entityName, IDictionary<string, IEntityMemberInfo> entityMembers)
     {
       var fileContents = new List<TypeScriptDeclarationOrStatement>();
-      var entityGenerator = _typescriptEntityGeneratorFactory.CreateEntityGenerator(_specAnalyzer);
 
-      fileContents.AddRange(entityGenerator.GetImportStatementsForEntity(entityName, entityMembers));
+      fileContents.AddRange(TypeScriptEntityGenerator.GetImportStatementsForEntity(spec, entityName, entityMembers));
       fileContents.Add(
         new TypeScriptExportStatement
         {
           IsDefault = true,
-          TypeDeclaration = entityGenerator.GenerateEntity(entityName, entityMembers)
+          TypeDeclaration =TypeScriptEntityGenerator.GenerateEntity(spec, entityName, entityMembers)
         });
 
       return new TypeScriptFile { Contents = fileContents };

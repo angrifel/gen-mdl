@@ -22,22 +22,14 @@
 namespace ModelGenerator.TypeScript.Services
 {
   using ModelGenerator.Model;
-  using System;
   using System.Collections.Generic;
 
-  public class TypeScriptEntityMemberGenerator : ITypeScriptEntityMemberGenerator
+  public class TypeScriptEntityMemberGenerator
   {
-    private readonly SpecAnalyzer _specAnalyzer;
-
-    public TypeScriptEntityMemberGenerator(SpecAnalyzer specAnalyzer)
+    public static TypeScriptClassMember GenerateEntityMember(Spec spec, KeyValuePair<string, IEntityMemberInfo> member)
     {
-      _specAnalyzer = specAnalyzer ?? throw new ArgumentNullException(nameof(specAnalyzer));
-    }
-
-    public TypeScriptClassMember GenerateEntityMember(KeyValuePair<string, IEntityMemberInfo> member)
-    {
-      var resolvedType = _specAnalyzer.GetResolvedType(Constants.TypeScriptTarget, member.Value.Type);
-      var normalizedType = _specAnalyzer.IsNativeType(Constants.TypeScriptTarget, resolvedType) ? resolvedType : SpecFunctions.ToPascalCase(resolvedType);
+      var resolvedType = spec.GetResolvedType(Constants.TypeScriptTarget, member.Value.Type);
+      var normalizedType = spec.IsNativeType(Constants.TypeScriptTarget, resolvedType) ? resolvedType : SpecFunctions.ToPascalCase(resolvedType);
       var normalizedMemberName = SpecFunctions.ToCamelCase(member.Key);
       if (member.Value.IsCollection)
       {

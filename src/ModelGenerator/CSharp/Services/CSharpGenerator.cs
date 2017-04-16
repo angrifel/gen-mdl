@@ -22,49 +22,42 @@
 namespace ModelGenerator.CSharp.Services
 {
   using Model;
-  using System;
   using System.Collections.Generic;
   using System.IO;
 
   public class CSharpGenerator : IGenerator
   {
-    private readonly SpecAnalyzer _specAnalizer;
-
-    public CSharpGenerator(SpecAnalyzer specAnalizer)
+    public IEnumerable<GeneratorOutput> GenerateOutputs(Spec spec)
     {
-      _specAnalizer = specAnalizer ?? throw new ArgumentNullException(nameof(specAnalizer));
-    }
-
-    public IEnumerable<GeneratorOutput> GenerateOutputs()
-    {
-      var targetInfo = _specAnalizer.Spec.Targets[Constants.CSharpTarget];
-      var result = new GeneratorOutput[_specAnalizer.Spec.Enums.Count + _specAnalizer.Spec.Entities.Count];
+      var targetInfo = spec.Targets[Constants.CSharpTarget];
+      var result = new GeneratorOutput[spec.Enums.Count + spec.Entities.Count];
       var index = 0;
-      foreach (var @enum in _specAnalizer.Spec.Enums)
+      foreach (var @enum in spec.Enums)
       {
         result[index++] =
           new GeneratorOutput
           {
             Path = Path.Combine(targetInfo.Path, GetFilename(@enum.Key, targetInfo.AppendGeneratedExtension) + "." + Constants.CSharpExtension),
-            GenerationRoot = GenerateEnum(targetInfo.Namespace, @enum.Key, @enum.Value)
+            GenerationRoot = GenerateEnum(spec, @enum.Key)
           };
       }
 
-      foreach (var entity in _specAnalizer.Spec.Entities)
+      foreach (var entity in spec.Entities)
       {
         result[index++] =
           new GeneratorOutput
           {
             Path = Path.Combine(targetInfo.Path, GetFilename(entity.Key, targetInfo.AppendGeneratedExtension) + "." + Constants.CSharpExtension),
-            GenerationRoot = GenerateEntity(entity.Key)
+            GenerationRoot = GenerateEntity(spec, entity.Key)
           };
       }
 
       return result;
     }
 
-    private static IGenerationRoot GenerateEnum(string @namespace, string enumName, IList<EnumMember> enumMembers)
+    private static IGenerationRoot GenerateEnum(Spec spec, string enumName)
     {
+      var enumMembers = spec.Enums[enumName];
       var members = new List<CSharpEnumMember>(enumMembers.Count);
       foreach (var member in enumMembers)
       {
@@ -73,7 +66,7 @@ namespace ModelGenerator.CSharp.Services
 
       return new CSharpNamespace
       {
-        Name = @namespace,
+        Name = spec.Targets[Constants.CSharpTarget].Namespace,
         Types = new List<CSharpType>
         {
           new CSharpEnum
@@ -94,16 +87,16 @@ namespace ModelGenerator.CSharp.Services
       };
     }
 
-    private IGenerationRoot GenerateEntity(string entityName)
+    private static IGenerationRoot GenerateEntity(Spec spec, string entityName)
     {
       var namespaces = new List<string>();
-      var csharpClass = CSharpEntityGenerator.GenerateEntity(_specAnalizer.Spec, entityName);
+      var csharpClass = CSharpEntityGenerator.GenerateEntity(spec, entityName);
       csharpClass.PopulateNamespaces(namespaces);
       namespaces.Sort();
 
       return new CSharpNamespace
       {
-        Name = _specAnalizer.Spec.Targets[Constants.CSharpTarget].Namespace,
+        Name = spec.Targets[Constants.CSharpTarget].Namespace,
         Namespaces = namespaces,
         Types = new List<CSharpType> { csharpClass }
       };

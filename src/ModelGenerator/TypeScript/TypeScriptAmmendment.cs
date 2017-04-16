@@ -28,8 +28,8 @@ namespace ModelGenerator.TypeScript
   {
     public void AmmedSpecification(Spec spec)
     {
-      if (!spec.Targets.ContainsKey("typescript")) return;
-      var target = spec.Targets["typescript"];
+      if (!spec.Targets.ContainsKey(Constants.TypeScriptTarget)) return;
+      var target = spec.Targets[Constants.TypeScriptTarget];
       var ta = target.TypeAliases;
       string getExceptionMessage(string builtInType) => "builtin type '" + builtInType + "' cannot be overriden.";
 

@@ -23,26 +23,15 @@ namespace ModelGenerator
 {
   using ModelGenerator.CSharp.Services;
   using ModelGenerator.TypeScript.Services;
-  using System;
 
   public class GeneratorFactory : IGeneratorFactory
   {
-    private readonly ICSharpGeneratorFactory _csharpGeneratorFactory;
-
-    private readonly ITypeScriptGeneratorFactory _typescriptGeneratorFactory;
-
-    public GeneratorFactory(ICSharpGeneratorFactory csharpGeneratorFactory, ITypeScriptGeneratorFactory typescriptGeneratorFactory)
-    {
-      _csharpGeneratorFactory = csharpGeneratorFactory ?? throw new ArgumentNullException(nameof(csharpGeneratorFactory));
-      _typescriptGeneratorFactory = typescriptGeneratorFactory ?? throw new ArgumentNullException(nameof(typescriptGeneratorFactory));
-    }
-
-    public IGenerator CreateGenerator(string target, SpecAnalyzer specAnalyzer)
+    public IGenerator CreateGenerator(string target)
     {
       switch (target)
       {
-        case Constants.CSharpTarget: return _csharpGeneratorFactory.CreateGenerator(specAnalyzer);
-        case Constants.TypeScriptTarget: return _typescriptGeneratorFactory.CreateGenerator(specAnalyzer);
+        case Constants.CSharpTarget: return new CSharpGenerator();
+        case Constants.TypeScriptTarget: return new TypeScriptGenerator();
         default: return null;
       }
     }

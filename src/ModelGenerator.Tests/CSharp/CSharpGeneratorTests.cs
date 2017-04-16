@@ -25,11 +25,10 @@
             { Constants.CSharpTarget, new TargetInfo { Path = "some_path", Namespace = "Blogged"} }
           }
         };
-      var specAnalyzer = new SpecAnalyzer(spec);
-      var generator = new CSharpGenerator(specAnalyzer);
+      var generator = new CSharpGenerator();
 
       // act
-      var outputs = generator.GenerateOutputs();
+      var outputs = generator.GenerateOutputs(spec);
 
       // assert
       Assert.Equal(0, outputs.Count());
@@ -55,11 +54,10 @@
           }
         };
 
-      var specAnalyzer = new SpecAnalyzer(spec);
-      var generator = new CSharpGenerator(specAnalyzer);
+      var generator = new CSharpGenerator();
 
       // act
-      var outputs = generator.GenerateOutputs();
+      var outputs = generator.GenerateOutputs(spec);
 
       // assert
       var outputList = outputs?.ToList();
@@ -107,11 +105,10 @@
         };
       var ammendment = new AmmendmentFactory().CreateAmmendment(Constants.CSharpTarget);
       ammendment.AmmedSpecification(spec);
-      var specAnalyzer = new SpecAnalyzer(spec);
-      var generator = new CSharpGenerator(specAnalyzer);
+      var generator = new CSharpGenerator();
 
       // act
-      var outputs = generator.GenerateOutputs();
+      var outputs = generator.GenerateOutputs(spec);
 
       // assert
       var outputList = outputs?.ToList();
@@ -226,11 +223,10 @@
 
       var ammendment = new AmmendmentFactory().CreateAmmendment(Constants.CSharpTarget);
       ammendment.AmmedSpecification(spec);
-      var specAnalyzer = new SpecAnalyzer(spec);
-      var generator = new CSharpGenerator(specAnalyzer);
+      var generator = new CSharpGenerator();
 
       // act
-      var outputs = generator.GenerateOutputs();
+      var outputs = generator.GenerateOutputs(spec);
 
       // assert
       var outputList = outputs?.ToList();

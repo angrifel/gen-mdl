@@ -23,26 +23,15 @@ namespace ModelGenerator.TypeScript.Services
 {
   using ModelGenerator.Model;
   using ModelGenerator.TypeScript.Utilities;
-  using System;
   using System.Collections.Generic;
 
-  public class TypeScriptEntityGenerator : ITypeScriptEntityGenerator
+  public class TypeScriptEntityGenerator
   {
-    private readonly SpecAnalyzer _specAnalyzer;
-
-    private readonly ITypeScriptEntityMemberGeneratorFactory _typeScriptEntityMemberGeneratorFactory;
-
-    public TypeScriptEntityGenerator(SpecAnalyzer specAnalyzer, ITypeScriptEntityMemberGeneratorFactory typeScriptEntityMemberGeneratorFactory)
+    public static IEnumerable<TypeScriptDeclarationOrStatement> GetImportStatementsForEntity(Spec spec, string entityName, IDictionary<string, IEntityMemberInfo> entityMembers)
     {
-      _specAnalyzer = specAnalyzer ?? throw new ArgumentNullException(nameof(specAnalyzer));
-      _typeScriptEntityMemberGeneratorFactory = typeScriptEntityMemberGeneratorFactory ?? throw new ArgumentNullException(nameof(typeScriptEntityMemberGeneratorFactory));
-    }
-
-    public IEnumerable<TypeScriptDeclarationOrStatement> GetImportStatementsForEntity(string entityName, IDictionary<string, IEntityMemberInfo> entityMembers)
-    {
-      var targetInfo = _specAnalyzer.Spec.Targets[Constants.TypeScriptTarget];
-      var enumDependencies = _specAnalyzer.GetDirectEnumDependencies(Constants.TypeScriptTarget, entityName);
-      var entityDependencies = _specAnalyzer.GetDirectEntityDependencies(Constants.TypeScriptTarget, entityName);
+      var targetInfo = spec.Targets[Constants.TypeScriptTarget];
+      var enumDependencies = spec.GetDirectEnumDependencies(Constants.TypeScriptTarget, entityName);
+      var entityDependencies = spec.GetDirectEntityDependencies(Constants.TypeScriptTarget, entityName);
 
       foreach (var @enum in enumDependencies)
       {
@@ -55,15 +44,14 @@ namespace ModelGenerator.TypeScript.Services
       }
     }
 
-    public TypeScriptClass GenerateEntity(string entityName, IDictionary<string, IEntityMemberInfo> entityMembers)
+    public static TypeScriptClass GenerateEntity(Spec spec, string entityName, IDictionary<string, IEntityMemberInfo> entityMembers)
     {
       var members = new List<TypeScriptClassMember>(entityMembers.Count);
-      var typeScriptEntityMemberGenerator = _typeScriptEntityMemberGeneratorFactory.CreateTypeScriptEntityGenerator(_specAnalyzer);
       foreach (var entityMember in entityMembers)
       {
         if (!entityMember.Value.Exclude.Contains(Constants.TypeScriptTarget))
         {
-          members.Add(typeScriptEntityMemberGenerator.GenerateEntityMember(entityMember));
+          members.Add(TypeScriptEntityMemberGenerator.GenerateEntityMember(spec, entityMember));
         }
       }
 

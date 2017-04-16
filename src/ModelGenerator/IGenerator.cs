@@ -21,10 +21,11 @@
 
 namespace ModelGenerator
 {
+  using ModelGenerator.Model;
   using System.Collections.Generic;
 
   public interface IGenerator
   {
-    IEnumerable<GeneratorOutput> GenerateOutputs();
+    IEnumerable<GeneratorOutput> GenerateOutputs(Spec spec);
   }
 }

@@ -35,8 +35,6 @@ namespace ModelGenerator
 
     private readonly IAmmedmentFactory _ammendmentFactory;
 
-    private SpecAnalyzer _specAnalyzer;
-
     public SpecTranslator(ISpecSource specSource, IGeneratorFactory generatorFactory, IAmmedmentFactory ammendmentFactory)
     {
       _specSource = specSource;
@@ -47,7 +45,6 @@ namespace ModelGenerator
     public IEnumerable<GeneratorOutput> GetOutput()
     {
       var spec = _specSource.GetSpec();
-      _specAnalyzer = new SpecAnalyzer(spec);
 
       ValidateSpec(spec);
       AmmedSpecification(spec);
@@ -55,8 +52,8 @@ namespace ModelGenerator
 
       foreach (var target in Targets)
       {
-        var generator = _generatorFactory.CreateGenerator(target, _specAnalyzer);
-        foreach (var output in generator.GenerateOutputs())
+        var generator = _generatorFactory.CreateGenerator(target);
+        foreach (var output in generator.GenerateOutputs(spec))
         {
           yield return output;
         }
@@ -82,7 +79,7 @@ namespace ModelGenerator
         {
           foreach (var member in (IDictionary<string, IEntityMemberInfo>)entity.Value.Members)
           {
-            if (!_specAnalyzer.IsTypeResolvable(target, member.Value.Type))
+            if (!spec.IsTypeResolvable(target, member.Value.Type))
             {
               throw new Exception($"{target} verification failed: Unrecognized type '{member.Value}' in '{entity.Key}.{member.Key}'.");
             }
