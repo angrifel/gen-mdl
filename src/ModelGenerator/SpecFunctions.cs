@@ -52,7 +52,7 @@ namespace ModelGenerator
       return resultBuilder.ToString();
     }
 
-    public static bool IsLowerCaseWithUnderscore(string identifier)
+    public static bool IsSnakeCaseLowerCase(string identifier)
     {
       for (var i = 0; i < identifier.Length; i++)
       {

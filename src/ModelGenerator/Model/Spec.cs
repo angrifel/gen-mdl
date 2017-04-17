@@ -21,118 +21,14 @@
 
 namespace ModelGenerator.Model
 {
-  using System;
   using System.Collections.Generic;
-  using System.Text;
-  using System.Linq;
 
-  public class Spec
+  public partial class Spec
   {
-    private static readonly string[] _emptyArray = new string[0];
-
-    private Dictionary<string, Dictionary<string, string>> _resolvedAliasesInternal;
-
     public Dictionary<string, TargetInfo> Targets { get; set; }
 
     public Dictionary<string, EntityInfo> Entities { get; set; } = new Dictionary<string, EntityInfo>();
 
     public Dictionary<string, List<EnumMember>> Enums { get; set; } = new Dictionary<string, List<EnumMember>>();
-
-    public IEnumerable<string> GetDirectEnumDependencies(string target, string type) =>
-      IsEntity(type)
-        ? Entities[type].Members.Where(_ => !_.Value.Exclude.Contains(target) && IsEnum(_.Value.Type)).Select(_ => _.Value.Type)
-        : _emptyArray;
-
-    public IEnumerable<string> GetDirectEntityDependencies(string target, string type) =>
-      IsEntity(type)
-        ? Entities[type].Members.Where(_ => !_.Value.Exclude.Contains(target) && IsEntity(_.Value.Type)).Select(_ => _.Value.Type)
-        : _emptyArray;
-
-    public bool IsTypeResolvable(string target, string type) =>
-      ResolvedAliases[target].ContainsKey(type) ||
-      IsEnum(type) ||
-      IsEntity(type);
-
-    public bool IsNativeType(string target, string type) => Targets[target].NativeTypes.Contains(type);
-
-    public string GetResolvedType(string target, string type) =>
-      ResolvedAliases.ContainsKey(target)
-        ? ResolvedAliases[target].ContainsKey(type)
-          ? ResolvedAliases[target][type]
-          : IsEnum(type) || IsEntity(type)
-            ? type
-            : null
-        : null;
-
-    private Dictionary<string, Dictionary<string, string>> ResolvedAliases
-    {
-      get
-      {
-        if (_resolvedAliasesInternal == null)
-        {
-          var ra = new Dictionary<string, Dictionary<string, string>>();
-
-          foreach (var target in Targets.Keys)
-          {
-            var targetInfo = Targets[target];
-            var resolvedAliases = new Dictionary<string, string>();
-            var visitedAliases = new LinkedList<string>();
-            foreach (var alias in targetInfo.TypeAliases.Keys)
-            {
-              visitedAliases.AddLast(alias);
-              var resolvedType = targetInfo.TypeAliases[alias];
-              while (!IsProperType(target, resolvedType))
-              {
-                if (visitedAliases.Contains(resolvedType))
-                {
-                  throw CreateCircularReferenceException(target, resolvedType, visitedAliases);
-                }
-
-                visitedAliases.AddLast(resolvedType);
-                resolvedType = targetInfo.TypeAliases[resolvedType];
-              }
-
-              resolvedAliases.Add(alias, resolvedType);
-              visitedAliases.Clear();
-            }
-
-            ra.Add(target, resolvedAliases);
-          }
-
-          _resolvedAliasesInternal = ra;
-        }
-
-        return _resolvedAliasesInternal;
-      }
-    }
-    private bool IsEntity(string type) => Entities.ContainsKey(type);
-
-    private bool IsEnum(string type) => Enums.ContainsKey(type);
-
-    private bool IsProperType(string target, string resolvedType) =>
-      IsNativeType(target, resolvedType) || IsEntity(resolvedType) || IsEnum(resolvedType);
-
-    private static Exception CreateCircularReferenceException(string target, string resolvedType, IEnumerable<string> visitedAliases)
-    {
-      var makeMessage = false;
-      var errorBuilder = new StringBuilder();
-      errorBuilder.Append($"{target} verification failed: circular reference found. ");
-      foreach (var va in visitedAliases)
-      {
-        if (!makeMessage && va == resolvedType)
-        {
-          makeMessage = true;
-        }
-
-        if (makeMessage)
-        {
-          errorBuilder.Append($"'{va}' -> ");
-        }
-      }
-
-      errorBuilder.Append($"'{resolvedType}'.");
-
-      return new Exception(errorBuilder.ToString());
-    }
   }
 }

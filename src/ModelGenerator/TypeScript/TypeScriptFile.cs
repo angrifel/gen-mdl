@@ -31,6 +31,8 @@ namespace ModelGenerator.TypeScript
 
     public void Generate(TextWriter output)
     {
+      if (Contents == null) return;
+
       var previousItemType = (Type)null;
       foreach (var item in Contents)
       {

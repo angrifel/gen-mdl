@@ -94,7 +94,7 @@ namespace ModelGenerator
 
       void validateIdentifier(string identifier, string errorLocationPrefix)
       {
-        if (!SpecFunctions.IsLowerCaseWithUnderscore(identifier))
+        if (!SpecFunctions.IsSnakeCaseLowerCase(identifier))
         {
           throw new Exception(errorLocationPrefix + " must be composed of lowercase letters, digits and underscores only.");
         }

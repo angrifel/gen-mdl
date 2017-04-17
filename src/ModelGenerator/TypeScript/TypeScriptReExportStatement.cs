@@ -42,7 +42,7 @@ namespace ModelGenerator.TypeScript
         output.Write($"export {{ {Object}");
         if (Alias != null)
         {
-          output.Write($"as {Alias}");
+          output.Write($" as {Alias}");
         }
 
         output.WriteLine($" }} from './{FileName}';");
