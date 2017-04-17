@@ -2,6 +2,7 @@
 - Prevented replacement of built-in types.
 - added property to target to support adding '.generated' extension to files.
 - added namespace hoisting.
+- added test cases for TypeScriptFile, TypeScriptReExportStatement and SpecFunctions
 
 ## Version 0.2
 - Fixed bug in entity syntax, added 'members' property.
