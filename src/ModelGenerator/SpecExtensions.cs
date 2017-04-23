@@ -21,7 +21,9 @@
 
 namespace ModelGenerator
 {
+  using ModelGenerator.CSharp.Utilities;
   using ModelGenerator.Model;
+  using ModelGenerator.TypeScript.Utilities;
   using System.Collections.Generic;
   using System.Linq;
 
@@ -44,8 +46,6 @@ namespace ModelGenerator
       spec.IsEnum(type) ||
       spec.IsEntity(type);
 
-    public static bool IsNativeType(this Spec spec, string target, string type) => spec.Targets[target].NativeTypes.Contains(type);
-
     public static string GetResolvedType(this Spec spec, string target, string type) =>
       spec.ResolvedAliases.ContainsKey(target)
         ? spec.ResolvedAliases[target].ContainsKey(type)
@@ -60,6 +60,11 @@ namespace ModelGenerator
     public static bool IsEnum(this Spec spec, string type) => spec.Enums.ContainsKey(type);
 
     public static bool IsProperType(this Spec spec, string target, string resolvedType) =>
-      spec.IsNativeType(target, resolvedType) || spec.IsEntity(resolvedType) || spec.IsEnum(resolvedType);
+      (
+        (target == Constants.CSharpTarget && CSharpFacts.IsNativeType(resolvedType)) || 
+        (target == Constants.TypeScriptTarget && TypeScriptFacts.IsNativeType(resolvedType))
+      ) || 
+      spec.IsEntity(resolvedType) || 
+      spec.IsEnum(resolvedType);
   }
 }

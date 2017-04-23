@@ -21,7 +21,6 @@
 
 namespace ModelGenerator.CSharp
 {
-  using System.Collections.Generic;
   using ModelGenerator.Model;
 
   public class CSharpAmmendment : ITargetAmmedment
@@ -48,8 +47,6 @@ namespace ModelGenerator.CSharp
       ta.Add("time", "TimeSpan", getExceptionMessage);
       ta.Add("datetime", "DateTimeOffset", getExceptionMessage);
       ta.Add("object", "object", getExceptionMessage);
-
-      target.NativeTypes = new HashSet<string>(new[] { "bool", "byte", "short", "int", "long", "float", "double", "decimal", "char", "string", "Guid", "DateTime", "TimeSpan", "DateTimeOffset", "object" });
     }
   }
 }

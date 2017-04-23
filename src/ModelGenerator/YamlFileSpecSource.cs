@@ -36,20 +36,9 @@ namespace ModelGenerator
 
     public Spec GetSpec()
     {
-      Stream specStream = null;
-      TextReader specReader = null;
-      try
+      using (var stream = new FileStream(_specFile, FileMode.Open, FileAccess.Read, FileShare.Read, 65536, FileOptions.SequentialScan))
       {
-        specStream = new FileStream(_specFile, FileMode.Open,FileAccess.Read, FileShare.Read, 65536, FileOptions.SequentialScan);
-        specReader = new StreamReader(specStream);
-
-        var yamlReaderSpecSource = new YamlReaderSpecSource(specReader);
-        return yamlReaderSpecSource.GetSpec();
-      }
-      finally
-      {
-        specReader?.Dispose();
-        specStream?.Dispose();
+        return new YamlStreamSpecSource(stream).GetSpec();
       }
     }
   }

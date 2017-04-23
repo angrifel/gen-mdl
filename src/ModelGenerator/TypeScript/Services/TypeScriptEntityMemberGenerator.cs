@@ -22,6 +22,7 @@
 namespace ModelGenerator.TypeScript.Services
 {
   using ModelGenerator.Model;
+  using ModelGenerator.TypeScript.Utilities;
   using System.Collections.Generic;
 
   public class TypeScriptEntityMemberGenerator
@@ -29,7 +30,7 @@ namespace ModelGenerator.TypeScript.Services
     public static TypeScriptClassMember GenerateEntityMember(Spec spec, KeyValuePair<string, IEntityMemberInfo> member)
     {
       var resolvedType = spec.GetResolvedType(Constants.TypeScriptTarget, member.Value.Type);
-      var normalizedType = spec.IsNativeType(Constants.TypeScriptTarget, resolvedType) ? resolvedType : SpecFunctions.ToPascalCase(resolvedType);
+      var normalizedType = TypeScriptFacts.IsNativeType(resolvedType) ? resolvedType : SpecFunctions.ToPascalCase(resolvedType);
       var normalizedMemberName = SpecFunctions.ToCamelCase(member.Key);
       if (member.Value.IsCollection)
       {

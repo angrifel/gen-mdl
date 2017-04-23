@@ -22,7 +22,6 @@
 namespace ModelGenerator.TypeScript
 {
   using ModelGenerator.Model;
-  using System.Collections.Generic;
 
   public class TypeScriptAmmendment : ITargetAmmedment
   {
@@ -48,7 +47,6 @@ namespace ModelGenerator.TypeScript
       ta.Add("time", "Date", getExceptionMessage);
       ta.Add("datetime", "Date", getExceptionMessage);
       ta.Add("object", "any", getExceptionMessage);
-      target.NativeTypes = new HashSet<string>(new[] { "boolean", "number", "string", "Date", "any" });
     }
   }
 }

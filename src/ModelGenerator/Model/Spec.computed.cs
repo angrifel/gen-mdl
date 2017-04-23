@@ -51,11 +51,11 @@ namespace ModelGenerator.Model
 
             if (makeMessage)
             {
-              errorBuilder.Append($"'{va}' -> ");
+              errorBuilder.Append("'").Append(va).Append("' -> ");
             }
           }
 
-          errorBuilder.Append($"'{resolvedType}'.");
+          errorBuilder.Append("'").Append(resolvedType).Append("'.");
 
           return new Exception(errorBuilder.ToString());
         }

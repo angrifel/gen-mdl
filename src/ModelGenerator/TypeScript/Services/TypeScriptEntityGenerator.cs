@@ -27,7 +27,7 @@ namespace ModelGenerator.TypeScript.Services
 
   public class TypeScriptEntityGenerator
   {
-    public static IEnumerable<TypeScriptDeclarationOrStatement> GetImportStatementsForEntity(Spec spec, string entityName, IDictionary<string, IEntityMemberInfo> entityMembers)
+    public static IEnumerable<TypeScriptDeclarationOrStatement> GetImportStatementsForEntity(Spec spec, string entityName)
     {
       var targetInfo = spec.Targets[Constants.TypeScriptTarget];
       var enumDependencies = spec.GetDirectEnumDependencies(Constants.TypeScriptTarget, entityName);
@@ -44,8 +44,9 @@ namespace ModelGenerator.TypeScript.Services
       }
     }
 
-    public static TypeScriptClass GenerateEntity(Spec spec, string entityName, IDictionary<string, IEntityMemberInfo> entityMembers)
+    public static TypeScriptClass GenerateEntity(Spec spec, string entityName)
     {
+      var entityMembers = (IDictionary<string, IEntityMemberInfo>)spec.Entities[entityName].Members;
       var members = new List<TypeScriptClassMember>(entityMembers.Count);
       foreach (var entityMember in entityMembers)
       {

@@ -95,6 +95,7 @@
     <Compile Include="CSharp\CSharpNamespace.cs" />
     <Compile Include="CSharp\CSharpRequiredAttributeBehavior.cs" />
     <Compile Include="CSharp\CSharpType.cs" />
+    <Compile Include="CSharp\Utilities\CSharpFacts.cs" />
     <Compile Include="DictionaryExtensions.cs" />
     <Compile Include="ListExtensions.cs" />
     <Compile Include="Model\EntityInfo.cs" />
@@ -102,7 +103,9 @@
     <Compile Include="SpecExtensions.cs" />
     <Compile Include="TypeScript\Services\TypeScriptEntityGenerator.cs" />
     <Compile Include="TypeScript\Services\TypeScriptEntityMemberGenerator.cs" />
+    <Compile Include="TypeScript\Utilities\TypeScriptFacts.cs" />
     <Compile Include="TypeScript\Utilities\TypeScriptFileUtilities.cs" />
+    <Compile Include="YamlStreamSpecSource.cs" />
     <Compile Include="YamlFileSpecSource.cs" />
     <Compile Include="GeneratorFactory.cs" />
     <Compile Include="GeneratorOutput.cs" />

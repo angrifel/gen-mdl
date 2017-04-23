@@ -21,30 +21,25 @@
 
 namespace ModelGenerator
 {
-  using ModelGenerator.Model;
+  using Model;
   using System;
   using System.IO;
-  using YamlDotNet.Serialization;
-  using YamlDotNet.Serialization.NamingConventions;
-  using YamlDotNetExtensions;
 
-  public class YamlReaderSpecSource : ISpecSource
+  public class YamlStreamSpecSource : ISpecSource
   {
-    private readonly TextReader _reader;
+    private readonly Stream _stream;
 
-    public YamlReaderSpecSource(TextReader reader)
+    public YamlStreamSpecSource(Stream stream)
     {
-      _reader = reader ?? throw new ArgumentNullException(nameof(reader));
+      _stream = stream ?? throw new ArgumentNullException(nameof(stream));
     }
 
     public Spec GetSpec()
     {
-      var deserializer = (Deserializer)null;
-      deserializer = new DeserializerBuilder()
-        .WithTypeConverter(new IEntityMemberInfoConverter(() => deserializer))
-        .WithTypeConverter(new EnumMemberConverter())
-        .WithNamingConvention(new UnderscoredNamingConvention()).Build();
-      return deserializer.Deserialize<Spec>(_reader);
+      using (var reader = new StreamReader(_stream))
+      {
+        return new YamlReaderSpecSource(reader).GetSpec();
+      }
     }
   }
 }

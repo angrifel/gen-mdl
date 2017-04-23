@@ -21,19 +21,18 @@
 
 namespace ModelGenerator.CSharp.Services
 {
+  using ModelGenerator.CSharp.Utilities;
   using ModelGenerator.Model;
   using System.Collections.Generic;
 
   public class CSharpEntityMemberGenerator
   {
-    private static readonly string[] StructNativeTypes = new string[] { "bool", "byte", "short", "int", "long", "float", "double", "decimal", "char", "Guid", "DateTime", "TimeSpan", "DateTimeOffset" };
-
     public static CSharpClassMember GenerateEntityMember(Spec spec, string entity, string member)
     {
       var memberInfo = spec.Entities[entity].Members[member];
       var resolvedType = spec.GetResolvedType(Constants.CSharpTarget, memberInfo.Type);
-      var implementationType = spec.IsNativeType(Constants.CSharpTarget, resolvedType) ? resolvedType : SpecFunctions.ToPascalCase(resolvedType);
-      var isValueType = IsValueType(implementationType) || spec.Enums.ContainsKey(resolvedType);
+      var implementationType = CSharpFacts.IsNativeType(resolvedType) ? resolvedType : SpecFunctions.ToPascalCase(resolvedType);
+      var isValueType = CSharpFacts.IsStructNativeType(implementationType) || spec.Enums.ContainsKey(resolvedType);
       var memberType = memberInfo.IsCollection
         ? "IList<" + implementationType + ">"
         : implementationType + (memberInfo.IsNullable && isValueType ? "?" : string.Empty);
@@ -80,19 +79,6 @@ namespace ModelGenerator.CSharp.Services
           return "System";
         default: return null;
       }
-    }
-
-    private static bool IsValueType(string type)
-    {
-      for (int i = 0; i < StructNativeTypes.Length; i++)
-      {
-        if (StructNativeTypes[i] == type)
-        {
-          return true;
-        }
-      }
-
-      return false;
     }
   }
 }

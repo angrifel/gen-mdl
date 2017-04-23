@@ -31,27 +31,6 @@ namespace ModelGenerator.Tests.TypeScript
   public class TypeScriptAmmendmentTests
   {
     [Fact]
-    public void TestAmmendmentFillAllNativeTypes()
-    {
-      // arrange
-      var spec = new Spec { Targets = new Dictionary<string, TargetInfo> { { Constants.TypeScriptTarget, new TargetInfo() } } };
-      var ammendment = new TypeScriptAmmendment();
-
-      // act
-      ammendment.AmmedSpecification(spec);
-
-      // assert
-      var nativeTypes = spec.Targets[Constants.TypeScriptTarget].NativeTypes;
-
-      Assert.True(nativeTypes.Remove("boolean"));
-      Assert.True(nativeTypes.Remove("number"));
-      Assert.True(nativeTypes.Remove("string"));
-      Assert.True(nativeTypes.Remove("Date"));
-      Assert.True(nativeTypes.Remove("any"));
-      Assert.True(nativeTypes.Count == 0, "Additional Native types present than those that were tested. Adjust your unit test.");
-    }
-
-    [Fact]
     public void TestAmmendSpecificationMapsAllAliasesOnEmptySpec()
     {
       // arrange

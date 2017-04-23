@@ -37,15 +37,9 @@ namespace ModelGenerator.TypeScript.Services
       var index = 0;
       foreach (var @enum in spec.Enums)
       {
-        var enumFileName = TypeScriptFileUtilities.GetFileName(@enum.Key, targetInfo.AppendGeneratedExtension);
-        result[index++] =
-          new GeneratorOutput
-          {
-            Path = Path.Combine(targetInfo.Path, enumFileName + "." + Constants.TypeScriptExtension),
-            GenerationRoot = GenerateEnum(@enum.Key, @enum.Value)
-          };
-
-        barrelContents.Add(new TypeScriptReExportStatement { FileName = enumFileName });
+        var enumOutput = GenerateEnum(spec, @enum.Key);
+        result[index++] = enumOutput;
+        barrelContents.Add(new TypeScriptReExportStatement { FileName = Path.GetFileNameWithoutExtension(enumOutput.Path) });
       }
 
       foreach (var entity in spec.Entities)
@@ -55,7 +49,7 @@ namespace ModelGenerator.TypeScript.Services
           new GeneratorOutput
           {
             Path = Path.Combine(targetInfo.Path, entityFileName + "." + Constants.TypeScriptExtension),
-            GenerationRoot = GenerateEntity(spec, entity.Key, entity.Value.Members)
+            GenerationRoot = GenerateEntity(spec, entity.Key)
           };
 
         barrelContents.Add(new TypeScriptReExportStatement { FileName = entityFileName });
@@ -74,27 +68,35 @@ namespace ModelGenerator.TypeScript.Services
 
     }
 
-    private static TypeScriptFile GenerateEnum(string enumName, IList<EnumMember> enumMembers)
+    private static GeneratorOutput GenerateEnum(Spec spec, string @enum)
     {
-      var normalizedEnumName = SpecFunctions.ToPascalCase(enumName);
+      var targetInfo = spec.Targets[Constants.TypeScriptTarget];
+      var enumFileName = TypeScriptFileUtilities.GetFileName(@enum, targetInfo.AppendGeneratedExtension);
+      var enumMembers = spec.Enums[@enum];
+      var normalizedEnumName = SpecFunctions.ToPascalCase(@enum);
       var members = new List<TypeScriptEnumMember>(enumMembers.Count);
       for (int i = 0; i < enumMembers.Count; i++)
       {
         members.Add(GenerateEnumMember(enumMembers[i]));
       }
 
-      return new TypeScriptFile
+      return new GeneratorOutput
       {
-        Contents = new List<TypeScriptDeclarationOrStatement>
+        Path = Path.Combine(targetInfo.Path, enumFileName + "." + Constants.TypeScriptExtension),
+        GenerationRoot = new TypeScriptFile
         {
-          new TypeScriptEnum
+          Contents = new List<TypeScriptDeclarationOrStatement>
           {
-            Name = normalizedEnumName,
-            Members = members
-          },
-          new TypeScriptExportStatement { IsDefault = true, Object = normalizedEnumName }
+            new TypeScriptEnum
+            {
+              Name = normalizedEnumName,
+              Members = members
+            },
+            new TypeScriptExportStatement { IsDefault = true, Object = normalizedEnumName }
+          }
         }
       };
+      
     }
 
     private static TypeScriptEnumMember GenerateEnumMember(EnumMember member)
@@ -106,16 +108,16 @@ namespace ModelGenerator.TypeScript.Services
       };
     }
 
-    private TypeScriptFile GenerateEntity(Spec spec, string entityName, IDictionary<string, IEntityMemberInfo> entityMembers)
+    private TypeScriptFile GenerateEntity(Spec spec, string entityName)
     {
       var fileContents = new List<TypeScriptDeclarationOrStatement>();
 
-      fileContents.AddRange(TypeScriptEntityGenerator.GetImportStatementsForEntity(spec, entityName, entityMembers));
+      fileContents.AddRange(TypeScriptEntityGenerator.GetImportStatementsForEntity(spec, entityName));
       fileContents.Add(
         new TypeScriptExportStatement
         {
           IsDefault = true,
-          TypeDeclaration =TypeScriptEntityGenerator.GenerateEntity(spec, entityName, entityMembers)
+          TypeDeclaration =TypeScriptEntityGenerator.GenerateEntity(spec, entityName)
         });
 
       return new TypeScriptFile { Contents = fileContents };

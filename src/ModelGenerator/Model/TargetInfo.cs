@@ -22,16 +22,12 @@
 namespace ModelGenerator.Model
 {
   using System.Collections.Generic;
-  using YamlDotNet.Serialization;
 
   public class TargetInfo
   {
     public string Path { get; set; }
 
     public IDictionary<string, string> TypeAliases { get; set; } = new Dictionary<string, string>();
-
-    [YamlIgnore]
-    public ISet<string> NativeTypes { get; set; }
 
     public bool AppendGeneratedExtension { get; set; }
 

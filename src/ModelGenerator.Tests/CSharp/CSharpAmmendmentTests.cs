@@ -31,37 +31,6 @@ namespace ModelGenerator.Tests.CSharp
   public class CSharpAmmendmentTests
   {
     [Fact]
-    public void TestAmmendmentFillAllNativeTypes()
-    {
-      // arrange
-      var spec = new Spec { Targets = new Dictionary<string, TargetInfo> { { Constants.CSharpTarget, new TargetInfo() } } };
-      var ammendment = new CSharpAmmendment();
-
-      // act
-      ammendment.AmmedSpecification(spec);
-
-      // assert
-      var nativeTypes = spec.Targets[Constants.CSharpTarget].NativeTypes;
-      
-      Assert.True(nativeTypes.Remove("bool"));
-      Assert.True(nativeTypes.Remove("char"));
-      Assert.True(nativeTypes.Remove("byte"));
-      Assert.True(nativeTypes.Remove("short"));
-      Assert.True(nativeTypes.Remove("int"));
-      Assert.True(nativeTypes.Remove("long"));
-      Assert.True(nativeTypes.Remove("float"));
-      Assert.True(nativeTypes.Remove("double"));
-      Assert.True(nativeTypes.Remove("decimal"));
-      Assert.True(nativeTypes.Remove("string"));
-      Assert.True(nativeTypes.Remove("object"));
-      Assert.True(nativeTypes.Remove("TimeSpan"));
-      Assert.True(nativeTypes.Remove("DateTime"));
-      Assert.True(nativeTypes.Remove("DateTimeOffset"));
-      Assert.True(nativeTypes.Remove("Guid"));
-      Assert.True(nativeTypes.Count == 0, "Additional Native types present than those that were tested. Adjust your unit test.");
-    }
-
-    [Fact]
     public void TestAmmendSpecificationMapsAllAliasesOnEmptySpec()
     {
       // arrange
