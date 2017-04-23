@@ -25,6 +25,7 @@ namespace ModelGenerator.TypeScript.Services
   using ModelGenerator.TypeScript.Utilities;
   using System.Collections.Generic;
   using System.IO;
+  using System.Linq;
 
   public class TypeScriptGenerator : IGenerator
   {
@@ -33,7 +34,10 @@ namespace ModelGenerator.TypeScript.Services
     {
       var targetInfo = spec.Targets[Constants.TypeScriptTarget];
       var barrelContents = new List<TypeScriptDeclarationOrStatement>();
-      var result = new GeneratorOutput[spec.Enums.Count + spec.Entities.Count + 1];
+      var typeCount = spec.Enums.Count + spec.Entities.Count;
+      if (typeCount == 0) return Enumerable.Empty<GeneratorOutput>();
+
+      var result = new GeneratorOutput[typeCount + 1];
       var index = 0;
       foreach (var @enum in spec.Enums)
       {

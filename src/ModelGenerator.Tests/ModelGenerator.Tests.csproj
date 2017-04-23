@@ -78,6 +78,7 @@
     <Compile Include="TypeScript\TypeScriptEnumMemberTests.cs" />
     <Compile Include="TypeScript\TypeScriptEnumTests.cs" />
     <Compile Include="TypeScript\TypeScriptExportStatementTests.cs" />
+    <Compile Include="TypeScript\TypeScriptGeneratorTests.cs" />
     <Compile Include="TypeScript\TypeScriptImportStatementTests.cs" />
     <Compile Include="TypeScript\TypeScriptReExportStatementTests.cs" />
     <Compile Include="TypeScript\Utilities\TypeScriptFactsTests.cs" />
