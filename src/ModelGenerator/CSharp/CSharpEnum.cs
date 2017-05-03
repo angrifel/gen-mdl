@@ -21,10 +21,12 @@
 
 namespace ModelGenerator.CSharp
 {
+  using System;
+  using System.Linq;
   using System.Collections.Generic;
   using System.IO;
 
-  public class CSharpEnum : CSharpType
+  public class CSharpEnum : CSharpType, IEquatable<CSharpEnum>
   {
     public string Name { get; set; }
 
@@ -48,5 +50,17 @@ namespace ModelGenerator.CSharp
     {
       // always empty
     }
+
+    public bool Equals(CSharpEnum other) =>
+      other != null
+        ? Name == other.Name &&
+          Members.SequenceEqual(other.Members)
+        : false;
+
+    public override bool Equals(CSharpType other) => Equals(other as CSharpEnum);
+
+    public override bool Equals(object obj) => Equals(obj as CSharpEnum);
+
+    public override int GetHashCode() => this.Name?.GetHashCode() ?? 0;
   }
 }

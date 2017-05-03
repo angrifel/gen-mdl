@@ -21,10 +21,12 @@
 
 namespace ModelGenerator.CSharp
 {
+  using System;
+  using System.Linq;
   using System.Collections.Generic;
   using System.IO;
 
-  public class CSharpNamespace : IGenerationRoot
+  public class CSharpNamespace : IGenerationRoot, IEquatable<CSharpNamespace>
   {
     public string Name { get; set; }
 
@@ -59,5 +61,16 @@ namespace ModelGenerator.CSharp
 
       output.WriteLine(@"}");
     }
+
+    public bool Equals(CSharpNamespace other) =>
+      other != null
+        ? Name == other.Name &&
+          (Namespaces == other.Namespaces || (Namespaces?.SequenceEqual(other.Namespaces) ?? false)) &&
+          (Types == other.Types || (Types?.SequenceEqual(other.Types) ?? false))
+        : false;
+
+    public override bool Equals(object obj) => Equals(obj as CSharpNamespace);
+
+    public override int GetHashCode() => Name?.GetHashCode() ?? 0;
   }
 }

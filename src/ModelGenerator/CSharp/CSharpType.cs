@@ -21,13 +21,20 @@
 
 namespace ModelGenerator.CSharp
 {
+  using System;
   using System.Collections.Generic;
   using System.IO;
 
-  public abstract class CSharpType
+  public abstract class CSharpType : IEquatable<CSharpType>
   {
     public abstract void Generate(TextWriter output);
 
     public abstract void PopulateNamespaces(IList<string> namespaces);
+
+    public abstract bool Equals(CSharpType other);
+
+    public abstract override bool Equals(object obj);
+
+    public abstract override int GetHashCode();
   }
 }

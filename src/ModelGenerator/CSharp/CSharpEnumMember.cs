@@ -21,9 +21,10 @@
 
 namespace ModelGenerator.CSharp
 {
+  using System;
   using System.IO;
 
-  public class CSharpEnumMember
+  public class CSharpEnumMember : IEquatable<CSharpEnumMember>
   {
     public string Name { get; set; }
 
@@ -41,5 +42,15 @@ namespace ModelGenerator.CSharp
         output.WriteLine($"    {Name} = {Value}{separator}");
       }
     }
+
+    public bool Equals(CSharpEnumMember other) =>
+      other != null
+        ? Name == other.Name &&
+          Value == other.Value
+        : false;
+
+    public override bool Equals(object obj) => Equals(obj as CSharpEnumMember);
+
+    public override int GetHashCode() => unchecked((Name?.GetHashCode() ?? 0) + Value?.GetHashCode() ?? 0);
   }
 }

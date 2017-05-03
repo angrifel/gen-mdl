@@ -21,10 +21,12 @@
 
 namespace ModelGenerator.CSharp
 {
+  using System;
+  using System.Linq;
   using System.Collections.Generic;
   using System.IO;
 
-  public class CSharpClassMember
+  public class CSharpClassMember : IEquatable<CSharpClassMember>
   {
     public string Name { get; set; }
 
@@ -66,5 +68,17 @@ namespace ModelGenerator.CSharp
 
       output.WriteLine($"    public {Type} {Name} {{ get; set; }}");
     }
+
+    public bool Equals(CSharpClassMember other) =>
+      other != null
+        ? this.Name == other.Name &&
+          this.Type == other.Type &&
+          this.RequiredAttributeBehavior == other.RequiredAttributeBehavior &&
+          this.Namespaces.SequenceEqual(other.Namespaces, StringComparer.Ordinal)
+        : false;
+
+    public override bool Equals(object obj) => Equals(obj as CSharpClassMember);
+
+    public override int GetHashCode() => unchecked((Type?.GetHashCode() ?? 0) + Name?.GetHashCode() ?? 0);
   }
 }
