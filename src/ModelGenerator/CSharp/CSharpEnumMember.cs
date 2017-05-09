@@ -44,10 +44,9 @@ namespace ModelGenerator.CSharp
     }
 
     public bool Equals(CSharpEnumMember other) =>
-      other != null
-        ? Name == other.Name &&
-          Value == other.Value
-        : false;
+      other != null &&
+      Name == other.Name &&
+      Value == other.Value;
 
     public override bool Equals(object obj) => Equals(obj as CSharpEnumMember);
 

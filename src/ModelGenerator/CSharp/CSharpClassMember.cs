@@ -70,12 +70,11 @@ namespace ModelGenerator.CSharp
     }
 
     public bool Equals(CSharpClassMember other) =>
-      other != null
-        ? this.Name == other.Name &&
-          this.Type == other.Type &&
-          this.RequiredAttributeBehavior == other.RequiredAttributeBehavior &&
-          this.Namespaces.SequenceEqual(other.Namespaces, StringComparer.Ordinal)
-        : false;
+      other != null &&
+      Name == other.Name &&
+      Type == other.Type &&
+      RequiredAttributeBehavior == other.RequiredAttributeBehavior &&
+      (Namespaces == other.Namespaces || (Namespaces?.SequenceEqual(other.Namespaces, StringComparer.Ordinal)  ?? false));
 
     public override bool Equals(object obj) => Equals(obj as CSharpClassMember);
 

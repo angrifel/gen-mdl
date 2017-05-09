@@ -63,11 +63,10 @@ namespace ModelGenerator.CSharp
     }
 
     public bool Equals(CSharpNamespace other) =>
-      other != null
-        ? Name == other.Name &&
-          (Namespaces == other.Namespaces || (Namespaces?.SequenceEqual(other.Namespaces) ?? false)) &&
-          (Types == other.Types || (Types?.SequenceEqual(other.Types) ?? false))
-        : false;
+      other != null &&
+      Name == other.Name &&
+      (Namespaces == other.Namespaces || (Namespaces?.SequenceEqual(other.Namespaces) ?? false)) &&
+      (Types == other.Types || (Types?.SequenceEqual(other.Types) ?? false));
 
     public override bool Equals(object obj) => Equals(obj as CSharpNamespace);
 

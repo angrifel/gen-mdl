@@ -58,10 +58,9 @@ namespace ModelGenerator.CSharp
     }
 
     public bool Equals(CSharpClass other) =>
-      other != null
-        ? this.Name == other.Name &&
-          this.Members.SequenceEqual(other.Members)
-        : false;
+      other != null &&
+      Name == other.Name &&
+      (Members == other.Members || (Members?.SequenceEqual(other.Members) ?? false));
 
     public override bool Equals(CSharpType other) => Equals(other as CSharpClass);
 

@@ -50,7 +50,7 @@ namespace ModelGenerator.TypeScript
     public bool Equals(TypeScriptClass other) =>
       other != null &&
       Name == other.Name &&
-      (Members == other.Members || Members.SequenceEqual(other.Members));
+      (Members == other.Members || (Members?.SequenceEqual(other.Members) ?? false));
 
     public override bool Equals(TypeScriptTypeDeclaration other) => Equals(other as TypeScriptClass);
 

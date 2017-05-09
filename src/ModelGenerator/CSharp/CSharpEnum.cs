@@ -52,10 +52,9 @@ namespace ModelGenerator.CSharp
     }
 
     public bool Equals(CSharpEnum other) =>
-      other != null
-        ? Name == other.Name &&
-          Members.SequenceEqual(other.Members)
-        : false;
+      other != null &&
+      Name == other.Name &&
+      (Members == other.Members || (Members?.SequenceEqual(other.Members) ?? false));
 
     public override bool Equals(CSharpType other) => Equals(other as CSharpEnum);
 
