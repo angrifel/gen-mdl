@@ -21,10 +21,12 @@
 
 namespace ModelGenerator.TypeScript
 {
+  using System;
+  using System.Linq;
   using System.Collections.Generic;
   using System.IO;
 
-  public class TypeScriptClass : TypeScriptTypeDeclaration
+  public class TypeScriptClass : TypeScriptTypeDeclaration, IEquatable<TypeScriptClass>
   {
     public string Name { get; set; }
 
@@ -44,5 +46,19 @@ namespace ModelGenerator.TypeScript
 
       output.WriteLine("}");
     }
+
+    public bool Equals(TypeScriptClass other) =>
+      other != null &&
+      Name == other.Name &&
+      (Members == other.Members || Members.SequenceEqual(other.Members));
+
+    public override bool Equals(TypeScriptTypeDeclaration other) => Equals(other as TypeScriptClass);
+
+    public override bool Equals(TypeScriptDeclarationOrStatement other) => Equals(other as TypeScriptClass);
+
+    public override bool Equals(object obj) => Equals(obj as TypeScriptClass);
+
+    public override int GetHashCode() => this.Name?.GetHashCode() ?? 0;
+
   }
 }

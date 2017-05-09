@@ -22,10 +22,11 @@
 namespace ModelGenerator.TypeScript
 {
   using System;
+  using System.Linq;
   using System.Collections.Generic;
   using System.IO;
 
-  public class TypeScriptFile : IGenerationRoot
+  public class TypeScriptFile : IGenerationRoot, IEquatable<TypeScriptFile>
   {
     public IList<TypeScriptDeclarationOrStatement> Contents { get; set; }
 
@@ -45,5 +46,13 @@ namespace ModelGenerator.TypeScript
         previousItemType = item.GetType();
       }
     }
+
+    public bool Equals(TypeScriptFile other) =>
+      other != null &&
+      (Contents == other.Contents || Contents.SequenceEqual(other.Contents));
+
+    public override bool Equals(object obj) => Equals(obj as TypeScriptFile);
+
+    public override int GetHashCode() => base.GetHashCode();
   }
 }

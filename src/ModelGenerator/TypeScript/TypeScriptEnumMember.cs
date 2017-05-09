@@ -21,9 +21,10 @@
 
 namespace ModelGenerator.TypeScript
 {
+  using System;
   using System.IO;
 
-  public class TypeScriptEnumMember
+  public class TypeScriptEnumMember : IEquatable<TypeScriptEnumMember>
   {
     public string Name { get; set; }
 
@@ -41,5 +42,17 @@ namespace ModelGenerator.TypeScript
         output.WriteLine($"  {Name} = {Value}{separator}");
       }
     }
+
+    public bool Equals(TypeScriptEnumMember other) =>
+      other != null &&
+      Name == other.Name &&
+      Value == other.Value;
+
+    public override bool Equals(object obj) => Equals(obj as TypeScriptEnumMember);
+
+    public override int GetHashCode() =>
+      unchecked(
+        (Name?.GetHashCode() ?? 0) +
+        Value?.GetHashCode() ?? 0);
   }
 }

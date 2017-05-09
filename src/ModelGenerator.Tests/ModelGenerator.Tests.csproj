@@ -67,6 +67,7 @@
     <Compile Include="CSharp\CSharpGeneratorTests.cs" />
     <Compile Include="CSharp\CSharpNamespaceTests.cs" />
     <Compile Include="CSharp\Utilities\CSharpFactsTests.cs" />
+    <Compile Include="EnumerableExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpecFunctionTests.cs" />
     <Compile Include="TypeScript\Mocks\TypeScriptDeclarationOrStatementMock2.cs" />

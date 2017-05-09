@@ -21,7 +21,10 @@
 
 namespace ModelGenerator.TypeScript
 {
-  public abstract class TypeScriptTypeDeclaration : TypeScriptDeclarationOrStatement
+  using System;
+
+  public abstract class TypeScriptTypeDeclaration : TypeScriptDeclarationOrStatement, IEquatable<TypeScriptTypeDeclaration>
   {
+    public abstract bool Equals(TypeScriptTypeDeclaration other);
   }
 }

@@ -21,9 +21,10 @@
 
 namespace ModelGenerator.TypeScript
 {
+  using System;
   using System.IO;
 
-  public class TypeScriptReExportStatement : TypeScriptDeclarationOrStatement
+  public class TypeScriptReExportStatement : TypeScriptDeclarationOrStatement, IEquatable<TypeScriptReExportStatement>
   {
     public string Object { get; set; }
 
@@ -48,5 +49,21 @@ namespace ModelGenerator.TypeScript
         output.WriteLine($" }} from './{FileName}';");
       }
     }
+
+    public bool Equals(TypeScriptReExportStatement other) =>
+      other != null &&
+      Object == other.Object &&
+      Alias == other.Alias &&
+      FileName == other.FileName;
+
+    public override bool Equals(TypeScriptDeclarationOrStatement other) => Equals(other as TypeScriptReExportStatement);
+
+    public override bool Equals(object obj) => Equals(obj as TypeScriptReExportStatement);
+
+    public override int GetHashCode() => 
+      unchecked(
+        (Object?.GetHashCode() ?? 0) + 
+        (Alias?.GetHashCode() ?? 0) +
+        (FileName?.GetHashCode() ?? 0));
   }
 }

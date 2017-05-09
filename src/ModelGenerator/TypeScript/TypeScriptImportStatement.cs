@@ -21,9 +21,10 @@
 
 namespace ModelGenerator.TypeScript
 {
+  using System;
   using System.IO;
 
-  public class TypeScriptImportStatement : TypeScriptDeclarationOrStatement
+  public class TypeScriptImportStatement : TypeScriptDeclarationOrStatement, IEquatable<TypeScriptImportStatement>
   {
     public string ObjectName { get; set; }
 
@@ -33,5 +34,19 @@ namespace ModelGenerator.TypeScript
     {
       output.WriteLine($"import {ObjectName} from './{File}'");
     }
+
+    public bool Equals(TypeScriptImportStatement other) =>
+      other != null &&
+      ObjectName == other.ObjectName &&
+      File == other.File;
+
+    public override bool Equals(TypeScriptDeclarationOrStatement other) => Equals(other as TypeScriptImportStatement);
+
+    public override bool Equals(object obj) => Equals(obj as TypeScriptImportStatement);
+
+    public override int GetHashCode() =>
+      unchecked(
+        (ObjectName?.GetHashCode() ?? 0) +
+        File?.GetHashCode() ?? 0);
   }
 }

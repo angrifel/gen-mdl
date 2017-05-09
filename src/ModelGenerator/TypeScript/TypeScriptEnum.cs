@@ -21,10 +21,12 @@
 
 namespace ModelGenerator.TypeScript
 {
+  using System;
+  using System.Linq;
   using System.Collections.Generic;
   using System.IO;
 
-  public class TypeScriptEnum : TypeScriptTypeDeclaration
+  public class TypeScriptEnum : TypeScriptTypeDeclaration, IEquatable<TypeScriptEnum>
   {
     public string Name { get; set; }
 
@@ -41,5 +43,18 @@ namespace ModelGenerator.TypeScript
       Members[Members.Count - 1].Generate(output, true);
       output.WriteLine("}");
     }
+
+    public bool Equals(TypeScriptEnum other) =>
+      other != null &&
+      Name == other.Name &&
+      (Members == other.Members || Members.SequenceEqual(other.Members));
+
+    public override bool Equals(TypeScriptTypeDeclaration other) => Equals(other as TypeScriptEnum);
+
+    public override bool Equals(TypeScriptDeclarationOrStatement other) => Equals(other as TypeScriptEnum);
+
+    public override bool Equals(object obj) => Equals(obj as TypeScriptEnum);
+
+    public override int GetHashCode() => Name?.GetHashCode() ?? 0;
   }
 }

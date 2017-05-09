@@ -21,9 +21,10 @@
 
 namespace ModelGenerator.TypeScript
 {
+  using System;
   using System.IO;
 
-  public class TypeScriptExportStatement : TypeScriptDeclarationOrStatement
+  public class TypeScriptExportStatement : TypeScriptDeclarationOrStatement, IEquatable<TypeScriptExportStatement>
   {
     public bool IsDefault { get; set; }
 
@@ -49,5 +50,20 @@ namespace ModelGenerator.TypeScript
         TypeDeclaration.Generate(output);
       }
     }
+
+    public bool Equals(TypeScriptExportStatement other) =>
+      other != null &&
+      IsDefault == other.IsDefault &&
+      (TypeDeclaration == other.TypeDeclaration || TypeDeclaration.Equals(other.TypeDeclaration));
+
+    public override bool Equals(TypeScriptDeclarationOrStatement other) => Equals(other as TypeScriptExportStatement);
+
+    public override bool Equals(object obj) => Equals(obj as TypeScriptExportStatement);
+
+    public override int GetHashCode() => 
+      unchecked(
+        IsDefault.GetHashCode() + 
+        (Object?.GetHashCode() ?? 0) + 
+        (TypeDeclaration?.GetHashCode() ?? 0));
   }
 }

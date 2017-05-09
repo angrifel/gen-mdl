@@ -21,10 +21,17 @@
 
 namespace ModelGenerator.TypeScript
 {
+  using System;
   using System.IO;
 
-  public abstract class TypeScriptDeclarationOrStatement
+  public abstract class TypeScriptDeclarationOrStatement : IEquatable<TypeScriptDeclarationOrStatement>
   {
     public abstract void Generate(TextWriter output);
+
+    public abstract bool Equals(TypeScriptDeclarationOrStatement other);
+
+    public abstract override bool Equals(object obj);
+
+    public abstract override int GetHashCode();
   }
 }

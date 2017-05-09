@@ -21,9 +21,10 @@
 
 namespace ModelGenerator.TypeScript
 {
+  using System;
   using System.IO;
 
-  public class TypeScriptClassMember
+  public class TypeScriptClassMember : IEquatable<TypeScriptClassMember>
   {
     public string Name { get; set; }
 
@@ -33,5 +34,14 @@ namespace ModelGenerator.TypeScript
     {
       output.WriteLine($"  {Name} : {Type};");
     }
+
+    public bool Equals(TypeScriptClassMember other) =>
+      other != null &&
+      this.Name == other.Name && 
+      this.Type == other.Type;
+
+    public override bool Equals(object obj) => Equals(obj as TypeScriptClassMember);
+
+    public override int GetHashCode() => unchecked((Name?.GetHashCode() ?? 0) + Type?.GetHashCode() ?? 0);
   }
 }
