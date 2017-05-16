@@ -1,3 +1,6 @@
+## Version 0.4
+- added test cases for TypeScriptGenerator
+
 ## Version 0.3
 - Prevented replacement of built-in types.
 - added property to target to support adding '.generated' extension to files.
