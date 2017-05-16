@@ -68,6 +68,8 @@ namespace ModelGenerator.CSharp
       (Namespaces == other.Namespaces || (Namespaces?.SequenceEqual(other.Namespaces) ?? false)) &&
       (Types == other.Types || (Types?.SequenceEqual(other.Types) ?? false));
 
+    public bool Equals(IGenerationRoot other) => Equals(other as CSharpNamespace);
+
     public override bool Equals(object obj) => Equals(obj as CSharpNamespace);
 
     public override int GetHashCode() => Name?.GetHashCode() ?? 0;

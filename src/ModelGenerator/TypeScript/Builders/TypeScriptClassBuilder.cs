@@ -19,26 +19,30 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-namespace ModelGenerator
+namespace ModelGenerator.TypeScript.Builders
 {
-  using System;
+  using System.Collections.Generic;
 
-  public class GeneratorOutput : IEquatable<GeneratorOutput>
+  public class TypeScriptClassBuilder
   {
-    public string Path { get; set; }
+    private readonly TypeScriptClass _result = new TypeScriptClass { Members = new List<TypeScriptClassMember>() };
 
-    public IGenerationRoot GenerationRoot { get; set; }
+    private TypeScriptClassBuilder() { }
 
-    public bool Equals(GeneratorOutput other) =>
-      other != null &&
-      Path == other.Path &&
-      (GenerationRoot == other.GenerationRoot || GenerationRoot.Equals(other.GenerationRoot));
+    public static TypeScriptClassBuilder Start() => new TypeScriptClassBuilder();
 
-    public override bool Equals(object obj) => Equals(obj as GeneratorOutput);
+    public TypeScriptClassBuilder Name(string name)
+    {
+      _result.Name = name;
+      return this;
+    }
 
-    public override int GetHashCode() =>
-      unchecked(
-        (this.Path?.GetHashCode() ?? 0) + 
-        this.GenerationRoot?.GetHashCode() ?? 0);
+    public TypeScriptClassBuilder Member(string name, string type)
+    {
+      _result.Members.Add(new TypeScriptClassMember { Name = name, Type = type });
+      return this;
+    }
+
+    public TypeScriptClass Build() => _result;
   }
 }

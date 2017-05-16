@@ -21,9 +21,10 @@
 
 namespace ModelGenerator
 {
+  using System;
   using System.IO;
 
-  public interface IGenerationRoot
+  public interface IGenerationRoot : IEquatable<IGenerationRoot>
   {
     void Generate(TextWriter output);
   }

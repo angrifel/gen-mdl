@@ -101,6 +101,9 @@
     <Compile Include="Model\EntityInfo.cs" />
     <Compile Include="Model\Spec.computed.cs" />
     <Compile Include="SpecExtensions.cs" />
+    <Compile Include="TypeScript\Builders\TypeScriptClassBuilder.cs" />
+    <Compile Include="TypeScript\Builders\TypeScriptExportStatementBuilder.cs" />
+    <Compile Include="TypeScript\Builders\TypeScriptFileBuilder.cs" />
     <Compile Include="TypeScript\Services\TypeScriptEntityGenerator.cs" />
     <Compile Include="TypeScript\Services\TypeScriptEntityMemberGenerator.cs" />
     <Compile Include="TypeScript\Utilities\TypeScriptFacts.cs" />

@@ -19,26 +19,24 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-namespace ModelGenerator
+namespace ModelGenerator.TypeScript.Builders
 {
-  using System;
+  using System.Collections.Generic;
 
-  public class GeneratorOutput : IEquatable<GeneratorOutput>
+  public class TypeScriptFileBuilder
   {
-    public string Path { get; set; }
+    private readonly TypeScriptFile _result = new TypeScriptFile { Contents = new List<TypeScriptDeclarationOrStatement>() };
 
-    public IGenerationRoot GenerationRoot { get; set; }
+    private TypeScriptFileBuilder() { }
 
-    public bool Equals(GeneratorOutput other) =>
-      other != null &&
-      Path == other.Path &&
-      (GenerationRoot == other.GenerationRoot || GenerationRoot.Equals(other.GenerationRoot));
+    public static TypeScriptFileBuilder Start() => new TypeScriptFileBuilder();
 
-    public override bool Equals(object obj) => Equals(obj as GeneratorOutput);
+    public TypeScriptFileBuilder Content(TypeScriptDeclarationOrStatement declarationOrStatement)
+    {
+      _result.Contents.Add(declarationOrStatement);
+      return this;
+    }
 
-    public override int GetHashCode() =>
-      unchecked(
-        (this.Path?.GetHashCode() ?? 0) + 
-        this.GenerationRoot?.GetHashCode() ?? 0);
+    public TypeScriptFile Build() => _result;
   }
 }

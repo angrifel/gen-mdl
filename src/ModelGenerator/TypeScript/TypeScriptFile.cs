@@ -47,6 +47,8 @@ namespace ModelGenerator.TypeScript
       }
     }
 
+    public bool Equals(IGenerationRoot other) => Equals(other as TypeScriptFile);
+
     public bool Equals(TypeScriptFile other) =>
       other != null &&
       (Contents == other.Contents || Contents.SequenceEqual(other.Contents));
@@ -54,5 +56,6 @@ namespace ModelGenerator.TypeScript
     public override bool Equals(object obj) => Equals(obj as TypeScriptFile);
 
     public override int GetHashCode() => base.GetHashCode();
+
   }
 }
