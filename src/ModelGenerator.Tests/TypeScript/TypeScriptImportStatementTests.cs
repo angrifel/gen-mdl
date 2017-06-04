@@ -1,4 +1,4 @@
-﻿//  This file is part of mdlgen - A Source code generator for model definitions.
+﻿//  This file is part of gen-mdl - A Source code generator for model definitions.
 //  Copyright (c) angrifel
 
 //  Permission is hereby granted, free of charge, to any person obtaining a copy of

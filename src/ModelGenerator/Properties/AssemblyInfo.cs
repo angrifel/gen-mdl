@@ -1,4 +1,4 @@
-﻿//  This file is part of mdlgen - A Source code generator for model definitions.
+﻿//  This file is part of gen-mdl - A Source code generator for model definitions.
 //  Copyright (c) angrifel
 
 //  Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -26,11 +26,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("genmdl")]
+[assembly: AssemblyTitle("gen-mdl")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("genmdl")]
+[assembly: AssemblyProduct("gen-mdl")]
 [assembly: AssemblyCopyright("Copyright © angrifel")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
