@@ -1,10 +1,10 @@
-# genmdl 
+# gen-mdl 
 
-[![Build status](https://ci.appveyor.com/api/projects/status/baeho8r25ny89044/branch/master?svg=true)](https://ci.appveyor.com/project/angrifel/genmdl/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/7m9l9ralcadqwhua/branch/master?svg=true)](https://ci.appveyor.com/project/angrifel/gen-mdl/branch/master)
 
 ## What is it?
 
-**genmdl** is a code generator that takes a data model definition as input and produces code in C# and TypeScript for that model.
+**gen-mdl** is a code generator that takes a data model definition as input and produces code in C# and TypeScript for that model.
 
 ## What is it good for?
 
@@ -21,10 +21,10 @@ Our core principles
 
 
  
-## How does genmdl work?
+## How does gen-mdl work?
 
  - You write model definitions in YAML.
- - You invoke genmdl with your model definition.
+ - You invoke gen-mdl with your model definition.
  - You get code. :)
 
 ## What does a model definition look like?
@@ -82,7 +82,7 @@ entities :
             shared_in_fb : { type: bool, exclude: [typescript] }
 
 ```
-## What do I get after invoking genmdl?
+## What do I get after invoking gen-mdl?
 
 For the model above you would get the following files
 
