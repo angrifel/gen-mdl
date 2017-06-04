@@ -1,3 +1,6 @@
+## Version 0.5
+- changed project name to gen-mdl
+
 ## Version 0.4
 - added test cases for TypeScriptGenerator
 
